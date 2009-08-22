@@ -12,7 +12,7 @@ public class ServerTest extends TestCase {
 
 	public void testMain() {
 		Server s = new Server();
-		Assert.assertTrue(s.start());
+		Assert.assertTrue(s.openSocket());
 	}
 	
 }

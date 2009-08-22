@@ -10,8 +10,8 @@ public class Server {
 	private ServerSocket serverSocket;
 	
 	public Server() {
-		port = 7870;
-		hostName = "localhost";
+		port = ServerConstants.PORT;
+		hostName = ServerConstants.HOSTNAME;
 	}
 	
 	/**
@@ -71,8 +71,10 @@ public class Server {
 	/**
 	 * Method to kick off the server.
 	 */
-	public Boolean start() {
-		return (this.openSocket() ? true : false);
+	public void start() {
+		if(openSocket()) {
+			loop();
+		}
 	}
 	
 	/**
@@ -90,10 +92,11 @@ public class Server {
 		while(true) {
 			try {
 				clientSocket = null;
-				System.out.println("Waiting for accepting...");
+				System.out.println(ServerConstants.SERVER_STARTUP);
+				System.out.println(ServerConstants.SERVER_ACCEPTING);
 				clientSocket = serverSocket.accept();
 			} catch (IOException e) {
-				System.out.println("Server socket is closed");
+				System.out.println(ServerConstants.Server_STARTUP_FAILED);
 				System.exit(1);
 			} 
 			
@@ -104,5 +107,16 @@ public class Server {
 			t.start();
 			System.out.println("Accepted a connection on port: " + serverSocket.getLocalPort());
 		}
+	}
+	
+	/**
+	 * Main method that is called when you launch the 
+	 * run_server.bat or run_server.sh
+	 * 
+	 * @param args not needed for now.
+	 */
+	public static void main(String[] args) {
+		Server server = new Server();
+		server.start();
 	}
 }
