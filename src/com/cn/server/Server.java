@@ -2,11 +2,12 @@ package com.cn.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server {
 	private int port;
 	private String hostName;
-	private ServerSocket socket;
+	private ServerSocket serverSocket;
 	
 	public Server() {
 		port = 7870;
@@ -46,11 +47,11 @@ public class Server {
 	}
 
 	public void setSocket(ServerSocket socket) {
-		this.socket = socket;
+		this.serverSocket = socket;
 	}
 
 	public ServerSocket getSocket() {
-		return socket;
+		return serverSocket;
 	}
 	
 	/**
@@ -72,5 +73,36 @@ public class Server {
 	 */
 	public Boolean start() {
 		return (this.openSocket() ? true : false);
+	}
+	
+	/**
+	 *  1. Loop for accepting sockets
+	 *  2. Create a thread for the accepted socket
+	 */
+	protected void loop() {
+		
+		Socket clientSocket = null;
+
+		/*
+		 * Wait for clients at serverSockets, 
+		 * instantiate a new thread for each new connection with the clientSocket information
+		 */
+		while(true) {
+			try {
+				clientSocket = null;
+				System.out.println("Waiting for accepting...");
+				clientSocket = serverSocket.accept();
+			} catch (IOException e) {
+				System.out.println("Server socket is closed");
+				System.exit(1);
+			} 
+			
+			/*
+			 * Start a new thread (ServerThread).
+			 */
+			Thread t = new Thread(new ServerThread(clientSocket));
+			t.start();
+			System.out.println("Accepted a connection on port: " + serverSocket.getLocalPort());
+		}
 	}
 }
