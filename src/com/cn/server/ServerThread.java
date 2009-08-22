@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 public class ServerThread implements Runnable {
 	
+	// Client-Server Interaction
 	Logger logger = Logger.getLogger(ServerConstants.LOGGER);
 	protected Socket clientSocket;
 	protected BufferedReader sockBufReader = null;

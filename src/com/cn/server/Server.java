@@ -12,6 +12,8 @@ public class Server {
 	public Server() {
 		port = ServerConstants.PORT;
 		hostName = ServerConstants.HOSTNAME;
+		System.out.println(ServerConstants.SERVER_STARTUP);
+		System.out.println(ServerConstants.SERVER_ACCEPTING);
 	}
 	
 	/**
@@ -92,8 +94,6 @@ public class Server {
 		while(true) {
 			try {
 				clientSocket = null;
-				System.out.println(ServerConstants.SERVER_STARTUP);
-				System.out.println(ServerConstants.SERVER_ACCEPTING);
 				clientSocket = serverSocket.accept();
 			} catch (IOException e) {
 				System.out.println(ServerConstants.Server_STARTUP_FAILED);
@@ -105,7 +105,8 @@ public class Server {
 			 */
 			Thread t = new Thread(new ServerThread(clientSocket));
 			t.start();
-			System.out.println("Accepted a connection on port: " + serverSocket.getLocalPort());
+			String success = ServerConstants.formatOutput("Accepted connection "+serverSocket.getInetAddress() +":"+serverSocket.getLocalPort());
+			System.out.println(success);
 		}
 	}
 	
