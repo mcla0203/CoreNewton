@@ -1,41 +1,15 @@
 package com.cn.npc.monsters;
 
 public class Monster {
-
-	private String name;
-	private int health;
-	private int energy;
-	private boolean isAlive;
+	
+	private double id;
 	
 	public Monster() {
-		health = 100;
-		energy = 100;
-		isAlive = true;
+		id = Math.random();
 	}
 	
-	public int getHealth() {
-		return health;
+	public double getId() {
+		return id;
 	}
 	
-	public int getEnergy() {
-		return energy;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void beAttacked(int dmg) {
-		if(dmg >= health) {
-			health = 0;
-			isAlive = false;
-		}
-		else {
-			health -= dmg;
-		}
-	}
-	
-	public void attack(Monster monster, int damage) {
-	
-	}
 }
