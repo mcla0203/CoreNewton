@@ -1,4 +1,4 @@
-package com.ptc.npc.monsters;
+package com.cn.npc.monsters;
 
 public class FaerieLumpAmoeba extends Monster {
 	

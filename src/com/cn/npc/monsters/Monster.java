@@ -1,4 +1,4 @@
-package com.ptc.npc.monsters;
+package com.cn.npc.monsters;
 
 public class Monster {
 
@@ -36,7 +36,6 @@ public class Monster {
 	}
 	
 	public void attack(Monster monster, int damage) {
-		monster.beAttacked(damage);
-		//don't let the monster attack you...you need to defend yourself :-p
+	
 	}
 }
