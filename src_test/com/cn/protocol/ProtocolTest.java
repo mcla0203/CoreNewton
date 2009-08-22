@@ -7,8 +7,8 @@ public class ProtocolTest extends TestCase {
 	public void testParseSimple() {
 		String s = "<Hello><World!>";
 		String x = "  <Bigger string: >" + s;	
-		String[] sArray = Protocol.parseSimple(s);
-		String[] xArray = Protocol.parseSimple(x);
+		String[] sArray = Protocol.getRequestArgsSimple(s);
+		String[] xArray = Protocol.getRequestArgsSimple(x);
 		
 		assertEquals(sArray.length, 2);
 		assertEquals(xArray.length, 3);

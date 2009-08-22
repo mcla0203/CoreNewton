@@ -1,7 +1,5 @@
 package com.cn.protocol;
 
-import java.util.ArrayList;
-
 import com.cn.npc.monsters.Monster;
 import com.cn.players.Player;
 
@@ -28,11 +26,15 @@ public class Protocol {
 	 * It returns an array of strings created by splitting 
 	 * the original string at the "<>".
 	 */
-	public static String[] parseSimple(String s) {
+	public static String[] getRequestArgsSimple(String s) {
 		String[] array;
 		s = s.trim();
 		s = s.substring(1, s.length()-1);
 		array = s.split("><");
 		return array;
 	}	
+	
+	public static String getRequestCmdSimple(String s) {
+		return getRequestArgsSimple(s)[0];
+	}
 }
