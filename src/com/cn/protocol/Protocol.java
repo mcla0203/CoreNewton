@@ -1,16 +1,16 @@
 package com.cn.protocol;
 
-import com.cn.npc.monsters.Monster;
+import com.cn.constants.ProtocolConstants;
 import com.cn.players.Player;
 
 public class Protocol {
 
-	public static String attackRequest(int damage, Monster monster) {
-		return ProtocolConstants.ATTACK_MONSTER + "<" + monster.getId() + "><" + damage + ">";
+	public static String attackRequest(int damage, double id) {
+		return ProtocolConstants.ATTACK_MONSTER + "<" + id + "><" + damage + ">";
 	}
 	
-	public static String attackResponse(int damage, Monster monster, Player player) {
-		return attackRequest(damage, monster) + "<" + player.getName() + ">";
+	public static String attackResponse(int damage, double id) {
+		return attackRequest(damage, id);
 	}
 	
 	public static String healRequest(int heal, Player player) {
@@ -19,6 +19,10 @@ public class Protocol {
 	
 	public static String healResponse(String s) {
 		return ProtocolConstants.HEAL + ProtocolConstants.SUCCESS;
+	}
+	
+	public static String createSuccessResponse() {
+		return ProtocolConstants.SUCCESS;
 	}
 	
 	/**
@@ -34,7 +38,14 @@ public class Protocol {
 		return array;
 	}	
 	
+	/**
+	 * Return the first argument of getRequestArgsSimple.
+	 */
 	public static String getRequestCmdSimple(String s) {
 		return getRequestArgsSimple(s)[0];
+	}
+	
+	public static String createSimpleResponse(String s) {
+		return "<" + s + ">";
 	}
 }

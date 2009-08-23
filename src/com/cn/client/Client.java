@@ -10,6 +10,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import com.cn.constants.ClientConstants;
+import com.cn.protocol.Protocol;
+
 public class Client {
 	
 	// Client-Server Interaction
@@ -32,7 +35,6 @@ public class Client {
 	 * Default constructor.  Sets the URL, and gets the user input.
 	 */
 	public Client() {
-		//init the URL
 		try { myURL = InetAddress.getLocalHost().getHostAddress();}
 		catch(Exception e) { e.printStackTrace(); System.exit(1); }
 		userInput = new UserInput();
@@ -45,25 +47,37 @@ public class Client {
 		while(true) {
 			String cmd = userInput.getUserInput();
 			String[] input = cmd.split(" ");
-			if(input[0].equals(ClientConstants.CONNECT)) {
+			if(input[0].equals(ClientConstants.HELP)) {
+				System.out.println(ClientConstants.HELP_FORMATTED);
+			}
+			else if(input[0].equals(ClientConstants.CONNECT)) {
 				System.out.println(ClientConstants.CONNECT_ATTEMPT);
 				if(input.length != 3) {
 					System.out.println(ClientConstants.CONNECT_ATTEMPT_MALFORMED);
 				}
 				else {
-					connectToServer(input[1], Integer.valueOf(input[2]));
+					if (connectToServer(input[1], Integer.valueOf(input[2])) == 0) {
+						System.out.println(ClientConstants.CONNECT_SUCCESS);
+					}
 				}
 			}
+			else if(input[0].equals(ClientConstants.DISCONNECT)) {
+				disconnectFromServer();
+				System.out.println(ClientConstants.DISCONNECT_SUCCESS);
+			}
+			else if(input[0].equals(ClientConstants.ATTACK)) {
+				doATTACK(input);
+			}
+			
 		}
 	}
 	
 	
 	/**
 	 * Method that connects to the server Given a serverName (ip/url)
-	 * and serverPort.
+	 * and serverPort.  Returns 0 on success.
 	 */
 	protected int connectToServer(String serverName, int serverPort) { 
-		System.out.println("Connecting to the server...." + serverName+ ":"+serverPort);
 		int retVal = 0;
 		this.serverName = serverName;
 		this.serverPort = serverPort;
@@ -73,11 +87,9 @@ public class Client {
 			Thread t = new Thread(new ClientShutdown());
 			Runtime.getRuntime().addShutdownHook(t);
 		} catch (Exception e) {
-			System.out.println("Socket connection to "+serverName+":"+serverPort+" failed!");
 			clientSocket = null;
 			retVal = -1;
 		}
-
 		try {
 			bis = new BufferedInputStream(clientSocket.getInputStream());
 			bos = new BufferedOutputStream(clientSocket.getOutputStream());
@@ -87,7 +99,6 @@ public class Client {
 			clientSocket = null;
 			retVal = -1;
 		}
-
 		return retVal;
 	}
 	
@@ -131,5 +142,22 @@ public class Client {
 	public static void main(String[] args) {
 		Client client = new Client();
 		client.runClient();
+	}
+	
+	public String doATTACK(String[] args) {
+		sendMessageToServer(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
+		
+		return "0";
+	}
+	
+	public void sendMessageToServer(String message) {
+		try {
+			sockPrintWriter.println(message);
+			String response = sockBufReader.readLine();
+			System.out.println(response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

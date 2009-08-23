@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.cn.constants.ClientConstants;
+
 public class UserInput{
 
     
@@ -11,11 +13,11 @@ public class UserInput{
 	BufferedReader reader; 
 	
 	public UserInput() {
+		System.out.println(ClientConstants.USER_INPUT);
 		reader = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
 	public String getUserInput() {
-		System.out.println(ClientConstants.USER_INPUT);
 		try{
 			userInput = reader.readLine(); 
 		}
