@@ -34,6 +34,12 @@ public class Protocol {
 		return array;
 	}	
 	
+	/**
+	 * Returns the first element of a request.
+	 *  
+	 * @param s
+	 * @return
+	 */
 	public static String getRequestCmdSimple(String s) {
 		return getRequestArgsSimple(s)[0];
 	}
