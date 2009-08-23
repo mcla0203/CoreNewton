@@ -62,4 +62,12 @@ public class Player extends Character {
 	public void sleep() {
 		//TODO:Implement me
 	}
+	
+	/**
+	 * Returns true if the player is fully healed.
+	 * @return
+	 */
+	public boolean isFullyHealed() {
+		return (MAX_HEALTH == health ? true : false);
+	}
 }

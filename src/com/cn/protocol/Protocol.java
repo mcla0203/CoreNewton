@@ -1,7 +1,6 @@
 package com.cn.protocol;
 
 import com.cn.constants.ProtocolConstants;
-import com.cn.players.Player;
 
 public class Protocol {
 
@@ -13,8 +12,8 @@ public class Protocol {
 		return attackRequest(damage, id);
 	}
 	
-	public static String healRequest(int heal, Player player) {
-		return ProtocolConstants.HEAL + "<" + player.getName() + "><" + heal + ">";
+	public static String healRequest(int heal, String name) {
+		return ProtocolConstants.HEAL + "<" + heal + "><" + name + ">";
 	}
 	
 	public static String healResponse(String s) {
@@ -23,6 +22,10 @@ public class Protocol {
 	
 	public static String createSuccessResponse() {
 		return ProtocolConstants.SUCCESS;
+	}
+	
+	public static String createCharacterDiedResponse(double id) {
+		return ProtocolConstants.DEATH + "<" + id + ">"; 
 	}
 	
 	/**

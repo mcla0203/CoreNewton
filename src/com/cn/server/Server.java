@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cn.constants.Constants;
+import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.npc.monsters.Monster;
+import com.cn.players.Player;
 import com.cn.protocol.Protocol;
 
 public class Server {
@@ -24,11 +26,13 @@ public class Server {
 	private String hostName;
 	private ServerSocket serverSocket;
 	public static List<Monster> monsterList;
+	public static List<Player> playerList;
 	
 	public Server() {
 		port = ServerConstants.PORT;
 		hostName = ServerConstants.HOSTNAME;
 		monsterList = Collections.synchronizedList(new ArrayList<Monster>());
+		playerList = Collections.synchronizedList(new ArrayList<Player>());
 		for(int i=0; i<10; i++) {
 			monsterList.add(new Monster());
 		}
@@ -194,6 +198,10 @@ public class Server {
 						onATTACK(args);
 						continue;
 					}
+					if (cmd.equalsIgnoreCase(Constants.HEAL)) {
+						onHEAL(args);
+						continue;
+					}
 					
 					System.out.println(ServerConstants.INVALID_MSG_RECVD);
 					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALIS_MSG_RECVD_CODE));
@@ -217,14 +225,34 @@ public class Server {
 		public void onATTACK(String[] args) {
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
 			if(m == null) {
-				System.out.println(ServerConstants.INVALID_MSG_RECVD);
-				sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALIS_MSG_RECVD_CODE));
-			}
-			else {
+				invalidMsg();
+			} else {
 				m.beAttacked(Integer.valueOf(args[2]));
-				System.out.println(ServerConstants.INVALID_MSG_RECVD);
-				sockPrintWriter.println(Protocol.createSuccessResponse());
+				if(m.isAlive()) {
+					sockPrintWriter.println(Protocol.createSuccessResponse());
+				} else {
+					sockPrintWriter.println(Protocol.createCharacterDiedResponse(Double.valueOf(args[1])));  //attacking a dead monster is invalid...
+				}
 			}
+		}
+		
+		public void onHEAL(String[] args) {
+			Player p = ServerPlayersHelper.getPlayerByName(args[2], playerList);
+			if(p == null) {
+				invalidMsg();
+			} else {
+				p.heal(Integer.valueOf(args[1]));
+				if(!p.isFullyHealed()) {
+					sockPrintWriter.println(Protocol.createSuccessResponse());
+				} else {
+					invalidMsg();  //heal when having max health is invalid...
+				}
+			}
+		}
+		
+		public void invalidMsg() {
+			System.out.println(ServerConstants.INVALID_MSG_RECVD);
+			sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALIS_MSG_RECVD_CODE));
 		}
 	}
 

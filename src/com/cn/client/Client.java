@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 import com.cn.constants.ClientConstants;
+import com.cn.constants.Constants;
+import com.cn.constants.ProtocolConstants;
 import com.cn.protocol.Protocol;
 
 public class Client {
@@ -44,31 +46,44 @@ public class Client {
 	 * Method to run the Client as the cmd line interface.
 	 */
 	public void runClient() {
-		while(true) {
-			String cmd = userInput.getUserInput();
-			String[] input = cmd.split(" ");
-			if(input[0].equals(ClientConstants.HELP)) {
-				System.out.println(ClientConstants.HELP_FORMATTED);
-			}
-			else if(input[0].equals(ClientConstants.CONNECT)) {
-				System.out.println(ClientConstants.CONNECT_ATTEMPT);
-				if(input.length != 3) {
-					System.out.println(ClientConstants.CONNECT_ATTEMPT_MALFORMED);
+		try {
+			while(true) {
+				String cmd = userInput.getUserInput();
+				String[] input = cmd.split(" ");
+				if(input[0].equals(ClientConstants.HELP)) {
+					System.out.println(ClientConstants.HELP_FORMATTED);
 				}
-				else {
-					if (connectToServer(input[1], Integer.valueOf(input[2])) == 0) {
-						System.out.println(ClientConstants.CONNECT_SUCCESS);
+				else if(input[0].equals(ClientConstants.CONNECT)) {
+					System.out.println(ClientConstants.CONNECT_ATTEMPT);
+					if(input.length != 3) {
+						System.out.println(ClientConstants.CONNECT_ATTEMPT_MALFORMED);
+					}
+					else {
+						if (connectToServer(input[1], Integer.valueOf(input[2])) == 0) {
+							System.out.println(ClientConstants.CONNECT_SUCCESS);
+						}
 					}
 				}
+				else if(input[0].equals(ClientConstants.DISCONNECT)) {
+					disconnectFromServer();
+					System.out.println(ClientConstants.DISCONNECT_SUCCESS);
+				}
+				else if(input[0].equals(ClientConstants.ATTACK)) {
+					doATTACK(input);
+				}
+				else if(input[0].equals(Constants.HEAL)) {
+					doHEAL(input);
+				}
+				else if(input[0].equals(Constants.REST)) {
+					doREST(input);
+				}
+				else if(input[0].equals(Constants.LOOT)) {
+					doLOOT(input);
+				}
 			}
-			else if(input[0].equals(ClientConstants.DISCONNECT)) {
-				disconnectFromServer();
-				System.out.println(ClientConstants.DISCONNECT_SUCCESS);
-			}
-			else if(input[0].equals(ClientConstants.ATTACK)) {
-				doATTACK(input);
-			}
-			
+		} catch(Exception e) {
+			disconnectFromServer();
+			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
 	
@@ -144,20 +159,38 @@ public class Client {
 		client.runClient();
 	}
 	
-	public String doATTACK(String[] args) {
-		sendMessageToServer(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
-		
-		return "0";
+	public void doATTACK(String[] args) {
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
+		if(Protocol.getRequestCmdSimple(response).equals(Constants.DEATH)) {
+			System.out.println(ClientConstants.LOOT_IS_POSSIBLE);
+		}
 	}
 	
-	public void sendMessageToServer(String message) {
+	public void doHEAL(String[] args) {
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
+		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
+			System.out.println(ClientConstants.HEAL_COMPLETE);
+		}
+	}
+	
+	public void doLOOT(String[] args) {
+		System.out.println(ClientConstants.NOT_IMPLEMENTED);
+	}
+	
+	public void doREST(String[] args) {
+		System.out.println(ClientConstants.NOT_IMPLEMENTED);
+	}
+	
+	public String sendToServerAndGetResponse(String message) {
 		try {
 			sockPrintWriter.println(message);
 			String response = sockBufReader.readLine();
 			System.out.println(response);
+			return response;
 		}catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+			return "";
+		}	
 	}
+	
 }
