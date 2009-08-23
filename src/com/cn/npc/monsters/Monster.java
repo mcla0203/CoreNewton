@@ -1,11 +1,14 @@
 package com.cn.npc.monsters;
 
-public class Monster {
+import com.cn.chars.Character;
+
+public class Monster extends Character {
 	
 	private double id;
 	
 	public Monster() {
-		id = Math.random();
+		id = Math.floor(Math.random()*1000);
+		System.out.println(id);
 	}
 	
 	public double getId() {
