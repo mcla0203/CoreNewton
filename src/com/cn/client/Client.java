@@ -71,6 +71,9 @@ public class Client {
 				else if(input[0].equals(ClientConstants.ATTACK)) {
 					doATTACK(input);
 				}
+				else if(input[0].equals(ClientConstants.GET_MONSTER)) {
+					doGETMONSTERS(input);
+				}
 				else if(input[0].equals(Constants.HEAL)) {
 					doHEAL(input);
 				}
@@ -179,6 +182,10 @@ public class Client {
 	
 	public void doREST(String[] args) {
 		System.out.println(ClientConstants.NOT_IMPLEMENTED);
+	}
+	
+	public void doGETMONSTERS(String[] args) {
+		sendToServerAndGetResponse(Protocol.getMonstersRequest());
 	}
 	
 	public String sendToServerAndGetResponse(String message) {
