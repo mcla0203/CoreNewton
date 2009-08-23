@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 public class ProtocolTest extends TestCase {
 
-	public void testParseSimple() {
+	public void testGetRequestArgsSimple() {
 		String s = "<Hello><World!>";
 		String x = "  <Bigger string: >" + s;	
 		String[] sArray = Protocol.getRequestArgsSimple(s);
@@ -21,10 +21,17 @@ public class ProtocolTest extends TestCase {
 		assertEquals(xArray[2], "World!");
 	}
 	
+
 	public void testCreateSuccessResponse() {
 		String s1 = ProtocolConstants.DEATH + "<123>";
 		String s2 = Protocol.createCharacterDiedResponse(123);
 		assertEquals(s1, s2);
+	}
+
+	public void testGetRequestCmdSimple() {
+		String s = "<This is the command><Hello><World!>";
+		String command = Protocol.getRequestCmdSimple(s);
+		assertEquals(command, "This is the command");
 	}
 	
 }
