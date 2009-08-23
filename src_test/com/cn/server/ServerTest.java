@@ -15,4 +15,11 @@ public class ServerTest extends TestCase {
 		Assert.assertTrue(s.openSocket());
 	}
 	
+	@SuppressWarnings("static-access")
+	public void testConstructor() {
+		Server s = new Server();
+		Assert.assertTrue(s.monsterList.size() == 10);
+		Assert.assertTrue(s.playerList.size() == 0);
+	}
+	
 }
