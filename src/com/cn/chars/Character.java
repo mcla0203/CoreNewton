@@ -5,14 +5,19 @@ public class Character {
 	protected int health;
 	protected int energy;
 	protected boolean isAlive;
+	protected int level;
+
+	protected int MAX_HEALTH = 100;
+	protected int MAX_ENERGY = 20;
 	
 	/**
 	 * Given a name, construct an instance of a Player
 	 */
 	public Character() {
-		health = 100;
-		energy = 20;
+		health = MAX_HEALTH;
+		energy = MAX_ENERGY;
 		isAlive = true;
+		level = 1;
 	}
 	
 	/**
@@ -23,10 +28,40 @@ public class Character {
 	}
 	
 	/**
+	 * Returns the level of the character
+	 */
+	public int getLevel() {
+		return level;
+	}
+	
+	/**
+	 * Sets the level of the character
+	 */
+	public void setLevel(int lvl) {
+		level = lvl;
+	}
+	
+	/**
 	 * Returns the health of the player
 	 */
 	public int getHealth() {
 		return health;
+	}
+
+	/**
+	 * Sets the health of the character. For now this method is used
+	 * primarily for testing purposes, but later could have a greater 
+	 * use. Returns true if the health was set successfully and false 
+	 * if not.
+	 * @param h
+	 * @return
+	 */
+	public boolean setHealth(int h) {
+		if(h <= MAX_HEALTH) {
+			health = h;
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -34,6 +69,22 @@ public class Character {
 	 */
 	public int getEnergy() {
 		return energy;
+	}
+	
+	/**
+	 * Sets the energy of the character. For now this method is used
+	 * primarily for testing purposes, but later could have a greater 
+	 * use. Returns true if the energy was set successfully and false 
+	 * if not.
+	 * @param e
+	 * @return
+	 */
+	public boolean setEnergy(int e) {
+		if(e <= MAX_ENERGY) {
+			energy = e;
+			return true;
+		}
+		return false;
 	}
 	
 	/**

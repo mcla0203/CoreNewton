@@ -11,6 +11,7 @@ public class CharacterTest extends TestCase {
 		assertEquals(c.health, 100);
 		assertEquals(c.energy, 20);
 		assertTrue(c.isAlive);
+		assertEquals(c.level, 1);
 	}
 
 	public void testLoseEnergy() {
@@ -56,6 +57,35 @@ public class CharacterTest extends TestCase {
 	public void testIsAlive() {
 		Character c = new Character();
 		assertTrue(c.isAlive());
+	}
+	
+	public void testGetLevel() {
+		Character c = new Character();
+		assertEquals(c.getLevel(), 1);
+	}
+	
+	public void testSetLevel() {
+		Character c = new Character();
+		c.setLevel(5);
+		assertEquals(c.getLevel(), 5);
+	}
+	
+	public void testSetHealth() {
+		Character c = new Character();
+		assertEquals(c.getHealth(), 100);
+		assertTrue(c.setHealth(5));
+		assertEquals(c.getHealth(), 5);
+		assertFalse(c.setHealth(200));
+		assertEquals(c.getHealth(), 5);
+	}
+	
+	public void testSetEnergy() {
+		Character c = new Character();
+		assertEquals(c.getEnergy(), 20);
+		assertTrue(c.setEnergy(10));
+		assertEquals(c.getEnergy(), 10);
+		assertFalse(c.setEnergy(100));
+		assertEquals(c.getEnergy(), 10);
 	}
 	
 }
