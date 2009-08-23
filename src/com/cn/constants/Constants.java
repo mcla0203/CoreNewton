@@ -9,6 +9,7 @@ public class Constants {
 	public static String REST = "rest";
 	public static String GET_HEALTH = "getHealth";
 	public static String GET_ENERGY = "getEnergy";
+	public static String GET_MONSTER = "getMonsters";
 	public static String DEATH = "death";
 	public static String LOOT = "loot";
 	

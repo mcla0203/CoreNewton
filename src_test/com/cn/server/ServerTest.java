@@ -11,7 +11,7 @@ import com.cn.server.Server;
 public class ServerTest extends TestCase {
 
 	public void testMain() {
-		Server s = new Server();
+		Server s = new Server(7778);
 		Assert.assertTrue(s.openSocket());
 	}
 	

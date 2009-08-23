@@ -26,5 +26,19 @@ public class ServerMonstersHelper {
 		}
 		return null;
 	}
+	
+	/**
+	 * Returns an array representation of all the monster ids.
+	 * 
+	 * @param monsterList
+	 * @return
+	 */
+	public static Double[] getMonsterIds(List<Monster> monsterList) {
+		Double[] result = new Double[monsterList.size()];
+		for(int i = 0; i<monsterList.size() ; i++ ) {
+			result[i] = monsterList.get(i).getId();
+		}
+		return result;
+	}
 
 }

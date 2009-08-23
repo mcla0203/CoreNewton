@@ -39,13 +39,13 @@ public class Client {
 	public Client() {
 		try { myURL = InetAddress.getLocalHost().getHostAddress();}
 		catch(Exception e) { e.printStackTrace(); System.exit(1); }
-		userInput = new UserInput();
 	}
 	
 	/**
 	 * Method to run the Client as the cmd line interface.
 	 */
 	public void runClient() {
+		userInput = new UserInput();
 		try {
 			while(true) {
 				String cmd = userInput.getUserInput();

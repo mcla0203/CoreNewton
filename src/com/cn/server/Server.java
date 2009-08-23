@@ -39,6 +39,11 @@ public class Server {
 		System.out.println(ServerConstants.SERVER_ACCEPTING);
 	}
 	
+	public Server(int port) {
+		this();
+		this.port = port;
+	}
+	
 	/**
 	 * Sets the hostname to the input string.
 	 * @param hostName
@@ -197,8 +202,16 @@ public class Server {
 						onATTACK(args);
 						continue;
 					}
-					if (cmd.equalsIgnoreCase(Constants.HEAL)) {
+					else if (cmd.equalsIgnoreCase(Constants.HEAL)) {
 						onHEAL(args);
+						continue;
+					}
+					else if (cmd.equalsIgnoreCase(Constants.LOOT)) {
+						onLOOT(args);
+						continue;
+					}
+					else if (cmd.equalsIgnoreCase(Constants.GET_MONSTER)) {
+						onGETMONSTERS(args);
 						continue;
 					}
 					
@@ -247,6 +260,24 @@ public class Server {
 					invalidMsg();  //heal when having max health is invalid...
 				}
 			}
+		}
+		
+		public void onLOOT(String[] args) {
+			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
+			if(m == null) {
+				invalidMsg();
+			} else {
+				if(!m.isAlive()) {
+					invalidMsg();
+				} else {
+					invalidMsg();  //loot while alive is invalid
+				}
+			}
+		}
+		
+		public void onGETMONSTERS(String[] args) {
+			String response = Protocol.createResponseSimple(ServerMonstersHelper.getMonsterIds(monsterList));
+			sockPrintWriter.println(response);
 		}
 		
 		public void invalidMsg() {

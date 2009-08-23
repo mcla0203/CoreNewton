@@ -27,6 +27,10 @@ public class Protocol {
 	public static String createCharacterDiedResponse(double id) {
 		return ProtocolConstants.DEATH + "<" + id + ">";
 	}
+	
+	public static String getMonstersRequest() {
+		return ProtocolConstants.GET_MONSTERS;
+	}
 
 	/**
 	 * This method is used to parse the most simple strings.
@@ -39,6 +43,34 @@ public class Protocol {
 		s = s.substring(1, s.length()-1);
 		array = s.split("><");
 		return array;
+	}
+	
+	/**
+	 * This method is used to iterate a set of strings and create a 
+	 * simple response.
+	 * @param array
+	 * @return String result
+	 */
+	public static String createResponseSimple(String[] list) {
+		String result = "";
+		for( String s : list ) {
+			result += "<" + s + ">";
+		}
+		return result;
+	}
+	
+	/**
+	 * This method is used to iterate a set of strings and create a 
+	 * simple response.
+	 * @param array
+	 * @return String result
+	 */
+	public static String createResponseSimple(Double[] list) {
+		String result = "";
+		for( Double s : list ) {
+			result += "<" + String.valueOf(s) + ">";
+		}
+		return result;
 	}
 
 	/**
