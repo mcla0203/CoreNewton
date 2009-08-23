@@ -23,7 +23,7 @@ public class ProtocolTest extends TestCase {
 	
 
 	public void testCreateSuccessResponse() {
-		String s1 = ProtocolConstants.DEATH + "<123>";
+		String s1 = ProtocolConstants.DEATH + "<123.0>";
 		String s2 = Protocol.createCharacterDiedResponse(123);
 		assertEquals(s1, s2);
 	}
