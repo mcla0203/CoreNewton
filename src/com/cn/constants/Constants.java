@@ -12,6 +12,10 @@ public class Constants {
 	public static String GET_MONSTER = "getMonsters";
 	public static String DEATH = "death";
 	public static String LOOT = "loot";
+	public static String LOGIN = "login";
+	public static String PASSWORD = "password";
+	public static String CHARACTER = "character";
+	public static String LOGIN_NAME = "loginName";
 	
 	/**
 	 * Formats the message to a more desirable output within the server.

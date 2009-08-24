@@ -83,4 +83,12 @@ public class Protocol {
 	public static String createSimpleResponse(String s) {
 		return "<" + s + ">";
 	}
+	
+	public static String createSimpleRequest(String s) {
+		return createSimpleResponse(s);
+	}
+	
+	public static String createLoginWithCharName(String s) {
+		return ProtocolConstants.LOGIN_NAME + s;
+	}
 }

@@ -12,6 +12,8 @@ public class CharacterTest extends TestCase {
 		assertEquals(c.energy, 20);
 		assertTrue(c.isAlive);
 		assertEquals(c.level, 1);
+		assertEquals(c.MAX_ENERGY, 20);
+		assertEquals(c.MAX_HEALTH, 100);
 	}
 
 	public void testLoseEnergy() {

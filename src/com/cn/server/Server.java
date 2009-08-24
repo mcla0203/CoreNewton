@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cn.constants.Constants;
+import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.npc.monsters.Monster;
 import com.cn.players.Player;
@@ -185,9 +186,6 @@ public class Server {
 			try {
 				String request;
 				while ((request = sockBufReader.readLine()) != null) {
-					if (request.length() == 0)
-						continue;
-
 					System.out.println(request);
 
 					if (request.length() < 1) {
@@ -214,9 +212,13 @@ public class Server {
 						onGETMONSTERS(args);
 						continue;
 					}
+					else if (cmd.equalsIgnoreCase(Constants.LOGIN_NAME)) {
+						onLOGINNAME(args);
+						continue;
+					}
 					
 					System.out.println(ServerConstants.INVALID_MSG_RECVD);
-					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALIS_MSG_RECVD_CODE));
+					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
 				}
 			} catch (Exception e) {
 				System.out.println("Disconnected: " +clientSocket.getInetAddress());
@@ -280,9 +282,16 @@ public class Server {
 			sockPrintWriter.println(response);
 		}
 		
+		public void onLOGINNAME(String[] args) {
+			playerList.add(new Player(args[1], Integer.valueOf(args[2]), Integer.valueOf(args[3]),
+					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
+			String response = ProtocolConstants.SUCCESS;
+			sockPrintWriter.println(response);
+		}
+		
 		public void invalidMsg() {
 			System.out.println(ServerConstants.INVALID_MSG_RECVD);
-			sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALIS_MSG_RECVD_CODE));
+			sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
 		}
 	}
 

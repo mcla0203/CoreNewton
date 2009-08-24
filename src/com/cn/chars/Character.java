@@ -7,13 +7,15 @@ public class Character {
 	protected boolean isAlive;
 	protected int level;
 
-	protected int MAX_HEALTH = 100;
-	protected int MAX_ENERGY = 20;
+	protected int MAX_HEALTH;
+	protected int MAX_ENERGY;
 	
 	/**
-	 * Given a name, construct an instance of a Player
+	 * Construct an instance of a Character
 	 */
 	public Character() {
+		MAX_HEALTH = 100;
+		MAX_ENERGY = 20;
 		health = MAX_HEALTH;
 		energy = MAX_ENERGY;
 		isAlive = true;
@@ -126,5 +128,4 @@ public class Character {
 			return false;
 		}
 	}
-	
 }

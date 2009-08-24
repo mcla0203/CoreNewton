@@ -7,10 +7,21 @@ public class Player extends Character {
 	
 	protected String name;
 	protected int credits;
+	protected int xp;
 	
 	public Player(String name) {
 		this.name = name;
-		this.credits = 0;		
+		this.credits = 0;	
+		this.xp = 0;
+	}
+	
+	public Player(String name, int lvl, int health, int energy, int xp, int credits) {
+		this.name = name;
+		this.credits = credits;
+		this.xp = xp;
+		this.level = lvl;
+		this.health = health;
+		this.energy = energy;
 	}
 	
 	/**
@@ -27,6 +38,14 @@ public class Player extends Character {
 	 */
 	public int getCredits() {
 		return credits;
+	}
+	
+	/**
+	 * Returns the xp of the player
+	 * @return
+	 */
+	public int getXP() {
+		return xp;
 	}
 	
 	/**
@@ -101,22 +120,39 @@ public class Player extends Character {
 	 * Returns an int that represents the number of 'credits'
 	 * (coins) that a player receives for killing a monster.
 	 * The number of credits returned will depend on the level 
-	 * of the monster.
+	 * of the monster killed.
 	 * @param monster
 	 * @return
 	 */
 	public int loot(Monster monster) {
-		if(monster.getLevel() < 6) {
-			credits += 5;
-			return 5;
+		if(monster.isAlive()) {
+			return -1;
 		}
-		if(monster.getLevel() < 11) {
-			credits += 10;
-			return 10;
+		if(monster.isLooted()) {
+			return 0;
 		}
 		else {
-			credits += 20;
-			return 20;
+			monster.setIsLooted(true);
+			if(monster.getLevel() < 6) {
+				credits += 5;
+				return 5;
+			}
+			if(monster.getLevel() < 11) {
+				credits += 10;
+				return 10;
+			}
+			else {
+				credits += 20;
+				return 20;
+			}
 		}
+	}
+	
+	public void levelUp() {
+		level += 1;
+		MAX_HEALTH += 10;
+		MAX_ENERGY += 2;
+		health = MAX_HEALTH;
+		energy = MAX_ENERGY;
 	}
 }
