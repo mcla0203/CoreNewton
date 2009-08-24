@@ -15,6 +15,7 @@ public class ClientConstants extends Constants {
 	
 	public static String HELP = "help";
 	public static String HELP_CMDS_AVAILABLE = "Available commands are:\n   connect <ip> <port>   - connect to the server"
+																	+ "\n   login <user> <pass>   - login to the server"
 																	+ "\n   disconnect            - disconnect from the server"
 																	+ "\n   attack <monster id>   - attack the monster"
 																	+ "\n   loot <monster id>     - loot the monster you killed"
