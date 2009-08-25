@@ -64,9 +64,10 @@ public class AuthenticationServerHelperTest extends TestCase {
 		AuthenticationServerHelper ash = new AuthenticationServerHelper(usr1, pw1);
 		assertTrue(ash.getCharacterMap().keySet().size() == 5);
 		
-		String[] stats = new String[5];
-		for (int i=0; i<stats.length; i++) { 
-			stats[i] = "<123>"; 
+		String[] stats = new String[6];
+		stats[0] = "temp_char";
+		for (int i=1; i<stats.length; i++) { 
+			stats[i] = "123"; 
 		}
 		ash.getCharacterMap().put("temp_char", stats);
 		ash.overWriteChar();

@@ -75,8 +75,10 @@ public class AuthenticationServerHelper {
 			outputStream = new PrintWriter(new FileOutputStream(saveFile));
 			outputStream.println(ProtocolConstants.PASSWORD + Protocol.createSimpleRequest(password));
 			for(String character : characterMap.keySet()) {
-				outputStream.println(Protocol.createSimpleRequest(character) + Protocol.createResponseSimple(characterMap.get(character)));
+				outputStream.println(Protocol.createResponseSimple(characterMap.get(character)));
 			}
+			outputStream.close();
+			outputStream.flush();
 			//re-init the character data structure
 			reInit();
 		}
@@ -102,7 +104,7 @@ public class AuthenticationServerHelper {
 						this.username = username;
 					}
 				}
-				else {  //they are stats
+				else if(authenticated){  //they are stats
 					for(int i=1; i<5; i++) {
 						characterMap.put(cmd, Protocol.getRequestArgsSimple(line));
 					}
