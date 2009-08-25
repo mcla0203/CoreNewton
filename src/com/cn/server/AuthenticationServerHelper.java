@@ -64,7 +64,8 @@ public class AuthenticationServerHelper {
 	}
 	
 	/**
-	 * This method overwrites the current save file in src/usrers/<userName>
+	 * This method overwrites the current save file in src/usrers/<userName>.
+	 * Then, it reinitalizes the ash object.
 	 */
 	public void overWriteChar() {
 		if(!userFound || !authenticated) {
@@ -75,7 +76,7 @@ public class AuthenticationServerHelper {
 			outputStream = new PrintWriter(new FileOutputStream(saveFile));
 			outputStream.println(ProtocolConstants.PASSWORD + Protocol.createSimpleRequest(password));
 			for(String character : characterMap.keySet()) {
-				outputStream.println(Protocol.createResponseSimple(characterMap.get(character)));
+				outputStream.println(Protocol.convertListToProtocol(characterMap.get(character)));
 			}
 			outputStream.close();
 			outputStream.flush();

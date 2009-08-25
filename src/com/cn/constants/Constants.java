@@ -16,6 +16,7 @@ public class Constants {
 	public static String PASSWORD = "password";
 	public static String CHARACTER = "character";
 	public static String LOGIN_NAME = "loginName";
+	public static String SAVE = "save";
 	
 	/**
 	 * Formats the message to a more desirable output within the server.

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.cn.constants.Constants;
+import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.protocol.Protocol;
 
@@ -74,6 +75,7 @@ public class AuthenticationServer {
 		protected BufferedInputStream bis;
 		protected BufferedOutputStream bos;
 		protected String accountName = null;
+		AuthenticationServerHelper ash = null;
 		
 		public AuthenticationServerThread(Socket socket) {
 			clientSocket = socket;
@@ -106,13 +108,18 @@ public class AuthenticationServer {
 
 					if(cmd.equalsIgnoreCase(Constants.LOGIN)) {
 						onLOGIN(args);
+						continue;
+					}
+					else if(cmd.equalsIgnoreCase(Constants.SAVE)) {
+						onSAVE(args);
+						continue;
 					}
 					
-					System.out.println(ServerConstants.INVALID_MSG_RECVD);
+					System.out.println(ServerConstants.INVALID_MSG_RECVD + request);
 					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
 				}
 			} catch (Exception e) {
-				System.out.println("Disconnected: " +clientSocket.getInetAddress());
+				System.out.println("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
 
 			} finally {
 				try {
@@ -127,25 +134,45 @@ public class AuthenticationServer {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
+		private void onSAVE(String[] args) {
+			if(ash.isAuthenticated() && ash != null) {
+				Map map = ash.getCharacterMap();
+				if(map.containsKey(args[2])) {
+					map.remove(args[2]);
+					String[] stats = new String[5];
+					for(int i=2; i<args.length; i++) {
+						//should include name...
+						stats[i-2] = args[i];
+					}
+					System.out.println(stats);
+					map.put(args[2], stats);
+					ash.overWriteChar();
+					sockPrintWriter.println(ProtocolConstants.SUCCESS);
+				}
+			}
+			else {
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
+			}
+		}
+
 		private void onLOGIN(String[] args) throws IOException {
 			if(args.length != 3) {
 				invalidMsg();
 			}
 			else {
-				AuthenticationServerHelper ash = new AuthenticationServerHelper(args[1], args[2]);
+				ash = new AuthenticationServerHelper(args[1], args[2]);
 				if(ash.isAuthenticated()) {
 					Map<String, String[]> characters = ash.getCharacterMap();
 					sockPrintWriter.println(characters.keySet());
 					String request = null;
-					while ((request = sockBufReader.readLine()) != null) {
+					if ((request = sockBufReader.readLine()) != null) {
 						String loginAs = Protocol.getRequestCmdSimple(request);
-						System.out.print(loginAs);
 						if(characters.containsKey(loginAs)) {
-							sockPrintWriter.println(Protocol.createResponseSimple(characters.get(loginAs)));
+							sockPrintWriter.println(Protocol.convertListToProtocol(characters.get(loginAs)));
 						}
 						else {
-							System.out.println(ServerConstants.INVALID_CHAR);
-							sockPrintWriter.println(ServerConstants.INVALID_MSG_RECVD);
+							invalidMsg();
 						}
 					}
 				}

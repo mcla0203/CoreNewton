@@ -25,6 +25,20 @@ public class Player extends Character {
 	}
 	
 	/**
+	 * Returns the stats that are saved in the user file.
+	 */
+	public String[] getStats() {
+		String[] stats = new String[6];
+		stats[0] = name;
+		stats[1] = String.valueOf(credits);
+		stats[2] = String.valueOf(xp);
+		stats[3] = String.valueOf(level);
+		stats[4] = String.valueOf(health);
+		stats[5] = String.valueOf(energy);
+		return stats;
+	}
+	
+	/**
 	 * Returns the name of the player
 	 */
 	public String getName() {

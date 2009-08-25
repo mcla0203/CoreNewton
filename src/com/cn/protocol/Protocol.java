@@ -51,7 +51,7 @@ public class Protocol {
 	 * @param array
 	 * @return String result
 	 */
-	public static String createResponseSimple(String[] list) {
+	public static String convertListToProtocol(String[] list) {
 		String result = "";
 		for( String s : list ) {
 			result += "<" + s + ">";
@@ -65,7 +65,7 @@ public class Protocol {
 	 * @param array
 	 * @return String result
 	 */
-	public static String createResponseSimple(Double[] list) {
+	public static String convertListToProtocol(Double[] list) {
 		String result = "";
 		for( Double s : list ) {
 			result += "<" + String.valueOf(s) + ">";
@@ -91,4 +91,9 @@ public class Protocol {
 	public static String createLoginWithCharName(String s) {
 		return ProtocolConstants.LOGIN_NAME + s;
 	}
+	
+	public static String createSaveRequest(String name) {
+		return ProtocolConstants.SAVE + Protocol.createSimpleRequest(name);
+	}
+	
 }

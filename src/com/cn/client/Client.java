@@ -19,7 +19,7 @@ import com.cn.protocol.Protocol;
 
 public class Client {
 
-	// Client-Server Interaction
+	//World server interaction
 	protected String serverName;
 	protected int serverPort;
 	protected Socket clientSocket = null;
@@ -27,8 +27,18 @@ public class Client {
 	protected BufferedOutputStream bos;
 	protected BufferedReader sockBufReader;
 	protected PrintWriter sockPrintWriter;
+	
+	//Auth server interaction
+	Socket authServerSocket = null;
+	BufferedReader authSockBufReader = null;
+	PrintWriter authSockPrintWriter = null;
+	BufferedInputStream authBis;
+	BufferedOutputStream authBos;
 
 	protected UserInput userInput = null;
+	
+	private String username = null;
+	private boolean isLoggedIn = false;
 
 	protected String myURL = null;
 	protected String cmd = "";
@@ -88,12 +98,16 @@ public class Client {
 				else if(input[0].equals(Constants.LOGIN)) {
 					doLOGIN(input);
 				}
+				else if(input[0].equals(Constants.SAVE)) {
+					doSAVE(input);
+				}
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
+
 
 	/**
 	 * Method that connects to the server Given a serverName (ip/url)
@@ -123,16 +137,54 @@ public class Client {
 		}
 		return retVal;
 	}
+	
+	/**
+	 * Connects to the authentication server.
+	 */
+	protected void connectToAuthServer() {
+		try {
+			authServerSocket = new Socket(ServerConstants.HOSTNAME, 8888);
+			Thread t = new Thread(new AuthClientShutdown());
+			Runtime.getRuntime().addShutdownHook(t);
+		} catch (Exception e) {
+			authServerSocket = null;
+		}
+		try {
+			authBis = new BufferedInputStream(authServerSocket.getInputStream());
+			authBos = new BufferedOutputStream(authServerSocket.getOutputStream());
+			authSockPrintWriter = new PrintWriter(new OutputStreamWriter(authBos), true);
+			authSockBufReader = new BufferedReader(new InputStreamReader(authBis));
+		} catch (IOException e) {
+			System.out.println(e);  //temp until we import log4j jar.
+			System.exit(1);
+		} 
+	}
+
+
 
 	/**
 	 * Destroy socket to disconnect from the server.
-	 * Sets the value of client to null after calling close()
+	 * Sets the value of socket to null after calling close()
 	 */
 	protected void disconnectFromServer() {
 		try {
 			if (clientSocket != null) {
 				clientSocket.close();
 				clientSocket = null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Destroy socket to disconnect from the auth server.
+	 * Sets the value of socket to null after calling close()
+	 */
+	protected void disconnectFromAuthServer() {
+		try {
+			if (authServerSocket != null) {
+				authServerSocket.close();
+				authServerSocket = null;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,6 +200,22 @@ public class Client {
 				if (clientSocket != null) {
 					System.out.println("Closing client...");
 					clientSocket.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Shutdown handler for the client
+	 */
+	public class AuthClientShutdown extends Thread {
+		public void run() {
+			try {
+				if (authServerSocket != null) {
+					System.out.println("Closing client...");
+					authServerSocket.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -193,40 +261,41 @@ public class Client {
 	}
 
 	private void doLOGIN(String[] input) {
-		Socket authServerSocket = null;
-		BufferedReader authSockBufReader = null;
-		PrintWriter authSockPrintWriter = null;
-		BufferedInputStream authBis;
-		BufferedOutputStream authBos;
-		try {
-			authServerSocket = new Socket(ServerConstants.HOSTNAME, 8888);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-
-		try {
-			authBis = new BufferedInputStream(authServerSocket.getInputStream());
-			authBos = new BufferedOutputStream(authServerSocket.getOutputStream());
-			authSockPrintWriter = new PrintWriter(new OutputStreamWriter(authBos), true);
-			authSockBufReader = new BufferedReader(new InputStreamReader(authBis));
-		} catch (IOException e) {
-			System.out.println(e);  //temp until we import log4j jar.
-			System.exit(1);
-		} 
-		authSockPrintWriter.println(Protocol.createResponseSimple(input));
-		try {
-			String response = authSockBufReader.readLine();
-			System.out.println(response);
-			String character = userInput.getUserInput();
-			authSockPrintWriter.println(Protocol.createSimpleRequest(character));
+		if(isLoggedIn) {
+			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
+			return;
+		}
+		connectToAuthServer();
+		sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		username = input[1];
+		
+		String character = userInput.getUserInput();
+		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
+		System.out.println("SENDING TO SERVER - LAST THING: " + stats);
+		disconnectFromAuthServer();
+		
+		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
+		String response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
+		if(response.equals(ProtocolConstants.SUCCESS)) {
+			isLoggedIn = true;
+		}
+	}
+	
+	private void doSAVE(String[] input) {
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(input.length == 2) {
+			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(input[1]));
 			
-			String stats = authSockBufReader.readLine();
-			connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
-			sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
-			
-			System.out.println(response);
-		} catch (IOException e) {
-			e.printStackTrace();
+			connectToAuthServer();
+			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
+			response = sendToAuthServerAndGetResponse(toForward);
+			disconnectFromAuthServer();
+		}
+		else {
+			System.out.println(ClientConstants.INVALID_INPUT);
 		}
 	}
 
@@ -234,6 +303,18 @@ public class Client {
 		try {
 			sockPrintWriter.println(message);
 			String response = sockBufReader.readLine();
+			System.out.println(response);
+			return response;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}	
+	}
+	
+	public String sendToAuthServerAndGetResponse(String message) {
+		try {
+			authSockPrintWriter.println(message);
+			String response = authSockBufReader.readLine();
 			System.out.println(response);
 			return response;
 		}catch (Exception e) {

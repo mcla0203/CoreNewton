@@ -216,6 +216,10 @@ public class Server {
 						onLOGINNAME(args);
 						continue;
 					}
+					else if (cmd.equalsIgnoreCase(Constants.SAVE)) {
+						onSAVE(args);
+						continue;
+					}
 					
 					System.out.println(ServerConstants.INVALID_MSG_RECVD);
 					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
@@ -278,7 +282,7 @@ public class Server {
 		}
 		
 		public void onGETMONSTERS(String[] args) {
-			String response = Protocol.createResponseSimple(ServerMonstersHelper.getMonsterIds(monsterList));
+			String response = Protocol.convertListToProtocol(ServerMonstersHelper.getMonsterIds(monsterList));
 			sockPrintWriter.println(response);
 		}
 		
@@ -287,6 +291,11 @@ public class Server {
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;
 			sockPrintWriter.println(response);
+		}
+		
+		public void onSAVE(String[] args) {
+			Player p = ServerPlayersHelper.getPlayerByName(args[1], playerList);
+			sockPrintWriter.println(Protocol.convertListToProtocol(p.getStats()));
 		}
 		
 		public void invalidMsg() {
