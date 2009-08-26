@@ -28,11 +28,11 @@ public class Player extends Character {
 	public String[] getStats() {
 		String[] stats = new String[6];
 		stats[0] = name;
-		stats[1] = String.valueOf(credits);
-		stats[2] = String.valueOf(xp);
-		stats[3] = String.valueOf(level);
-		stats[4] = String.valueOf(health);
-		stats[5] = String.valueOf(energy);
+		stats[1] = String.valueOf(level);
+		stats[2] = String.valueOf(health);
+		stats[3] = String.valueOf(energy);
+		stats[4] = String.valueOf(xp);
+		stats[5] = String.valueOf(credits);
 		return stats;
 	}
 	
@@ -158,5 +158,13 @@ public class Player extends Character {
 		MAX_ENERGY += 2;
 		health = MAX_HEALTH;
 		energy = MAX_ENERGY;
+	}
+	
+	public int getMaxHealth() {
+		return MAX_HEALTH;
+	}
+	
+	public int getMaxEnergy() {
+		return MAX_ENERGY;
 	}
 }

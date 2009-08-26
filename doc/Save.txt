@@ -1,0 +1,17 @@
+Design of the save function.
+
+Intent:  Save a characters stats.  Uses the auth server.  The idea here is to retrieve the latest stats
+         from the Core server, and forward that information to the Auth server to save the stats.
+         
+Protocol:
+    Communication Direction           Actual Message Sent                       Meaning
+	1.  Client -> Core                <save><CharacterName>                     Client requests stats for character.
+	2.  Core -> Client                <Character1><lvl><hp><energy><xp><$$>     Core server response with stats
+	3.  Client -> Auth                <Character1><lvl><hp><energy><xp><$$>     Client forwards stats to Auth to process.
+	4.  Auth -> Client                <sucess>                                  Auth server responds with success.
+	
+Acceptance Criteria:
+    1.  Current stats on the Core server are saved on the Auth server.
+    2.  Player is informed if there was success on the save.
+    3.  On the next login, the character should have all the latest stats since the save.
+    4.  Other characters stats are NOT affected by another characters' save.

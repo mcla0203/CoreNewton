@@ -81,4 +81,51 @@ public class PlayerTest extends TestCase {
 		assertEquals(p.getCredits(), 5);
 	}
 	
+	public void testPlayerStatsConstructor() {
+		Player p = new Player("name", 1, 2, 3, 4, 5);
+		assertEquals(p.getName(),"name");
+		assertEquals(p.getLevel(),1);
+		assertEquals(p.getHealth(),2);
+		assertEquals(p.getEnergy(),3);
+		assertEquals(p.getXP(),4);
+		assertEquals(p.getCredits(),5);
+	}
+	
+	public void testGetStats() {
+		Player p = new Player("name", 1, 2, 3, 4, 5);
+		String[] stats = p.getStats();
+		assertEquals(stats[0],"name");
+		assertEquals(stats[1],"1");
+		assertEquals(stats[2],"2");
+		assertEquals(stats[3],"3");
+		assertEquals(stats[4],"4");
+		assertEquals(stats[5],"5");
+	}
+	
+	public void testLevelUp() {
+		Player p = new Player("name", 1, 2, 3, 4, 5);
+		assertEquals(p.getName(),"name");
+		assertEquals(p.getLevel(),1);
+		assertEquals(p.getHealth(),2);
+		assertEquals(p.getEnergy(),3);
+		assertEquals(p.getMaxEnergy(), 20);
+		assertEquals(p.getMaxHealth(), 100);
+		p.levelUp();
+		assertEquals(p.getLevel(),2);
+		assertEquals(p.getHealth(),110);
+		assertEquals(p.getEnergy(),22);
+		assertEquals(p.getMaxEnergy(), 22);
+		assertEquals(p.getMaxHealth(), 110);	
+	}
+	
+	public void testGetMAXHEALTH() {
+		Player p = new Player("name");
+		assertEquals(p.getMaxHealth(),100);
+	}
+	
+	public void testGetMAXENERGY() {
+		Player p = new Player("name");
+		assertEquals(p.getMaxEnergy(),20);
+	}
+	
 }

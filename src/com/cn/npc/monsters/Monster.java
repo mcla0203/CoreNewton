@@ -17,6 +17,7 @@ public class Monster extends Character {
 		isLooted = false;
 		id = Math.floor(Math.random()*1000);
 		playersEligibleForXP = new HashMap<Player, Integer>();
+		attackedBy = new HashMap<Player, Integer>();
 	}
 	
 	public double getId() {
@@ -34,6 +35,15 @@ public class Monster extends Character {
 	public void setIsLooted(boolean b) {
 		isLooted = b;
 	}
+	
+	public Map<Player, Integer> getPlayersEligibleForXP() {
+		return playersEligibleForXP;
+	}
+	
+	public Map<Player, Integer> getAttackedBy() {
+		return attackedBy;
+	}
+	
 	
 	/**
 	 * Method for handling the attacks of players against monsters. Decrements
