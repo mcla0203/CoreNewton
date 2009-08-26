@@ -266,12 +266,13 @@ public class Client {
 			return;
 		}
 		connectToAuthServer();
+		
+		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
 		username = input[1];
 		
 		String character = userInput.getUserInput();
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
-		System.out.println("SENDING TO SERVER - LAST THING: " + stats);
 		disconnectFromAuthServer();
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);

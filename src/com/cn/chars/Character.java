@@ -1,11 +1,14 @@
 package com.cn.chars;
 
+import com.cn.npc.monsters.Monster;
+
 public class Character {
 
 	protected int health;
 	protected int energy;
 	protected boolean isAlive;
 	protected int level;
+	protected int xp;
 
 	protected int MAX_HEALTH;
 	protected int MAX_ENERGY;
@@ -20,6 +23,7 @@ public class Character {
 		energy = MAX_ENERGY;
 		isAlive = true;
 		level = 1;
+		xp = 0;
 	}
 	
 	/**
@@ -34,6 +38,21 @@ public class Character {
 	 */
 	public int getLevel() {
 		return level;
+	}
+	
+	/**
+	 * Returns the xp of the character
+	 * @return
+	 */
+	public int getXP() {
+		return xp;
+	}
+	
+	/**
+	 * Sets the xp of the character
+	 */
+	public void setXP(int exp) {
+		xp = exp;
 	}
 	
 	/**
@@ -95,6 +114,9 @@ public class Character {
 	 * health, he dies and his health is set to 0.
 	 */
 	public void beAttacked(int dmg) {
+		if(!isAlive) {
+			return;
+		}
 		if(dmg < health) {
 			health -= dmg;
 		}
@@ -127,5 +149,20 @@ public class Character {
 		else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Returns an int that represents the amount of xp received
+	 * for the character that you just killed.
+	 */
+	public int getXp(Monster m) {
+		int ret = 1;
+		if(level < m.getLevel()) {
+			ret = 5;
+		}
+		if(level == m.getLevel()) {
+			ret = 3;
+		}
+		return ret;
 	}
 }

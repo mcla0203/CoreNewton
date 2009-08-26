@@ -134,8 +134,6 @@ public class Server {
 			 */
 			Thread t = new Thread(new ServerThread(clientSocket));
 			t.start();
-			String success = ServerConstants.formatOutput("Accepted connection "+serverSocket.getInetAddress() +":"+serverSocket.getLocalPort());
-			System.out.println(success);
 		}
 	}
 	
@@ -249,6 +247,7 @@ public class Server {
 				if(m.isAlive()) {
 					sockPrintWriter.println(Protocol.createSuccessResponse());
 				} else {
+					
 					sockPrintWriter.println(Protocol.createCharacterDiedResponse(Double.valueOf(args[1])));  //attacking a dead monster is invalid...
 				}
 			}

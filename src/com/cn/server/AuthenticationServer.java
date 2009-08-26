@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.cn.constants.Constants;
@@ -60,8 +61,6 @@ public class AuthenticationServer {
 			 */
 			Thread t = new Thread(new AuthenticationServerThread(clientSocket));
 			t.start();
-			String success = ServerConstants.formatOutput("Accepted connection "+serverSocket.getInetAddress() +":"+serverSocket.getLocalPort());
-			System.out.println(success);
 		}
 	}
 	

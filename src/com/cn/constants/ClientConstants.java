@@ -36,4 +36,6 @@ public class ClientConstants extends Constants {
 	public static String NOT_LOGGED_IN = formatOutput("You need to be logged in to do that...");
 	public static String ALREADY_LOGGED_IN = formatOutput("You're already logged in...");
 	
+	public static String LOGIN_CHARACTERS = formatOutput("Here is a list of characters to choose from...");
+	
 }

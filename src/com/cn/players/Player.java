@@ -7,12 +7,10 @@ public class Player extends Character {
 	
 	protected String name;
 	protected int credits;
-	protected int xp;
 	
 	public Player(String name) {
 		this.name = name;
-		this.credits = 0;	
-		this.xp = 0;
+		this.credits = 0;
 	}
 	
 	public Player(String name, int lvl, int health, int energy, int xp, int credits) {
@@ -52,14 +50,6 @@ public class Player extends Character {
 	 */
 	public int getCredits() {
 		return credits;
-	}
-	
-	/**
-	 * Returns the xp of the player
-	 * @return
-	 */
-	public int getXP() {
-		return xp;
 	}
 	
 	/**
