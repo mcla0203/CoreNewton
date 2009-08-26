@@ -1,0 +1,3 @@
+start run_server
+start run_auth_server
+start run_client
