@@ -20,6 +20,11 @@ public class Monster extends Character {
 		attackedBy = new HashMap<Player, Integer>();
 	}
 	
+	public Monster(double id) {
+		this();
+		this.id = id;
+	}
+	
 	public double getId() {
 		return id;
 	}
