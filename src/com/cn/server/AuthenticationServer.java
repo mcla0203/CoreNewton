@@ -10,7 +10,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.cn.constants.Constants;
 import com.cn.constants.ProtocolConstants;
@@ -21,16 +24,21 @@ public class AuthenticationServer {
 	
 	private int port;
 	private ServerSocket serverSocket;
+	Logger logger = Logger.getLogger(AuthenticationServer.class);
 	
 	public AuthenticationServer() {
 		port = 8888;
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(logger.isEnabledFor(Level.ERROR)) {
+				logger.error("AuthenticationServer threw an exception: ", e);
+			}
 		}
-		System.out.println(ServerConstants.AUTH_SERVER_STARTUP);
-		System.out.println(ServerConstants.AUTH_SERVER_ACCEPTING);
+		logger.trace("We started an Auth Server!");
+		logger.debug(ServerConstants.AUTH_SERVER_STARTUP);
+		logger.debug(ServerConstants.AUTH_SERVER_ACCEPTING);
+
 	}
 	
 	/**
@@ -40,18 +48,24 @@ public class AuthenticationServer {
 	 * @param args not needed for now.
 	 */
 	public static void main(String[] args) {
+		PropertyConfigurator.configure(Constants.LOGGER_PROPERTIES);
 		AuthenticationServer server = new AuthenticationServer();
 		server.loop();
 	}
 
 	private void loop() {
+		logger.trace("Entering the auth server loop");
 		Socket clientSocket = null;
 		while(true) {
 			try {
 				clientSocket = null;
 				clientSocket = serverSocket.accept();
+				logger.trace("Client-(Auth)Server connection has been made successfully");
 			} catch (IOException e) {
-				System.out.println(ServerConstants.Server_STARTUP_FAILED);
+			    if(logger.isEnabledFor(Level.ERROR)) {
+			    	logger.error("Error establishing client-server connection: ", e);
+			    }
+				logger.debug(ServerConstants.Server_STARTUP_FAILED);
 				System.exit(1);
 			} 
 			
@@ -59,6 +73,9 @@ public class AuthenticationServer {
 			 * Start a new thread (ServerThread).
 			 */
 			Thread t = new Thread(new AuthenticationServerThread(clientSocket));
+			if(logger.isTraceEnabled()) {
+				logger.trace("Starting a new AuthenticationServerThread: " + t);
+			}
 			t.start();
 		}
 	}
@@ -66,7 +83,6 @@ public class AuthenticationServer {
 	public class AuthenticationServerThread implements Runnable{
 		
 		// Client-Server Interaction
-		Logger logger = Logger.getLogger(ServerConstants.LOGGER);
 		protected Socket clientSocket;
 		protected BufferedReader sockBufReader = null;
 		protected PrintWriter sockPrintWriter = null;
@@ -84,20 +100,23 @@ public class AuthenticationServer {
 				sockPrintWriter = new PrintWriter(new OutputStreamWriter(bos), true);
 				sockBufReader = new BufferedReader(new InputStreamReader(bis));
 			} catch (IOException e) {
-				System.out.println(e);  //temp until we import log4j jar.
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error("Error initializing AuthenticationServerThread ", e);
+				}
 				System.exit(1);
 			} 
 		}
 
 		@Override
 		public void run() {
+			logger.trace("Beginning run method - AuthenticationServerThread.");
 			try {
 				String request;
 				while ((request = sockBufReader.readLine()) != null) {
-					System.out.println(request);
+					logger.debug(request);
 
 					if (request.length() < 1) {
-						System.out.println("Message length is too short: "+request.length());
+						logger.debug("Message length is too short: "+request.length());
 						continue;
 					}
 
@@ -105,19 +124,25 @@ public class AuthenticationServer {
 					String[] args = Protocol.getRequestArgsSimple(request);
 
 					if(cmd.equalsIgnoreCase(Constants.LOGIN)) {
+						logger.debug("The cmd was 'login'");
 						onLOGIN(args);
 						continue;
 					}
 					else if(cmd.equalsIgnoreCase(Constants.SAVE)) {
+						logger.debug("The cmd was 'save'");
 						onSAVE(args);
 						continue;
 					}
-					
-					System.out.println(ServerConstants.INVALID_MSG_RECVD + request);
+					if(logger.isDebugEnabled()) {
+						logger.debug("An invalid message was received: " + request);
+						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
+					}
 					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
 				}
 			} catch (Exception e) {
-				System.out.println("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
+				}
 
 			} finally {
 				try {
@@ -127,29 +152,36 @@ public class AuthenticationServer {
 						sockPrintWriter.close();
 					clientSocket.close();	
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(logger.isEnabledFor(Level.ERROR)) {
+						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
+					}
 				}
 			}
 		}
 
 		@SuppressWarnings("unchecked")
 		private void onSAVE(String[] args) {
-			if(ash.isAuthenticated() && ash != null) {
+			logger.trace("onSAVE method");
+			if(ash != null && ash.isAuthenticated()) {
+				logger.debug("ash is authenticated and not null");
 				Map map = ash.getCharacterMap();
 				if(map.containsKey(args[2])) {
+					logger.debug("character map contains char: "+args[2]);
 					map.remove(args[2]);
 					String[] stats = new String[5];
 					for(int i=2; i<args.length; i++) {
 						//should include name...
 						stats[i-2] = args[i];
 					}
-					System.out.println(stats);
+					logger.debug("Stats: " +stats);
 					map.put(args[2], stats);
 					ash.overWriteChar();
 					sockPrintWriter.println(ProtocolConstants.SUCCESS);
+					logger.debug("onSAVE was successful");
 				}
 			}
 			else {
+				logger.debug("Failed onSAVE");
 				sockPrintWriter.println(ProtocolConstants.FAILURE);
 			}
 		}
