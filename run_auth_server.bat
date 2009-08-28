@@ -1,1 +1,1 @@
-java -classpath "bin" com.cn.server.AuthenticationServer
+java -classpath "bin;dep/log4j-1.2.15.jar" com.cn.server.AuthenticationServer
