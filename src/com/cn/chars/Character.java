@@ -1,6 +1,8 @@
 package com.cn.chars;
 
-import com.cn.npc.monsters.Monster;
+import org.apache.log4j.Logger;
+
+import com.cn.npc.monsters.Monster;\
 
 public class Character {
 
@@ -12,11 +14,13 @@ public class Character {
 
 	protected int MAX_HEALTH;
 	protected int MAX_ENERGY;
+	Logger logger = Logger.getLogger(Character.class);
 	
 	/**
 	 * Construct an instance of a Character
 	 */
 	public Character() {
+		logger.trace("Creating an instance of character()");
 		MAX_HEALTH = 100;
 		MAX_ENERGY = 20;
 		health = MAX_HEALTH;
@@ -114,6 +118,7 @@ public class Character {
 	 * health, he dies and his health is set to 0.
 	 */
 	public void beAttacked(int dmg) {
+		logger.trace("Inside character.beAttacked");
 		if(!isAlive) {
 			return;
 		}
@@ -121,6 +126,9 @@ public class Character {
 			health -= dmg;
 		}
 		else {
+			if(logger.isDebugEnabled()) {
+				logger.debug("the character: " +this.toString() + " died");
+			}
 			health = 0;
 			isAlive = false;
 		}
@@ -131,7 +139,11 @@ public class Character {
 	 * of the attacker
 	 */
 	public void attack(Character character, int dmg) {
+		logger.trace("Inside character.attack()");
 		character.beAttacked(dmg);
+		if(logger.isDebugEnabled()) {
+			logger.debug("Character: " +character+ "was attacked for "+dmg+ "damage");
+		}
 		loseEnergy(2);
 	}
 	
@@ -155,7 +167,8 @@ public class Character {
 	 * Returns an int that represents the amount of xp received
 	 * for the character that you just killed.
 	 */
-	public int getXp(Monster m) {
+	public int receiveXp(Monster m) {
+		logger.trace("Inside Character.receiveXP(Monster)");
 		int ret = 1;
 		if(level < m.getLevel()) {
 			ret = 5;

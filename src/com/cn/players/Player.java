@@ -1,19 +1,26 @@
 package com.cn.players;
 
+import org.apache.log4j.Logger;
+
 import com.cn.chars.Character;
 import com.cn.npc.monsters.Monster;
 
 public class Player extends Character {
+	Logger logger = Logger.getLogger(Player.class);
 	
 	protected String name;
 	protected int credits;
 	
 	public Player(String name) {
+		if(logger.isTraceEnabled()) {
+			logger.trace("Creating player: " + name);
+		}
 		this.name = name;
 		this.credits = 0;
 	}
 	
 	public Player(String name, int lvl, int health, int energy, int xp, int credits) {
+		logger.trace("Creating an instance of Player with many attributes.");
 		this.name = name;
 		this.credits = credits;
 		this.xp = xp;
@@ -68,11 +75,15 @@ public class Player extends Character {
 	 * health. This action also costs 5 energy to do.
 	 */
 	public boolean heal(int amount) {
+		logger.trace("Inside heal()");
 		if(loseEnergy(5)) {
 			if(health + amount > MAX_HEALTH) {
 				health = MAX_HEALTH;
 			}
 			else {
+				if(logger.isDebugEnabled()) {
+					logger.debug("Player " + this.getName() + "healing for: " + amount);
+				}
 				health += amount;
 			}
 			return true;
@@ -86,6 +97,7 @@ public class Player extends Character {
 	 * false.
 	 */
 	public boolean rest() {
+		logger.trace("Inside rest()");
 		if(energy + 5 < MAX_ENERGY) {
 			energy += 5;
 			return false;
@@ -101,6 +113,7 @@ public class Player extends Character {
 	 * for 1 minute after executing this command. 
 	 */
 	public void sleep() {
+		logger.trace("Inside sleep()");
 		//TODO:Implement me
 	}
 	
@@ -129,14 +142,24 @@ public class Player extends Character {
 	 * @return
 	 */
 	public int loot(Monster monster) {
+		logger.trace("Inside Player.loot()");
 		if(monster.isAlive()) {
+			if(logger.isDebugEnabled()) {
+				logger.debug("Monster " + monster + "is still alive. Player cannot loot.");
+			}
 			return -1;
 		}
 		if(monster.isLooted()) {
+			if(logger.isDebugEnabled()) {
+				logger.debug("Monster " + monster + "has already been looted. Player cannot loot.");
+			}
 			return 0;
 		}
 		else {
 			monster.setIsLooted(true);
+			if(logger.isDebugEnabled()) {
+				logger.debug("Player is going to loot monster " + monster);
+			}
 			if(monster.getLevel() < 6) {
 				credits += 5;
 				return 5;
@@ -153,11 +176,19 @@ public class Player extends Character {
 	}
 	
 	public void levelUp() {
+		logger.trace("Inside levelUp()"); 
+		if(logger.isDebugEnabled()) {
+			logger.debug("Player " + this.getName() + "of level " + this.getLevel() +
+				"is going to level up.");
+		}
 		level += 1;
 		MAX_HEALTH += 10;
 		MAX_ENERGY += 2;
 		health = MAX_HEALTH;
 		energy = MAX_ENERGY;
+		if(logger.isDebugEnabled()) {
+			logger.debug("Player " + this.getName() + "is now level " + this.getLevel());
+		}
 	}
 	
 	public int getMaxHealth() {

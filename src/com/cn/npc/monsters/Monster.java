@@ -3,10 +3,13 @@ package com.cn.npc.monsters;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.cn.chars.Character;
 import com.cn.players.Player;
 
 public class Monster extends Character {
+	Logger logger = Logger.getLogger(Monster.class);
 	
 	protected double id;
 	protected boolean isLooted;
@@ -59,7 +62,11 @@ public class Monster extends Character {
 	 * @param dmg
 	 */
 	public void beAttacked(Player p, int dmg) {
+		if(logger.isTraceEnabled()) {
+			logger.trace("Inside Monster.beAttacked(): " + this.toString());
+		}
 		if(!isAlive) {
+			logger.debug("The monster is dead...player cannot attack");
 			return;
 		}
 		int damageDone = 0;
@@ -73,6 +80,7 @@ public class Monster extends Character {
 			isAlive = false;
 		}
 		if(playersEligibleForXP.containsKey(p)) {
+			logger.debug("Player " + p + "is already eligible for XP but did more damage.");
 			int totalDmg = playersEligibleForXP.get(p) + damageDone;
 			playersEligibleForXP.remove(p);
 			playersEligibleForXP.put(p, totalDmg);
@@ -82,17 +90,24 @@ public class Monster extends Character {
 			if(isEligibleForXP(p, totalDmg)) {
 				attackedBy.remove(p);
 				playersEligibleForXP.put(p, totalDmg);
+				logger.debug("Player "+p+" is now eligible for XP");
 			}
 			else {
 				attackedBy.remove(p);
 				attackedBy.put(p, totalDmg);
+				logger.debug("Player " + p + "did damage to this monster again but is not " +
+						"yet eligible for XP");
 			}
 		}
 		else {
 			if(isEligibleForXP(p, dmg)) {
+				logger.debug("Player " + p + "did enough damage the first time to be" +
+						"eligible for XP");
 				playersEligibleForXP.put(p, dmg);
 			}
 			else {
+				logger.debug("Player " + p + "did damage for the first time but it is not" +
+						"enough to be eligible for XP");
 				attackedBy.put(p, dmg);
 			}
 		}

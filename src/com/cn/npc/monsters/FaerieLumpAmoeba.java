@@ -1,10 +1,14 @@
 package com.cn.npc.monsters;
 
+import org.apache.log4j.Logger;
+
 import com.cn.players.Player;
 
 public class FaerieLumpAmoeba extends Monster {
+	Logger logger = Logger.getLogger(FaerieLumpAmoeba.class);
 	
 	public FaerieLumpAmoeba() {
+		logger.trace("Creating an instance of a FaerieLumpAmoeba");
 		level = 2;
 	}
 	
@@ -13,6 +17,7 @@ public class FaerieLumpAmoeba extends Monster {
 	 * some attacks against it.
 	 */
 	public void beAttacked(int dmg) {
+		logger.trace("Inside FaerieLumpAmoeba.beAttacked()");
 		//TODO: Implement me
 	}
 	
@@ -21,6 +26,7 @@ public class FaerieLumpAmoeba extends Monster {
 	 * to the attacker.
 	 */
 	public void ooze(Player p) {
+		logger.trace("Inside FaerieLumpAmoeba.ooze()");
 		//TODO: Implement me
 	}
 

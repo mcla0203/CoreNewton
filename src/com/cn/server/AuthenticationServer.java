@@ -177,7 +177,7 @@ public class AuthenticationServer {
 					map.put(args[2], stats);
 					ash.overWriteChar();
 					sockPrintWriter.println(ProtocolConstants.SUCCESS);
-					logger.debug("onSAVE was successful");
+					logger.debug("onSAVE was successful");				
 				}
 			}
 			else {
