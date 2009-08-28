@@ -12,7 +12,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.cn.constants.Constants;
 import com.cn.constants.ProtocolConstants;
@@ -27,8 +30,10 @@ public class Server {
 	private ServerSocket serverSocket;
 	public static List<Monster> monsterList;
 	public static List<Player> playerList;
+	Logger logger = Logger.getLogger(Server.class);
 	
 	public Server() {
+		logger.trace("Creating an instance of Server");
 		port = ServerConstants.PORT;
 		hostName = ServerConstants.HOSTNAME;
 		monsterList = Collections.synchronizedList(new ArrayList<Monster>());
@@ -36,12 +41,13 @@ public class Server {
 		for(int i=0; i<10; i++) {
 			monsterList.add(new Monster());
 		}
-		System.out.println(ServerConstants.SERVER_STARTUP);
-		System.out.println(ServerConstants.SERVER_ACCEPTING);
+		logger.debug(ServerConstants.SERVER_STARTUP);
+		logger.debug(ServerConstants.SERVER_ACCEPTING);
 	}
 	
 	public Server(int port) {
 		this();
+		logger.trace("Creating specialized Server with port # " + port);
 		this.port = port;
 	}
 	
@@ -90,11 +96,14 @@ public class Server {
 	 * @throws IOException
 	 */
 	public Boolean openSocket() {
+		logger.trace("Opening socket.");
 		try {
 			setSocket(new ServerSocket(port));
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(logger.isEnabledFor(Level.ERROR)) {
+				logger.error("Error opening socket ", e);
+			}
 			return false;
 		}
 	}
@@ -103,6 +112,7 @@ public class Server {
 	 * Method to kick off the server.
 	 */
 	public void start() {
+		logger.trace("Starting up the server.");
 		if(openSocket()) {
 			loop();
 		}
@@ -113,7 +123,7 @@ public class Server {
 	 *  2. Create a thread for the accepted socket
 	 */
 	protected void loop() {
-		
+		logger.trace("Inside Server.loop method");
 		Socket clientSocket = null;
 
 		/*
@@ -125,7 +135,10 @@ public class Server {
 				clientSocket = null;
 				clientSocket = serverSocket.accept();
 			} catch (IOException e) {
-				System.out.println(ServerConstants.Server_STARTUP_FAILED);
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error(ServerConstants.Server_STARTUP_FAILED);
+					logger.error(e);
+				}
 				System.exit(1);
 			} 
 			
@@ -133,6 +146,7 @@ public class Server {
 			 * Start a new thread (ServerThread).
 			 */
 			Thread t = new Thread(new ServerThread(clientSocket));
+			logger.trace("Starting a new thread");
 			t.start();
 		}
 	}
@@ -144,6 +158,7 @@ public class Server {
 	 * @param args not needed for now.
 	 */
 	public static void main(String[] args) {
+		PropertyConfigurator.configure(Constants.LOGGER_PROPERTIES);
 		Server server = new Server();
 		server.start();
 	}
@@ -151,7 +166,6 @@ public class Server {
 	public class ServerThread implements Runnable {
 		
 		// Client-Server Interaction
-		Logger logger = Logger.getLogger(ServerConstants.LOGGER);
 		protected Socket clientSocket;
 		protected BufferedReader sockBufReader = null;
 		protected PrintWriter sockPrintWriter = null;
@@ -163,6 +177,7 @@ public class Server {
 		 * The constructor for the ServerThread object.
 		 */
 		public ServerThread(Socket s) {
+			logger.trace("ServerThread initialization");
 			clientSocket = s;
 
 			try {
@@ -171,7 +186,9 @@ public class Server {
 				sockPrintWriter = new PrintWriter(new OutputStreamWriter(bos), true);
 				sockBufReader = new BufferedReader(new InputStreamReader(bis));
 			} catch (IOException e) {
-				System.out.println(e);  //temp until we import log4j jar.
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error("Exception initializing ServerThread", e);
+				}
 				System.exit(1);
 			} 
 		}
@@ -180,52 +197,68 @@ public class Server {
 		 * Thread main routine
 		 */
 		public void run() {
-
+			logger.trace("Inside Server.run method");
 			try {
 				String request;
 				while ((request = sockBufReader.readLine()) != null) {
-					System.out.println(request);
-
+					if(logger.isDebugEnabled()) {
+						logger.debug("Request: " + request);
+					}
 					if (request.length() < 1) {
-						System.out.println("Message length is too short: "+request.length());
+						if(logger.isEnabledFor(Level.ERROR)) {
+							logger.error("Message length is too short: "+request.length());
+						}
 						continue;
 					}
 
 					String cmd = Protocol.getRequestCmdSimple(request);
 					String[] args = Protocol.getRequestArgsSimple(request);
+					if(logger.isDebugEnabled()) {
+						logger.debug("This is the command: " + cmd);
+						logger.debug("These are the args: " + args.toString());
+					}
 
 					if (cmd.equalsIgnoreCase(Constants.ATTACK_MONSTER)) {
+						logger.debug("cmd is Attack Monster");
 						onATTACK(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.HEAL)) {
+						logger.debug("cmd is Heal");
 						onHEAL(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.LOOT)) {
+						logger.debug("cmd is loot");
 						onLOOT(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.GET_MONSTER)) {
+						logger.debug("cmd is Get Monsters");
 						onGETMONSTERS(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.LOGIN_NAME)) {
+						logger.debug("cmd is LOGINNAME");
 						onLOGINNAME(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.SAVE)) {
+						logger.debug("cmd is save");
 						onSAVE(args);
 						continue;
 					}
-					
-					System.out.println(ServerConstants.INVALID_MSG_RECVD);
+					if(logger.isEnabledFor(Level.ERROR)) {
+						logger.error(ServerConstants.INVALID_MSG_RECVD);
+					}
 					sockPrintWriter.println(Protocol.createSimpleResponse(ServerConstants.INVALID_MSG_RECVD_CODE));
 				}
 			} catch (Exception e) {
-				System.out.println("Disconnected: " +clientSocket.getInetAddress());
-
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error("Disconnected: " +clientSocket.getInetAddress());
+				}
 			} finally {
+				logger.trace("Closing socket.");
 				try {
 					if (sockBufReader != null)
 						sockBufReader.close();
@@ -233,27 +266,36 @@ public class Server {
 						sockPrintWriter.close();
 					clientSocket.close();	
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(logger.isEnabledFor(Level.ERROR)) {
+						logger.error("Error closing socket.", e);
+					}
 				}
 			}
 		}
 		
 		public void onATTACK(String[] args) {
+			logger.trace("Inside Server.onAttack.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
 			if(m == null) {
+				logger.debug("monster is null");
 				invalidMsg();
 			} else {
+				if(logger.isDebugEnabled()) {
+					logger.debug("SERVER: Player is attacking monster");
+				}
 				m.beAttacked(Integer.valueOf(args[2]));
 				if(m.isAlive()) {
 					sockPrintWriter.println(Protocol.createSuccessResponse());
-				} else {
-					
+				} 
+				else {
+	
 					sockPrintWriter.println(Protocol.createCharacterDiedResponse(Double.valueOf(args[1])));  //attacking a dead monster is invalid...
 				}
 			}
 		}
 		
 		public void onHEAL(String[] args) {
+			logger.trace("Inside Server.onHEAL.");
 			Player p = ServerPlayersHelper.getPlayerByName(args[2], playerList);
 			if(p == null) {
 				invalidMsg();
@@ -268,6 +310,7 @@ public class Server {
 		}
 		
 		public void onLOOT(String[] args) {
+			logger.trace("Inside Server.onLOOT.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
 			if(m == null) {
 				invalidMsg();
@@ -281,11 +324,13 @@ public class Server {
 		}
 		
 		public void onGETMONSTERS(String[] args) {
+			logger.trace("Inside Server.onGETMONSTERS.");
 			String response = Protocol.convertListToProtocol(ServerMonstersHelper.getMonsterIds(monsterList));
 			sockPrintWriter.println(response);
 		}
 		
 		public void onLOGINNAME(String[] args) {
+			logger.trace("Inside Server.onLOGINNAME.");
 			playerList.add(new Player(args[1], Integer.valueOf(args[2]), Integer.valueOf(args[3]),
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;
@@ -293,6 +338,7 @@ public class Server {
 		}
 		
 		public void onSAVE(String[] args) {
+			logger.trace("Inside Server.onSAVE.");
 			Player p = ServerPlayersHelper.getPlayerByName(args[1], playerList);
 			sockPrintWriter.println(Protocol.convertListToProtocol(p.getStats()));
 		}

@@ -89,6 +89,7 @@ public class AuthenticationServer {
 		protected BufferedInputStream bis;
 		protected BufferedOutputStream bos;
 		protected String accountName = null;
+		{logger.debug("ash is initialized to null");}
 		AuthenticationServerHelper ash = null;
 		
 		public AuthenticationServerThread(Socket socket) {
@@ -187,12 +188,15 @@ public class AuthenticationServer {
 		}
 
 		private void onLOGIN(String[] args) throws IOException {
+			logger.trace("Inside AuthServerThread.onLOGIN");
 			if(args.length != 3) {
 				invalidMsg();
 			}
 			else {
+				logger.debug("ash is being set. Username: " + args[1] + " Password: " + args[2]);
 				ash = new AuthenticationServerHelper(args[1], args[2]);
 				if(ash.isAuthenticated()) {
+					logger.debug("ash is authenticated in AuthServerThread.onLOGIN");
 					Map<String, String[]> characters = ash.getCharacterMap();
 					sockPrintWriter.println(characters.keySet());
 					String request = null;

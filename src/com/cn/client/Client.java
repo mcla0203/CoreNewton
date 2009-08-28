@@ -9,7 +9,10 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.logging.Logger;
+
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.cn.constants.ClientConstants;
 import com.cn.constants.Constants;
@@ -230,6 +233,7 @@ public class Client {
 	 * @param args not needed for now.
 	 */
 	public static void main(String[] args) {
+		PropertyConfigurator.configure(Constants.LOGGER_PROPERTIES);
 		Client client = new Client();
 		client.runClient();
 	}

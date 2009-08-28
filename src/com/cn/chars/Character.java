@@ -2,7 +2,7 @@ package com.cn.chars;
 
 import org.apache.log4j.Logger;
 
-import com.cn.npc.monsters.Monster;\
+import com.cn.npc.monsters.Monster;
 
 public class Character {
 
