@@ -17,6 +17,9 @@ public class ServerPlayersHelper {
 	 * @return Player
 	 */
 	public static Player getPlayerByName(String name, List<Player> list) {
+		if(list == null || name == null) {
+			return null;
+		}
 		for( Player p : list ) {
 			if(p.getName().equals(name)) {
 				return p;

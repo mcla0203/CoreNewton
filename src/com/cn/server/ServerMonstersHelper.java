@@ -19,6 +19,9 @@ public class ServerMonstersHelper {
 	 * @return Monster
 	 */
 	public static Monster getMonsterById(double id, List<Monster> monsterList) {
+		if(monsterList == null) {
+			return null;
+		}
 		for(Monster m : monsterList) {
 			if(m.getId() == id) {
 				return m;
