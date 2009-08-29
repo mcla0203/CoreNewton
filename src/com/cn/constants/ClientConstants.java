@@ -38,4 +38,7 @@ public class ClientConstants extends Constants {
 	
 	public static String LOGIN_CHARACTERS = formatOutput("Here is a list of characters to choose from...");
 	
+	public static String PASSWORDS_DONT_MATCH = formatOutput("The passwords that you entered do not match...");
+	public static String USERNAME_ALREADY_IN_USE = formatOutput("Someone else uses that username... please choose another"); 
+	public static String ACCOUNT_CREATED = formatOutput("Successfully created your account!");
 }

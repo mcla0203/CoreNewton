@@ -60,6 +60,7 @@ public class Client {
 	 * Method to run the Client as the cmd line interface.
 	 */
 	public void runClient() {
+		connectToAuthServer();
 		userInput = new UserInput();
 		try {
 			while(true) {
@@ -104,9 +105,13 @@ public class Client {
 				else if(input[0].equals(Constants.SAVE)) {
 					doSAVE(input);
 				}
+				else if(input[0].equals(Constants.CREATE_ACC)) {
+					doCREATEACC(input);
+				}
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
+			disconnectFromAuthServer();
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
@@ -268,16 +273,18 @@ public class Client {
 		if(isLoggedIn) {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
 			return;
-		}
-		connectToAuthServer();
-		
+		}		
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
-		sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
-		username = input[1];
+		String charListResponse = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		if(charListResponse.equals(ProtocolConstants.NO_CHARS_CREATED)) {
+			isLoggedIn = true;
+			System.out.println("You haven't made any chars yet...  Create one to play!");
+			return;
+		}
 		
+		username = input[1];
 		String character = userInput.getUserInput();
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
-		disconnectFromAuthServer();
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
 		String response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
@@ -302,6 +309,27 @@ public class Client {
 		else {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
+	}
+	
+	public void doCREATEACC(String[] input) {
+		if(input.length != 4) {
+			logger.debug("input length != 4");
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		if(!input[2].equals(input[3])) {
+			System.out.println(ClientConstants.PASSWORDS_DONT_MATCH);
+			return;
+		}
+		String str = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		if(str.equals(ProtocolConstants.USERNAME_ALREADY_IN_USE)) {
+			System.out.println(ClientConstants.USERNAME_ALREADY_IN_USE);
+			return;
+		}
+		else if(str.equals(ProtocolConstants.SUCCESS)) {
+			System.out.println(ClientConstants.ACCOUNT_CREATED);
+		}
+		
 	}
 
 	public String sendToServerAndGetResponse(String message) {

@@ -18,6 +18,8 @@ public class Constants {
 	public static String LOGIN_NAME = "loginName";
 	public static String SAVE = "save";
 	public static String LOGGER_PROPERTIES = "dep/log4j.properties";
+	public static String CREATE_ACC = "createAcc";
+	public static String NO_CHARS_CREATED = "noCharsCreated";
 	
 	/**
 	 * Formats the message to a more desirable output within the server.

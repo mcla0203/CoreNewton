@@ -134,6 +134,11 @@ public class AuthenticationServer {
 						onSAVE(args);
 						continue;
 					}
+					else if(cmd.equals(Constants.CREATE_ACC)) {
+						onCREATEACC(args);
+						continue;
+						
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -198,7 +203,12 @@ public class AuthenticationServer {
 				if(ash.isAuthenticated()) {
 					logger.debug("ash is authenticated in AuthServerThread.onLOGIN");
 					Map<String, String[]> characters = ash.getCharacterMap();
-					sockPrintWriter.println(characters.keySet());
+					if(characters.size() > 0) {
+						sockPrintWriter.println(characters.keySet());
+					}
+					else{
+						sockPrintWriter.println(ProtocolConstants.NO_CHARS_CREATED);
+					}
 					String request = null;
 					if ((request = sockBufReader.readLine()) != null) {
 						String loginAs = Protocol.getRequestCmdSimple(request);
@@ -210,6 +220,22 @@ public class AuthenticationServer {
 						}
 					}
 				}
+			}
+		}
+		
+		private void onCREATEACC(String[] args) {
+			if(ash != null) {
+				invalidMsg();
+				return;
+			}
+			AccountCreationHelper ach = new AccountCreationHelper(args[1], args[2]);
+			if(ach.userAlreadyExists()){
+				logger.debug("The user already exists...");
+				sockPrintWriter.println(ProtocolConstants.USERNAME_ALREADY_IN_USE);
+			}
+			else {
+				logger.debug("Account creation was successful");
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
 			}
 		}
 
