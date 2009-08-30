@@ -4,12 +4,12 @@ import com.cn.constants.ProtocolConstants;
 
 public class Protocol {
 
-	public static String attackRequest(int damage, double id) {
-		return ProtocolConstants.ATTACK_MONSTER + "<" + id + "><" + damage + ">";
+	public static String attackRequest(int damage, double id, String name) {
+		return ProtocolConstants.ATTACK_MONSTER + "<" + damage + "><" + id + "><" + name + ">";
 	}
 
-	public static String attackResponse(int damage, double id) {
-		return attackRequest(damage, id);
+	public static String attackResponse(int damage, double id, String name) {
+		return attackRequest(damage, id, name);
 	}
 
 	public static String healRequest(int heal, String name) {

@@ -277,18 +277,27 @@ public class Server {
 			logger.trace("Inside Server.onAttack.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
 			if(m == null) {
-				logger.debug("monster is null");
-				invalidMsg();
+				logger.error("This monster does not exist.");
+				sockPrintWriter.println(ProtocolConstants.MONSTER_DOES_NOT_EXIST);
 			} else {
 				if(logger.isDebugEnabled()) {
 					logger.debug("SERVER: Player is attacking monster");
 				}
-				m.beAttacked(Integer.valueOf(args[2]));
+				
 				if(m.isAlive()) {
-					sockPrintWriter.println(Protocol.createSuccessResponse());
+					m.beAttacked(Integer.valueOf(args[2]));
+					String dmgDone = Protocol.createSimpleResponse(String.valueOf(m.getDmgReceived()));
+					if(!m.isAlive()) {
+						logger.debug("Player attacked and killed monster.");
+						sockPrintWriter.println(ProtocolConstants.MONSTER_WAS_KILLED + dmgDone);
+					}
+					else {
+						logger.debug("Player successfully attacked but did not kill monster.");
+						sockPrintWriter.println(Protocol.createSuccessResponse() + dmgDone);
+					}
 				} 
 				else {
-	
+					logger.debug("Player tried to attack a dead monster.");
 					sockPrintWriter.println(Protocol.createCharacterDiedResponse(Double.valueOf(args[1])));  //attacking a dead monster is invalid...
 				}
 			}
@@ -313,12 +322,14 @@ public class Server {
 			logger.trace("Inside Server.onLOOT.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
 			if(m == null) {
-				invalidMsg();
+				logger.error("This monster does not exist.");
+				sockPrintWriter.println(ProtocolConstants.MONSTER_DOES_NOT_EXIST);
 			} else {
-				if(!m.isAlive()) {
-					invalidMsg();
+				if(m.isAlive() || m.isLooted()) {			
+					logger.debug("Monster is still alive or has already been looted. Player cannot loot.");
+					sockPrintWriter.println(ProtocolConstants.CANNOT_LOOT_MONSTER);
 				} else {
-					invalidMsg();  //loot while alive is invalid
+					sockPrintWriter.println(ProtocolConstants.SUCCESS);
 				}
 			}
 		}

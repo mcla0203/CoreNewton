@@ -12,7 +12,7 @@ public class ClientConstants extends Constants {
 	public static String DISCONNECT_SUCCESS = formatOutput("Disconnected from server.");
 	
 	public static String USER_INPUT = "Type \"help\" for a list of commands..";
-	public static String INVALID_INPUT = "Invliad command. " + USER_INPUT;
+	public static String INVALID_INPUT = "Invalid command. " + USER_INPUT;
 	
 	public static String HELP = "help";
 	public static String HELP_CMDS_AVAILABLE = "Available commands are:"
@@ -41,4 +41,5 @@ public class ClientConstants extends Constants {
 	public static String PASSWORDS_DONT_MATCH = formatOutput("Your passwords do not match, type them again.");
 	public static String ACCOUNT_CREATED_SUCCESSFULLY = formatOutput("Your new account has been created.");
 	
+	public static String GENERAL_FAILURE = formatOutput("Something when horribly wrong.");
 }

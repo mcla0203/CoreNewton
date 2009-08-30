@@ -12,6 +12,7 @@ public class Character {
 	protected int level;
 	protected int xp;
 
+	protected int dmgReceived;
 	protected int MAX_HEALTH;
 	protected int MAX_ENERGY;
 	Logger logger = Logger.getLogger(Character.class);
@@ -113,23 +114,30 @@ public class Character {
 	}
 	
 	/**
+	 * Returns the amount of damage that this character received.
+	 * @return
+	 */
+	public int getDmgReceived() {
+		return dmgReceived;
+	}
+	
+	/**
 	 * When a character is attacked, the health is decremented by the 
 	 * amount of the damage done. If the character doesn't have enough 
 	 * health, he dies and his health is set to 0.
 	 */
 	public void beAttacked(int dmg) {
 		logger.trace("Inside character.beAttacked");
-		if(!isAlive) {
-			return;
-		}
 		if(dmg < health) {
 			health -= dmg;
+			dmgReceived = dmg;
 		}
 		else {
 			if(logger.isDebugEnabled()) {
 				logger.debug("the character: " +this.toString() + " died");
 			}
 			health = 0;
+			dmgReceived = dmg - health;
 			isAlive = false;
 		}
 	}

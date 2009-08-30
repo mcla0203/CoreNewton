@@ -143,15 +143,9 @@ public class Player extends Character {
 	 */
 	public int loot(Monster monster) {
 		logger.trace("Inside Player.loot()");
-		if(monster.isAlive()) {
+		if(monster.isAlive() || monster.isLooted()) {
 			if(logger.isDebugEnabled()) {
-				logger.debug("Monster " + monster + "is still alive. Player cannot loot.");
-			}
-			return -1;
-		}
-		if(monster.isLooted()) {
-			if(logger.isDebugEnabled()) {
-				logger.debug("Monster " + monster + "has already been looted. Player cannot loot.");
+				logger.debug("Monster " + monster + "is still alive or has already been looted. Player cannot loot.");
 			}
 			return 0;
 		}

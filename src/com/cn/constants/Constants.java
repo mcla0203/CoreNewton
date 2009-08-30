@@ -19,6 +19,10 @@ public class Constants {
 	public static String SAVE = "save";
 	public static String LOGGER_PROPERTIES = "dep/log4j.properties";
 	public static String CREATE_ACC = "createAcc";
+	public static String MONSTER_DOES_NOT_EXIST = "monsterDNE";
+	public static String MONSTER_WAS_KILLED = "monsterWasKilled";
+	public static String CANNOT_LOOT_MONSTER = "unableToLootMonster";
+	public static String SUCCESS = "success";
 	
 	/**
 	 * Formats the message to a more desirable output within the server.

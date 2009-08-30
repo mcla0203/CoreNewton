@@ -242,9 +242,28 @@ public class Client {
 	}
 
 	public void doATTACK(String[] args) {
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
-		if(Protocol.getRequestCmdSimple(response).equals(Constants.DEATH)) {
+		if(args.length != 3) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+		}
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
+		String cmd = Protocol.getRequestCmdSimple(response);
+		String[] responseArgs = Protocol.getRequestArgsSimple(response);
+		if(cmd.equals(Constants.SUCCESS)) {
+			System.out.println("You did " + responseArgs[1] + " damage to the monster.");
+		}
+		else if(cmd.equals(Constants.MONSTER_WAS_KILLED)) {
+			System.out.println("You did " + responseArgs[1] + " damage to the monster and the monster was killed!");
 			System.out.println(ClientConstants.LOOT_IS_POSSIBLE);
+		}
+		else if(cmd.equals(Constants.MONSTER_DOES_NOT_EXIST)) {
+			System.out.println("You nub, this monster does not exist!!");
+		}
+		else if(cmd.equals(Constants.DEATH)) {
+			System.out.println("This monster is already dead.");
+		}
+		else {
+			//should not get here ever
+			System.out.println(ClientConstants.GENERAL_FAILURE);
 		}
 	}
 
@@ -256,7 +275,16 @@ public class Client {
 	}
 
 	public void doLOOT(String[] args) {
-		System.out.println(ClientConstants.NOT_IMPLEMENTED);
+		if(args.length != 2) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+		}
+		String response = sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
+//		if() {
+//			
+//		}
+//		else {
+//			System.out.println("Failed to loot monster.");
+//		}
 	}
 
 	public void doREST(String[] args) {

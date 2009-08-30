@@ -5,7 +5,7 @@ public class ProtocolConstants extends Constants {
 	public static final String ATTACK_MONSTER = "<"+Constants.ATTACK_MONSTER+">";
 	public static final String HEAL = "<"+Constants.HEAL+">";
 	public static final String REST = "<"+Constants.REST+">";
-	public static final String SUCCESS = "<success>";
+	public static final String SUCCESS = "<" + Constants.SUCCESS + ">";
 	public static final String FAILURE = "<failure>";
 	public static final String DEATH = "<"+Constants.DEATH+">";
 	public static final String GET_MONSTERS = "<"+Constants.GET_MONSTER+">";
@@ -14,5 +14,8 @@ public class ProtocolConstants extends Constants {
 	public static final String PASSWORD = "<"+Constants.PASSWORD+">";
 	public static final String SAVE = "<" + Constants.SAVE + ">";
 	public static final String ACCOUNT_ALREADY_IN_USE = "<accountInUse>";
+	public static final String MONSTER_DOES_NOT_EXIST = "<" + Constants.MONSTER_DOES_NOT_EXIST + ">";
+	public static final String MONSTER_WAS_KILLED = "<" + Constants.MONSTER_WAS_KILLED + ">";
+	public static final String CANNOT_LOOT_MONSTER = "<" + Constants.CANNOT_LOOT_MONSTER + ">";
 	
 }
