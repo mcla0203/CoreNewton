@@ -134,6 +134,11 @@ public class AuthenticationServer {
 						onSAVE(args);
 						continue;
 					}
+					else if(cmd.equalsIgnoreCase(Constants.CREATE_ACC)) {
+						logger.debug("The cmd was 'create account'");
+						onCREATEACC(args);
+						continue;
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -210,6 +215,17 @@ public class AuthenticationServer {
 						}
 					}
 				}
+			}
+		}
+		
+		private void onCREATEACC(String[] args) {
+			AccountCreationHelper ach = new AccountCreationHelper(args[1], args[2]);
+			if(!ach.isAccountInUse()) {
+				System.out.println("The account is available.  It has been created.");
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			}
+			else {
+				sockPrintWriter.println(ProtocolConstants.ACCOUNT_ALREADY_IN_USE);
 			}
 		}
 

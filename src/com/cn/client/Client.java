@@ -60,6 +60,7 @@ public class Client {
 	 * Method to run the Client as the cmd line interface.
 	 */
 	public void runClient() {
+		connectToAuthServer();
 		userInput = new UserInput();
 		try {
 			while(true) {
@@ -110,6 +111,7 @@ public class Client {
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
+			disconnectFromAuthServer();
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
@@ -272,7 +274,6 @@ public class Client {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
 			return;
 		}
-		connectToAuthServer();
 		
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
@@ -280,7 +281,6 @@ public class Client {
 		
 		String character = userInput.getUserInput();
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
-		disconnectFromAuthServer();
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
 		String response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
@@ -297,10 +297,8 @@ public class Client {
 		if(input.length == 2) {
 			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(input[1]));
 			
-			connectToAuthServer();
 			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
 			response = sendToAuthServerAndGetResponse(toForward);
-			disconnectFromAuthServer();
 		}
 		else {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -317,10 +315,10 @@ public class Client {
 		}
 		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
 		if(response.equals(ProtocolConstants.ACCOUNT_ALREADY_IN_USE)) {
-			System.out.println(ClientConstants.ACCOUNT_CREATED_SUCCESSFULLY);
+			System.out.println(ClientConstants.ACCOUNT_ALREADY_EXISTS);
 		}
 		if(response.equals(ProtocolConstants.SUCCESS)) {
-			System.out.println();
+			System.out.println(ClientConstants.ACCOUNT_CREATED_SUCCESSFULLY);
 		}
 		logger.trace("Exiting the doCREATEACC method.");
 	}

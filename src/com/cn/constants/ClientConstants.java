@@ -40,5 +40,6 @@ public class ClientConstants extends Constants {
 	
 	public static String PASSWORDS_DONT_MATCH = formatOutput("Your passwords do not match, type them again.");
 	public static String ACCOUNT_CREATED_SUCCESSFULLY = formatOutput("Your new account has been created.");
+	public static String ACCOUNT_ALREADY_EXISTS = formatOutput("Someone else uses that account, please choose another...");
 	
 }
