@@ -200,10 +200,22 @@ public class AuthenticationServer {
 			else {
 				logger.debug("ash is being set. Username: " + args[1] + " Password: " + args[2]);
 				ash = new AuthenticationServerHelper(args[1], args[2]);
+				if(!ash.isUserFound()) {
+					sockPrintWriter.println(ProtocolConstants.USER_NOT_FOUND);
+					System.out.println("The login user was not found.");
+					return;
+				}
 				if(ash.isAuthenticated()) {
 					logger.debug("ash is authenticated in AuthServerThread.onLOGIN");
 					Map<String, String[]> characters = ash.getCharacterMap();
-					sockPrintWriter.println(characters.keySet());
+					if(ash.getCharacterMap().size() > 0) {
+						sockPrintWriter.println(characters.keySet());
+					}
+					else {
+						logger.debug("No characters have been created on the account.");
+						sockPrintWriter.println(ProtocolConstants.NO_CHARS_CREATED);
+						return;
+					}
 					String request = null;
 					if ((request = sockBufReader.readLine()) != null) {
 						String loginAs = Protocol.getRequestCmdSimple(request);

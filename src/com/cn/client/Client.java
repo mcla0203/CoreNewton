@@ -275,15 +275,24 @@ public class Client {
 			return;
 		}
 		
+		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		if(response.equals(ProtocolConstants.NO_CHARS_CREATED)) {
+			System.out.println(ClientConstants.NO_CHARS_CREATED);
+			return;
+		}
+		if(response.equals(ProtocolConstants.USER_NOT_FOUND)) {
+			System.out.println(ClientConstants.USER_NOT_FOUND);
+			return;
+		}
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
-		sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		System.out.println(response);
 		username = input[1];
 		
 		String character = userInput.getUserInput();
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
-		String response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
+		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
 		if(response.equals(ProtocolConstants.SUCCESS)) {
 			isLoggedIn = true;
 		}
@@ -327,7 +336,6 @@ public class Client {
 		try {
 			sockPrintWriter.println(message);
 			String response = sockBufReader.readLine();
-			System.out.println(response);
 			return response;
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -339,7 +347,6 @@ public class Client {
 		try {
 			authSockPrintWriter.println(message);
 			String response = authSockBufReader.readLine();
-			System.out.println(response);
 			return response;
 		}catch (Exception e) {
 			e.printStackTrace();

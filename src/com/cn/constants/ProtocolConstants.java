@@ -15,5 +15,7 @@ public class ProtocolConstants extends Constants {
 	public static final String SAVE = "<" + Constants.SAVE + ">";
 	public static final String ACCOUNT_ALREADY_IN_USE = "<accountInUse>";
 	public static final String CREATE_ACC = "<"+Constants.CREATE_ACC+">";
+	public static final String NO_CHARS_CREATED = "<" + Constants.NO_CHARS_CREATED + ">";
+	public static final String USER_NOT_FOUND = "<" + Constants.USER_NOT_FOUND + ">";
 	
 }
