@@ -45,4 +45,6 @@ public class ClientConstants extends Constants {
 	
 	public static String USER_NOT_FOUND = formatOutput("The username you typed does not exist.");
 	
+	public static String LOGIN_SUCCESS = formatOutput("You have successfully logged in.");
+	
 }

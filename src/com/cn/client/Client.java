@@ -266,12 +266,17 @@ public class Client {
 	}
 
 	public void doGETMONSTERS(String[] args) {
-		sendToServerAndGetResponse(Protocol.getMonstersRequest());
+		String response = sendToServerAndGetResponse(Protocol.getMonstersRequest());
+		System.out.println(response);
 	}
 
 	private void doLOGIN(String[] input) {
 		if(isLoggedIn) {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
+			return;
+		}
+		if(input.length != 3) {
+			System.out.println(ClientConstants.INVALID_INPUT);
 			return;
 		}
 		
@@ -295,6 +300,7 @@ public class Client {
 		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
 		if(response.equals(ProtocolConstants.SUCCESS)) {
 			isLoggedIn = true;
+			System.out.println(ClientConstants.LOGIN_SUCCESS);
 		}
 	}
 	
