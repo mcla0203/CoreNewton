@@ -17,5 +17,8 @@ public class ProtocolConstants extends Constants {
 	public static final String MONSTER_DOES_NOT_EXIST = "<" + Constants.MONSTER_DOES_NOT_EXIST + ">";
 	public static final String MONSTER_WAS_KILLED = "<" + Constants.MONSTER_WAS_KILLED + ">";
 	public static final String CANNOT_LOOT_MONSTER = "<" + Constants.CANNOT_LOOT_MONSTER + ">";
+	public static final String CREATE_ACC = "<"+Constants.CREATE_ACC+">";
+	public static final String NO_CHARS_CREATED = "<" + Constants.NO_CHARS_CREATED + ">";
+	public static final String USER_NOT_FOUND = "<" + Constants.USER_NOT_FOUND + ">";
 	
 }

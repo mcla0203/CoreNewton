@@ -16,15 +16,15 @@ public class ClientConstants extends Constants {
 	
 	public static String HELP = "help";
 	public static String HELP_CMDS_AVAILABLE = "Available commands are:"
-																	+ "\n   login <user> <pass>   - login to the server"
-																	+ "\n   disconnect            - disconnect from the server"
-																	+ "\n   attack <monster id>   - attack the monster"
-																	+ "\n   loot <monster id>     - loot the monster you killed"
-																	+ "\n   heal                  - heal yourself"
-																	+ "\n   rest                  - rest yourself"
-																	+ "\n   getHealth             - get your current health"
-																	+ "\n   getEnergy             - get your energy"
-																	+ "\n   getMonsters           - get the monsters in this instance";
+																	+ "\n   login <user> <pass>                      - login to the server"
+																	+ "\n   createAcc <user> <password> <password>   - create a new account"
+																	+ "\n   attack <monster id>                      - attack the monster"
+																	+ "\n   loot <monster id>                        - loot the monster you killed"
+																	+ "\n   heal                                     - heal yourself"
+																	+ "\n   rest                                     - rest yourself"
+																	+ "\n   getHealth                                - get your current health"
+																	+ "\n   getEnergy                                - get your energy"
+																	+ "\n   getMonsters                              - get the monsters in this instance";
 	public static String HELP_FORMATTED = formatOutput(HELP_CMDS_AVAILABLE);
 	
 	public static String LOOT_IS_POSSIBLE = formatOutput("You can loot these remains...");
@@ -40,6 +40,12 @@ public class ClientConstants extends Constants {
 	
 	public static String PASSWORDS_DONT_MATCH = formatOutput("Your passwords do not match, type them again.");
 	public static String ACCOUNT_CREATED_SUCCESSFULLY = formatOutput("Your new account has been created.");
+	public static String ACCOUNT_ALREADY_EXISTS = formatOutput("Someone else uses that account, please choose another...");
+	public static String NO_CHARS_CREATED = formatOutput("You have not made any characters yet... create one now!");
+	
+	public static String USER_NOT_FOUND = formatOutput("The username you typed does not exist.");
+	
+	public static String LOGIN_SUCCESS = formatOutput("You have successfully logged in.");
 	
 	public static String GENERAL_FAILURE = formatOutput("Something when horribly wrong.");
 }
