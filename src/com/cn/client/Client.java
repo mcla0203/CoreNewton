@@ -104,6 +104,9 @@ public class Client {
 				else if(input[0].equals(Constants.SAVE)) {
 					doSAVE(input);
 				}
+				else if(input[0].equals(Constants.CREATE_ACC)) {
+					doCREATEACC(input);
+				}
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
@@ -302,6 +305,24 @@ public class Client {
 		else {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
+	}
+	
+	private void doCREATEACC(String[] input) {
+		logger.trace("Entering the doCREATEACC method.");
+		if(input.length != 4) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+		}
+		if(!input[2].equals(input[3])) {
+			System.out.println(ClientConstants.PASSWORDS_DONT_MATCH);
+		}
+		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		if(response.equals(ProtocolConstants.ACCOUNT_ALREADY_IN_USE)) {
+			System.out.println(ClientConstants.ACCOUNT_CREATED_SUCCESSFULLY);
+		}
+		if(response.equals(ProtocolConstants.SUCCESS)) {
+			System.out.println();
+		}
+		logger.trace("Exiting the doCREATEACC method.");
 	}
 
 	public String sendToServerAndGetResponse(String message) {
