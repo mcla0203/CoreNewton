@@ -10,6 +10,7 @@ public class Player extends Character {
 	
 	protected String name;
 	protected int credits;
+	protected boolean isOnline;
 	
 	public Player(String name) {
 		if(logger.isTraceEnabled()) {
@@ -27,6 +28,7 @@ public class Player extends Character {
 		this.level = lvl;
 		this.health = health;
 		this.energy = energy;
+		this.isOnline = true;
 	}
 	
 	/**
@@ -65,6 +67,10 @@ public class Player extends Character {
 	 */
 	public void setCredits(int credit) {
 		credits = credit;
+	}
+	
+	public boolean isOnline() {
+		return isOnline;
 	}
 	
 	/**
@@ -191,5 +197,9 @@ public class Player extends Character {
 	
 	public int getMaxEnergy() {
 		return MAX_ENERGY;
+	}
+
+	public void updateXP(Integer amount) {
+		this.setXP(this.getXP() + amount);
 	}
 }

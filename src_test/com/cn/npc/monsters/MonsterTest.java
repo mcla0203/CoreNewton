@@ -67,15 +67,6 @@ public class MonsterTest extends TestCase {
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p2));
 	}
 	
-	public void testBeAttacked_AlreadyDead() {
-		Monster m = new Monster();
-		Player p = new Player("player");
-		m.beAttacked(p, 100);
-		Player p2 = new Player("player2");
-		m.beAttacked(p2, 100);
-		assertFalse(m.getPlayersEligibleForXP().containsKey(p2));
-	}
-	
 	public void testBeAttacked_EligibleMoreDmg() {
 		Monster m = new Monster();
 		Player p = new Player("player");

@@ -40,6 +40,7 @@ public class Client {
 
 	protected UserInput userInput = null;
 	
+	private String username = null;
 	private String charName = null;
 	private boolean isLoggedIn = false;
 
@@ -247,11 +248,15 @@ public class Client {
 		if(args.length != 3) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
+		logger.debug("charName: " + charName);
 		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), charName));
 		String cmd = Protocol.getRequestCmdSimple(response);
 		String[] responseArgs = Protocol.getRequestArgsSimple(response);
 		if(cmd.equals(Constants.SUCCESS)) {
 			System.out.println("You did " + responseArgs[1] + " damage to the monster.");
+		}
+		else if(cmd.equals(Constants.NOT_ENOUGH_ENERGY)) {
+			System.out.println("You do not have enough energy to attack.");
 		}
 		else if(cmd.equals(Constants.MONSTER_WAS_KILLED)) {
 			System.out.println("You did " + responseArgs[1] + " damage to the monster and the monster was killed!");
@@ -270,7 +275,7 @@ public class Client {
 	}
 
 	public void doHEAL(String[] args) {
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), charName));
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
 		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
 			System.out.println(ClientConstants.HEAL_COMPLETE);
 		}
@@ -319,9 +324,10 @@ public class Client {
 		}
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		System.out.println(response);
-		charName = input[1];
+		username = input[1];
 		
 		String character = userInput.getUserInput();
+		charName = character;
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
@@ -340,7 +346,7 @@ public class Client {
 		if(input.length == 2) {
 			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(input[1]));
 			
-			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(charName) + response;
+			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
 			response = sendToAuthServerAndGetResponse(toForward);
 		}
 		else {

@@ -128,4 +128,13 @@ public class PlayerTest extends TestCase {
 		assertEquals(p.getMaxEnergy(),20);
 	}
 	
+	public void testUpdateXP() {
+		Player p = new Player("name");
+		assertEquals(p.getXP(), 0);
+		p.updateXP(10);
+		assertEquals(p.getXP(), 10);
+		p.updateXP(100);
+		assertEquals(p.getXP(), 110);
+	}
+	
 }

@@ -146,6 +146,7 @@ public class Character {
 	 * Attacks character and decrements the energy 
 	 * of the attacker
 	 */
+	@Deprecated
 	public void attack(Character character, int dmg) {
 		logger.trace("Inside character.attack()");
 		character.beAttacked(dmg);
@@ -162,6 +163,7 @@ public class Character {
 	 * amount.
 	 */
 	public boolean loseEnergy(int amount) {
+		logger.trace("Entering character.loseEnergy method");
 		if(amount <= energy) {
 			energy -= amount;
 			return true;

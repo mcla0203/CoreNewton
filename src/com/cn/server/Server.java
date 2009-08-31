@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -277,20 +278,29 @@ public class Server {
 			logger.trace("Inside Server.onAttack.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[2]), monsterList);
 			Player p = ServerPlayersHelper.getPlayerByName(args[3], playerList);
-			if(m == null) {
+			if(m == null || p == null) {
 				logger.error("This monster does not exist.");
 				sockPrintWriter.println(ProtocolConstants.MONSTER_DOES_NOT_EXIST);
 			} else {
 				if(logger.isDebugEnabled()) {
 					logger.debug("SERVER: Player is attacking monster");
 				}
-				
+				if(!p.loseEnergy(2)) {
+					logger.debug("Player does not have enough energy to attack.");
+					sockPrintWriter.println(ProtocolConstants.NOT_ENOUGH_ENERGY);
+					return;
+				}
 				if(m.isAlive()) {
 					m.beAttacked(p, Integer.valueOf(args[1]));
 					String dmgDone = Protocol.createSimpleResponse(String.valueOf(m.getDmgReceived()));
 					if(!m.isAlive()) {
 						logger.debug("Player attacked and killed monster.");
 						sockPrintWriter.println(ProtocolConstants.MONSTER_WAS_KILLED + dmgDone);
+						Map<Player, Integer> xpMap = m.divvyUpXP();
+						logger.debug(xpMap.size() + " players are receiving xp for the death of this monster.");
+						for(Player player: xpMap.keySet()) {
+							player.updateXP(xpMap.get(player));
+						}
 					}
 					else {
 						logger.debug("Player successfully attacked but did not kill monster.");

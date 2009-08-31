@@ -27,6 +27,8 @@ public class Constants {
 
 	public static String NO_CHARS_CREATED = "noCharsCreated";
 	public static String USER_NOT_FOUND = "noUsersFound";
+	
+	public static final String NOT_ENOUGH_ENERGY = "notEnoughEnergy";
 
 	
 	/**
