@@ -40,7 +40,7 @@ public class Client {
 
 	protected UserInput userInput = null;
 	
-	private String username = null;
+	private String charName = null;
 	private boolean isLoggedIn = false;
 
 	protected String myURL = null;
@@ -247,7 +247,7 @@ public class Client {
 		if(args.length != 3) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), charName));
 		String cmd = Protocol.getRequestCmdSimple(response);
 		String[] responseArgs = Protocol.getRequestArgsSimple(response);
 		if(cmd.equals(Constants.SUCCESS)) {
@@ -270,7 +270,7 @@ public class Client {
 	}
 
 	public void doHEAL(String[] args) {
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2])));
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), charName));
 		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
 			System.out.println(ClientConstants.HEAL_COMPLETE);
 		}
@@ -298,7 +298,7 @@ public class Client {
 		System.out.println(response);
 	}
 
-	private void doLOGIN(String[] input) {
+	public void doLOGIN(String[] input) {
 		if(isLoggedIn) {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
 			return;
@@ -319,7 +319,7 @@ public class Client {
 		}
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		System.out.println(response);
-		username = input[1];
+		charName = input[1];
 		
 		String character = userInput.getUserInput();
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
@@ -340,7 +340,7 @@ public class Client {
 		if(input.length == 2) {
 			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(input[1]));
 			
-			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
+			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(charName) + response;
 			response = sendToAuthServerAndGetResponse(toForward);
 		}
 		else {

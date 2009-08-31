@@ -71,14 +71,17 @@ public class Monster extends Character {
 		}
 		int damageDone = 0;
 		if(dmg < health) {
-			health -= dmg;
 			damageDone = dmg;
+			health -= dmg;
+			logger.debug("damage done: " + damageDone);
 		}
 		else {
+			damageDone = health;
 			health = 0;
-			damageDone = dmg - health;
 			isAlive = false;
+			logger.debug("Monster killed. damage done: " + damageDone);
 		}
+		dmgReceived = damageDone;
 		if(playersEligibleForXP.containsKey(p)) {
 			logger.debug("Player " + p + "is already eligible for XP but did more damage.");
 			int totalDmg = playersEligibleForXP.get(p) + damageDone;

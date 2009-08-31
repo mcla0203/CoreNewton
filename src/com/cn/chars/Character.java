@@ -136,8 +136,8 @@ public class Character {
 			if(logger.isDebugEnabled()) {
 				logger.debug("the character: " +this.toString() + " died");
 			}
+			dmgReceived = health;
 			health = 0;
-			dmgReceived = dmg - health;
 			isAlive = false;
 		}
 	}

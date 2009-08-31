@@ -72,7 +72,7 @@ public class PlayerTest extends TestCase {
 		Player p = new Player("Stan");
 		assertEquals(0, p.credits);
 		Monster m = new Monster();
-		assertEquals(p.loot(m), -1);
+		assertEquals(p.loot(m), 0);
 		assertEquals(p.getCredits(), 0);
 		m.beAttacked(m.getHealth());
 		assertEquals(p.loot(m), 5);

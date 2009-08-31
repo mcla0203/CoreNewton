@@ -275,7 +275,8 @@ public class Server {
 		
 		public void onATTACK(String[] args) {
 			logger.trace("Inside Server.onAttack.");
-			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
+			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[2]), monsterList);
+			Player p = ServerPlayersHelper.getPlayerByName(args[3], playerList);
 			if(m == null) {
 				logger.error("This monster does not exist.");
 				sockPrintWriter.println(ProtocolConstants.MONSTER_DOES_NOT_EXIST);
@@ -285,7 +286,7 @@ public class Server {
 				}
 				
 				if(m.isAlive()) {
-					m.beAttacked(Integer.valueOf(args[2]));
+					m.beAttacked(p, Integer.valueOf(args[1]));
 					String dmgDone = Protocol.createSimpleResponse(String.valueOf(m.getDmgReceived()));
 					if(!m.isAlive()) {
 						logger.debug("Player attacked and killed monster.");
