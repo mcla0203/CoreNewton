@@ -174,7 +174,8 @@ public class AuthenticationServer {
 				if(map.containsKey(args[2])) {
 					logger.debug("character map contains char: "+args[2]);
 					map.remove(args[2]);
-					String[] stats = new String[5];
+					logger.debug("removed char: "+args[2]);
+					String[] stats = new String[6];
 					for(int i=2; i<args.length; i++) {
 						//should include name...
 						stats[i-2] = args[i];
