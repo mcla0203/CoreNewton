@@ -285,7 +285,7 @@ public class Client {
 		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
-		String response = sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
+		sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
 //		if() {
 //			
 //		}

@@ -31,6 +31,7 @@ public class Server {
 	private ServerSocket serverSocket;
 	public static List<Monster> monsterList;
 	public static List<Player> playerList;
+	public static List<ServerThread> threadList;
 	Logger logger = Logger.getLogger(Server.class);
 	
 	public Server() {
@@ -39,6 +40,7 @@ public class Server {
 		hostName = ServerConstants.HOSTNAME;
 		monsterList = Collections.synchronizedList(new ArrayList<Monster>());
 		playerList = Collections.synchronizedList(new ArrayList<Player>());
+		threadList = Collections.synchronizedList(new ArrayList<ServerThread>());
 		for(int i=0; i<10; i++) {
 			monsterList.add(new Monster());
 		}
@@ -146,7 +148,9 @@ public class Server {
 			/*
 			 * Start a new thread (ServerThread).
 			 */
-			Thread t = new Thread(new ServerThread(clientSocket));
+			ServerThread st = new ServerThread(clientSocket);
+			threadList.add(st);
+			Thread t = new Thread(st);
 			logger.trace("Starting a new thread");
 			t.start();
 		}
@@ -173,6 +177,7 @@ public class Server {
 		protected BufferedInputStream bis;
 		protected BufferedOutputStream bos;
 		protected String user = null;
+		protected String name = null;
 		
 		/*
 		 * The constructor for the ServerThread object.
@@ -300,7 +305,12 @@ public class Server {
 						logger.debug(xpMap.size() + " players are receiving xp for the death of this monster.");
 						for(Player player: xpMap.keySet()) {
 							player.updateXP(xpMap.get(player));
+							ServerThread st = getThreadForPlayer(player);
+							if(st != null) {
+								st.sendXPNotification(xpMap.get(player));
+							}
 						}
+						
 					}
 					else {
 						logger.debug("Player successfully attacked but did not kill monster.");
@@ -314,6 +324,27 @@ public class Server {
 			}
 		}
 		
+		private ServerThread getThreadForPlayer(Player player) {
+			logger.trace("Entering getThreadForPlayer");
+			ServerThread ret = null;
+			for(ServerThread st : threadList) {
+				if(player.getName().equals(st.name)) {
+					ret = st;
+				}
+			}
+			logger.trace("Exiting getThreadForPlayer.  ServerThread is: " + ret);
+			return ret;
+		}
+
+		private void sendXPNotification(int amt) {
+			logger.trace("Entering sendXPNotification");
+			if(clientSocket != null && user != null && name != null) {
+				logger.debug("Sending XP Notification.");
+				sockPrintWriter.println("<server><xp><50>");
+			}
+			logger.trace("Exiting sendXPNotification");
+		}
+
 		public void onHEAL(String[] args) {
 			logger.trace("Inside Server.onHEAL.");
 			Player p = ServerPlayersHelper.getPlayerByName(args[2], playerList);
@@ -353,6 +384,7 @@ public class Server {
 		
 		public void onLOGINNAME(String[] args) {
 			logger.trace("Inside Server.onLOGINNAME.");
+			name = args[1];
 			playerList.add(new Player(args[1], Integer.valueOf(args[2]), Integer.valueOf(args[3]),
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;
