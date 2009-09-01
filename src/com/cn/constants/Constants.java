@@ -29,6 +29,7 @@ public class Constants {
 	public static String USER_NOT_FOUND = "noUsersFound";
 	
 	public static final String NOT_ENOUGH_ENERGY = "notEnoughEnergy";
+	public static final String LOGOUT = "logout";
 
 	
 	/**

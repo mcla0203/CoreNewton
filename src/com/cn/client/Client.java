@@ -109,6 +109,9 @@ public class Client {
 				else if(input[0].equals(Constants.CREATE_ACC)) {
 					doCREATEACC(input);
 				}
+				else if(input[0].equals(Constants.LOGOUT)) {
+					doLOGOUT(input);
+				}
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
@@ -285,7 +288,7 @@ public class Client {
 		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
-		String response = sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
+		sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
 //		if() {
 //			
 //		}
@@ -327,6 +330,10 @@ public class Client {
 		username = input[1];
 		
 		String character = userInput.getUserInput();
+		if(!response.contains(character)) {
+			System.out.println("You made a typo... try again SLOWLY...");
+			character = userInput.getUserInput();
+		}
 		charName = character;
 		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
 		
@@ -343,8 +350,8 @@ public class Client {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
 			return;
 		}
-		if(input.length == 2) {
-			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(input[1]));
+		if(input.length == 1) {
+			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(charName));
 			
 			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
 			response = sendToAuthServerAndGetResponse(toForward);
@@ -370,6 +377,14 @@ public class Client {
 			System.out.println(ClientConstants.ACCOUNT_CREATED_SUCCESSFULLY);
 		}
 		logger.trace("Exiting the doCREATEACC method.");
+	}
+	
+	private void doLOGOUT(String[] input) {
+		doSAVE(input);  //only works cause input.length of logout == input.length of save
+		disconnectFromServer();
+		username = null;
+		charName = null;
+		isLoggedIn = false;
 	}
 
 	public String sendToServerAndGetResponse(String message) {
