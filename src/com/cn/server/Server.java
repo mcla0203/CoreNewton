@@ -170,7 +170,7 @@ public class Server {
 	
 	public class ServerThread implements Runnable {
 		
-		// Client-Server Interaction
+		//Client-Server Interaction
 		protected Socket clientSocket;
 		protected BufferedReader sockBufReader = null;
 		protected PrintWriter sockPrintWriter = null;
@@ -179,6 +179,13 @@ public class Server {
 		protected String user = null;
 		protected String name = null;
 		
+		//Server-ChatServer interaction
+		Socket chatServerSocket = null;
+		BufferedReader chatSockBufReader = null;
+		PrintWriter chatSockPrintWriter = null;
+		BufferedInputStream chatBis;
+		BufferedOutputStream chatBos;
+
 		/*
 		 * The constructor for the ServerThread object.
 		 */
@@ -197,6 +204,43 @@ public class Server {
 				}
 				System.exit(1);
 			} 
+		}
+		
+		
+		/**
+		 * Connects to the chat server.
+		 */
+		protected void connectToChatServer(String name, String url) {
+			try {
+				chatServerSocket = new Socket(ServerConstants.CHAT_HOSTNAME, ServerConstants.CHAT_PORT);
+			} catch (Exception e) {
+				chatServerSocket = null;
+			}
+			try {
+				chatBis = new BufferedInputStream(chatServerSocket.getInputStream());
+				chatBos = new BufferedOutputStream(chatServerSocket.getOutputStream());
+				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
+				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
+				url = (url.contains("/") ? url.replace("/", "") : url);
+				chatSockPrintWriter.println(Protocol.chatLoginRequest(name, url));
+			} catch (IOException e) {
+				logger.error(e);  //temp until we import log4j jar.
+				System.exit(1);
+			} 
+		}
+		
+		/**
+		 * Disconnects from the chat server.
+		 */
+		protected void disconnectFromChatServer() {
+			try {
+				if (chatServerSocket != null) {
+					chatServerSocket.close();
+					chatServerSocket = null;
+				}
+			} catch (Exception e) {
+				logger.error("Error disconnecting from the chat server.", e);
+			}
 		}
 		
 		/*
@@ -264,6 +308,7 @@ public class Server {
 					logger.error("Disconnected: " +clientSocket.getInetAddress());
 				}
 			} finally {
+				disconnectFromChatServer();
 				logger.trace("Closing socket.");
 				try {
 					if (sockBufReader != null)
@@ -385,6 +430,9 @@ public class Server {
 		public void onLOGINNAME(String[] args) {
 			logger.trace("Inside Server.onLOGINNAME.");
 			name = args[1];
+			String url = clientSocket.getRemoteSocketAddress().toString();
+			logger.debug("The URL is : " + url);
+			connectToChatServer(name, url);
 			playerList.add(new Player(args[1], Integer.valueOf(args[2]), Integer.valueOf(args[3]),
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;

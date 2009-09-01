@@ -21,5 +21,6 @@ public class ProtocolConstants extends Constants {
 	public static final String NO_CHARS_CREATED = "<" + Constants.NO_CHARS_CREATED + ">";
 	public static final String USER_NOT_FOUND = "<" + Constants.USER_NOT_FOUND + ">";
 	public static final String NOT_ENOUGH_ENERGY = "<" + Constants.NOT_ENOUGH_ENERGY + ">";
+	public static final String CHAT_LOGIN = "<" + Constants.CHAT_LOGIN + ">";
 	
 }

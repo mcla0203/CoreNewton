@@ -15,5 +15,10 @@ public class ServerConstants extends Constants {
 	public static String HOSTNAME = "localhost";
 	public static int PORT = 7777;
 	
+	public static String CHAT_HOSTNAME = HOSTNAME;
+	public static int CHAT_PORT = PORT+1;
+	public static String CHAT_SERVER_STARTUP = formatOutput("The Chat server has been started");
+	public static String CHAT_SERVER_ACCEPTING = formatOutput("The Chat server is waiting for client connections...");
+	
 	public static String INVALID_CHAR = formatOutput("Invalid character - requested character does not exist.");
 }

@@ -1,3 +1,4 @@
-start run_server
-start run_auth_server
-start run_client
+start run_auth_server.bat
+start run_chat_server.bat
+start run_server.bat
+start run_client.bat

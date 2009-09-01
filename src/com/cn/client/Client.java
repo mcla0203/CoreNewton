@@ -55,6 +55,7 @@ public class Client {
 	public Client() {
 		try { myURL = InetAddress.getLocalHost().getHostAddress();}
 		catch(Exception e) { e.printStackTrace(); System.exit(1); }
+		logger.debug("My URL is : " + myURL);
 	}
 
 	/**
@@ -171,8 +172,6 @@ public class Client {
 			System.exit(1);
 		} 
 	}
-
-
 
 	/**
 	 * Destroy socket to disconnect from the server.

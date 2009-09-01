@@ -96,4 +96,8 @@ public class Protocol {
 		return ProtocolConstants.SAVE + Protocol.createSimpleRequest(name);
 	}
 	
+	public static String chatLoginRequest(String name, String url) {
+		return ProtocolConstants.CHAT_LOGIN + "<" + name + ">" + "<" + url + ">";
+	}
+	
 }
