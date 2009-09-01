@@ -200,6 +200,35 @@ public class Player extends Character {
 	}
 
 	public void updateXP(Integer amount) {
+		logger.trace("Entering Player.updateXP");
+		if(shouldPlayerLevelUp(amount)) {
+			if(logger.isDebugEnabled()) {
+				logger.debug("Player should level up. Current XP: " + getXP() + " amount: " + amount);
+			}
+			levelUp();
+		}
+		if(logger.isDebugEnabled()) {
+			logger.debug("Player's current XP is: " + getXP() + ". Adding this much XP: " + amount);
+		}
 		this.setXP(this.getXP() + amount);
+		logger.debug("Players new XP: " + getXP());
+		logger.trace("Exiting Player.updateXP");
+	}
+
+	/**
+	 * Method to determine whether or not a player is eligible to level up. The current algorithm
+	 * to determine the experience needed to level up to the next level is: (current level * 600) + 1400.
+	 * This is the algorithm currently used for Guild Wars. Go to http://wiki.guildwars.com/wiki/XP to see
+	 * a chart of level/XP for now, until we make one for ourselves.
+	 * @param amount
+	 * @return true if the player should level up, else return false.
+	 */
+	public boolean shouldPlayerLevelUp(Integer amount) {
+		int minXPNeededForNextLevel = (getLevel()*600)+1400;
+		int xpNeededToLevelUp = minXPNeededForNextLevel - getXP();
+		if(amount >= xpNeededToLevelUp) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -145,6 +145,7 @@ public class Character {
 	/**
 	 * Attacks character and decrements the energy 
 	 * of the attacker
+	 * This method is only to be used in tests.
 	 */
 	@Deprecated
 	public void attack(Character character, int dmg) {
@@ -179,12 +180,12 @@ public class Character {
 	 */
 	public int receiveXp(Monster m) {
 		logger.trace("Inside Character.receiveXP(Monster)");
-		int ret = 1;
+		int ret = 25;
 		if(level < m.getLevel()) {
-			ret = 5;
+			ret = 200;
 		}
 		if(level == m.getLevel()) {
-			ret = 3;
+			ret = 100;
 		}
 		return ret;
 	}
