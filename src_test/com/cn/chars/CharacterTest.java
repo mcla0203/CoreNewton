@@ -89,5 +89,4 @@ public class CharacterTest extends TestCase {
 		assertFalse(c.setEnergy(100));
 		assertEquals(c.getEnergy(), 10);
 	}
-	
 }

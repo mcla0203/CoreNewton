@@ -137,4 +137,11 @@ public class PlayerTest extends TestCase {
 		assertEquals(p.getXP(), 110);
 	}
 	
+	public void testShouldPlayerLevelUp() {
+		Player p = new Player("dirka_stan");
+		assertEquals(p.getLevel(), 1);
+		p.setXP(1990);
+		assertFalse(p.shouldPlayerLevelUp(4));
+		assertTrue(p.shouldPlayerLevelUp(10));
+	}
 }
