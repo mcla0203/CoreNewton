@@ -24,5 +24,7 @@ public class ProtocolConstants extends Constants {
 	public static final String CHAT_LOGIN = "<" + Constants.CHAT_LOGIN + ">";
 	public static final String LOGOUT = "<" + Constants.LOGOUT + ">";
 	public static final String CHAT_LOGOUT = "<" + Constants.CHAT_LOGOUT + ">";
+	public static final String XP = "<" + Constants.XP + ">";
+	public static final String ANNOUNCEMENT = "<" + Constants.ANNOUNCEMENT +">";
 	
 }

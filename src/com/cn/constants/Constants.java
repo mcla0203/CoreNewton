@@ -33,6 +33,9 @@ public class Constants {
 	public static final String CHAT_LOGIN = "chatLogin";
 	public static final String CHAT_LOGOUT = "chatLogout";
 	public static int CHAT_LISTENER_PORT = 9999;
+	public static final String XP = "xp";
+	
+	public static final String ANNOUNCEMENT = "announcement";
 
 	
 	/**

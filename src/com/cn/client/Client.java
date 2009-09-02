@@ -496,25 +496,23 @@ public class Client {
 		 * Thread main routine
 		 */
 		public void run() {
-			logger.trace("Inside Server.run method");
 			try {
 				String request;
 				while ((request = chatSockBufReader.readLine()) != null) {
-					if(logger.isDebugEnabled()) {
-						logger.debug("Request: " + request);
-					}
 					if (request.length() < 1) {
 						if(logger.isEnabledFor(Level.ERROR)) {
 							logger.error("Message length is too short: "+request.length());
 						}
 						continue;
 					}
-					logger.debug("The request is : " + request);
 					String cmd = Protocol.getRequestCmdSimple(request);
 					String[] args = Protocol.getRequestArgsSimple(request);
-					if(cmd.equals(Constants.CHAT_LOGIN)) {
-						logger.debug("The cmd was " + Constants.CHAT_LOGIN);
+					if(cmd.equals(Constants.ANNOUNCEMENT)) {
+						System.out.println(args[1]);
 						continue;
+					}
+					else if(cmd.equals(Constants.XP)) {
+						System.out.println("You received " + args[1] + " XP!!");
 					}
 				}
 			} catch (Exception e) {

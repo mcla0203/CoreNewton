@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.cn.constants.Constants;
+import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.protocol.Protocol;
 
@@ -196,6 +197,11 @@ public class ChatServer {
 						onCHATLOGOUT(args);
 						continue;
 					}
+					else if(cmd.equals(Constants.XP)) {
+						logger.debug("The cmd was " + Constants.XP);
+						onXP(args);
+						continue;
+					}
 				}
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
@@ -214,6 +220,17 @@ public class ChatServer {
 						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
 					}
 				}
+			}
+		}
+
+		private void onXP(String[] args) {
+			if(args.length != 3) {
+				return;
+			}
+			String amount = args[1];
+			String name = args[2];
+			if(chatMap.containsKey(name)) {
+				csockPrintWriter.println(ProtocolConstants.XP + Protocol.createSimpleRequest(amount));
 			}
 		}
 
@@ -254,7 +271,8 @@ public class ChatServer {
 					logger.error("Error creating the socket", e);
 				}
 				chatMap.put(name, s);
-				csockPrintWriter.println("WELCOME TO THE SERVER "+ name);
+				String welcome = "Welcome to the server, "+ name;
+				csockPrintWriter.println(ProtocolConstants.ANNOUNCEMENT + Protocol.createSimpleResponse(welcome));
 			}
 		}
 		

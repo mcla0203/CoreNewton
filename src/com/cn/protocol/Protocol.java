@@ -103,5 +103,8 @@ public class Protocol {
 	public static String chatLogoutRequest(String name) {
 		return ProtocolConstants.CHAT_LOGOUT + "<" + name + ">";
 	}
+	public static String createXPNotification(int amt, String name) {
+		return ProtocolConstants.XP + "<" + amt +">" + "<" + name + ">";
+	}
 	
 }

@@ -356,10 +356,7 @@ public class Server {
 						logger.debug(xpMap.size() + " players are receiving xp for the death of this monster.");
 						for(Player player: xpMap.keySet()) {
 							player.updateXP(xpMap.get(player));
-							ServerThread st = getThreadForPlayer(player);
-							if(st != null) {
-								st.sendXPNotification(xpMap.get(player));
-							}
+							sendXPNotification(xpMap.get(player));
 						}
 						
 					}
@@ -374,24 +371,13 @@ public class Server {
 				}
 			}
 		}
-		
-		private ServerThread getThreadForPlayer(Player player) {
-			logger.trace("Entering getThreadForPlayer");
-			ServerThread ret = null;
-			for(ServerThread st : threadList) {
-				if(player.getName().equals(st.name)) {
-					ret = st;
-				}
-			}
-			logger.trace("Exiting getThreadForPlayer.  ServerThread is: " + ret);
-			return ret;
-		}
 
 		private void sendXPNotification(int amt) {
 			logger.trace("Entering sendXPNotification");
-			if(clientSocket != null && user != null && name != null) {
+			if(chatSockPrintWriter != null) {
 				logger.debug("Sending XP Notification.");
-				sockPrintWriter.println("<server><xp><50>");
+				logger.debug("Attempting to send xp with request: " + Protocol.createXPNotification(amt, name));
+				chatSockPrintWriter.println(Protocol.createXPNotification(amt, name));
 			}
 			logger.trace("Exiting sendXPNotification");
 		}
