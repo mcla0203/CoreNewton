@@ -235,6 +235,7 @@ public class Server {
 		protected void disconnectFromChatServer() {
 			try {
 				if (chatServerSocket != null) {
+					chatSockPrintWriter.println(Protocol.chatLogoutRequest(name));
 					chatServerSocket.close();
 					chatServerSocket = null;
 				}
@@ -291,6 +292,11 @@ public class Server {
 					else if (cmd.equalsIgnoreCase(Constants.LOGIN_NAME)) {
 						logger.debug("cmd is LOGINNAME");
 						onLOGINNAME(args);
+						continue;
+					}
+					else if (cmd.equalsIgnoreCase(Constants.LOGOUT)) {
+						logger.debug("cmd is LOGOUT");
+						onLOGOUT(args);
 						continue;
 					}
 					else if (cmd.equalsIgnoreCase(Constants.SAVE)) {
@@ -437,6 +443,20 @@ public class Server {
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;
 			sockPrintWriter.println(response);
+		}
+		
+		public void onLOGOUT(String[] args) {
+			logger.trace("Inside Server.onLOGOUT.");
+			logger.debug("The playerList size is " + playerList.size());
+			for(int i=0; i<playerList.size(); i++) {
+				if(playerList.get(i).getName().equals(name)) {
+					logger.debug("Removing the player " + name + " from the playerList");
+					playerList.remove(i);
+					break;
+				}
+			}
+			disconnectFromChatServer();
+			logger.trace("Inside Server.onLOGOUT.");
 		}
 		
 		public void onSAVE(String[] args) {

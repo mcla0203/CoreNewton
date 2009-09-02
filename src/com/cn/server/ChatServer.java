@@ -132,23 +132,30 @@ public class ChatServer {
 	}
 	public class ChatServerThread implements Runnable {
 		
-		//Client-Server Interaction
-		protected Socket clientSocket;
+		//ChatServer-Server Interaction
+		protected Socket serverSocket;
 		protected BufferedReader sockBufReader = null;
 		protected PrintWriter sockPrintWriter = null;
 		protected BufferedInputStream bis;
 		protected BufferedOutputStream bos;
+		
+		//ChatServer-Client Interaction
+		protected Socket clientSocket;
+		protected BufferedReader csockBufReader = null;
+		protected PrintWriter csockPrintWriter = null;
+		protected BufferedInputStream cbis;
+		protected BufferedOutputStream cbos;
 		
 		/*
 		 * The constructor for the ChatServerThread object.
 		 */
 		public ChatServerThread(Socket s) {
 			logger.trace("ServerThread initialization");
-			clientSocket = s;
+			serverSocket = s;
 
 			try {
-				bis = new BufferedInputStream(clientSocket.getInputStream());
-				bos = new BufferedOutputStream(clientSocket.getOutputStream());
+				bis = new BufferedInputStream(serverSocket.getInputStream());
+				bos = new BufferedOutputStream(serverSocket.getOutputStream());
 				sockPrintWriter = new PrintWriter(new OutputStreamWriter(bos), true);
 				sockBufReader = new BufferedReader(new InputStreamReader(bis));
 			} catch (IOException e) {
@@ -184,10 +191,15 @@ public class ChatServer {
 						onCHATLOGIN(args);
 						continue;
 					}
+					else if(cmd.equals(Constants.CHAT_LOGOUT)) {
+						logger.debug("The cmd was " + Constants.CHAT_LOGOUT);
+						onCHATLOGOUT(args);
+						continue;
+					}
 				}
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
+					logger.error("User has disconnected from Chat Server... " +serverSocket.getInetAddress());
 				}
 
 			} finally {
@@ -196,13 +208,28 @@ public class ChatServer {
 						sockBufReader.close();
 					if (sockPrintWriter != null)
 						sockPrintWriter.close();
-					clientSocket.close();	
+					serverSocket.close();	
 				} catch (Exception e) {
 					if(logger.isEnabledFor(Level.ERROR)) {
 						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
 					}
 				}
 			}
+		}
+
+		private void onCHATLOGOUT(String[] args) {
+			if(args.length != 2) {
+				return;
+			}
+			String name = args[1];
+			if(chatMap.containsKey(name)) {
+				logger.debug("Removing the player " + name + "from the chatMap");
+				chatMap.remove(name);
+			}
+			else {
+				logger.error("The logout user is not logged in to the chat server");
+			}
+			
 		}
 
 		private void onCHATLOGIN(String[] args) {
@@ -219,10 +246,15 @@ public class ChatServer {
 				Socket s = null;
 				try {
 					s = new Socket(ip, Constants.CHAT_LISTENER_PORT);
+					cbis = new BufferedInputStream(s.getInputStream());
+					cbos = new BufferedOutputStream(s.getOutputStream());
+					csockPrintWriter = new PrintWriter(new OutputStreamWriter(cbos), true);
+					csockBufReader = new BufferedReader(new InputStreamReader(cbis));
 				} catch (IOException e) {
 					logger.error("Error creating the socket", e);
 				}
 				chatMap.put(name, s);
+				csockPrintWriter.println("WELCOME TO THE SERVER "+ name);
 			}
 		}
 		

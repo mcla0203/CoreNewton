@@ -31,6 +31,7 @@ public class Constants {
 	public static final String NOT_ENOUGH_ENERGY = "notEnoughEnergy";
 	public static final String LOGOUT = "logout";
 	public static final String CHAT_LOGIN = "chatLogin";
+	public static final String CHAT_LOGOUT = "chatLogout";
 	public static int CHAT_LISTENER_PORT = 9999;
 
 	

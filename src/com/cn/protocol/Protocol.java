@@ -100,4 +100,8 @@ public class Protocol {
 		return ProtocolConstants.CHAT_LOGIN + "<" + name + ">" + "<" + url + ">";
 	}
 	
+	public static String chatLogoutRequest(String name) {
+		return ProtocolConstants.CHAT_LOGOUT + "<" + name + ">";
+	}
+	
 }
