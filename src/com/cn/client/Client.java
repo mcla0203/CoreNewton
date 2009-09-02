@@ -55,7 +55,7 @@ public class Client {
 
 	protected String myURL = null;
 	protected String cmd = "";
-
+	
 	Logger logger = Logger.getLogger(ClientConstants.LOGGER);
 
 	/**
@@ -268,6 +268,7 @@ public class Client {
 	public static void main(String[] args) {
 		PropertyConfigurator.configure(Constants.LOGGER_PROPERTIES);
 		Client client = new Client();
+		//ClientGUI gui = new ClientGUI();
 		client.runClient();
 	}
 
