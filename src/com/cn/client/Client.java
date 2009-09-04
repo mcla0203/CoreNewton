@@ -11,6 +11,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -19,6 +21,8 @@ import com.cn.constants.ClientConstants;
 import com.cn.constants.Constants;
 import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
+import com.cn.gui.LoginGUI;
+import com.cn.gui.LoginResponseGUI;
 import com.cn.protocol.Protocol;
 
 public class Client {
@@ -268,7 +272,6 @@ public class Client {
 	public static void main(String[] args) {
 		PropertyConfigurator.configure(Constants.LOGGER_PROPERTIES);
 		Client client = new Client();
-		//ClientGUI gui = new ClientGUI();
 		client.runClient();
 	}
 
@@ -331,28 +334,57 @@ public class Client {
 		System.out.println(response);
 	}
 
+	@SuppressWarnings({ "all", "null" })
 	public void doLOGIN(String[] input) {
 		if(isLoggedIn) {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
 			return;
 		}
-		if(input.length != 3) {
+		if(input.length != 1) {
 			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'login' now, you get a GUI");
 			return;
 		}
-		
-		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		LoginGUI g = new LoginGUI();
+		int action = g.getLoginDialog();
+		String usr = null;
+		String pw = null;
+		if(action == JOptionPane.OK_OPTION) {
+			usr = g.getUserNameField().getText();
+			char[] pwTemp = g.getPasswordField().getPassword();
+			if(pwTemp == null || usr == null) {
+				return;
+			}
+			for(int i=0; i<pwTemp.length; i++) {
+				pw += Character.toString(pwTemp[i]);
+			}
+			if(pw != null) {
+				pw = pw.substring(4);
+			}
+			logger.debug("user clicked ok as : " + usr +"/"+ pw);
+		}
+		else{
+			return;
+		}
+		String[] requestArgs = new String[3];
+		requestArgs[0] = input[0];
+		requestArgs[1] = usr;
+		requestArgs[2] = pw; 
+		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(requestArgs));
+		LoginResponseGUI responseGUI = new LoginResponseGUI();
 		if(response.equals(ProtocolConstants.NO_CHARS_CREATED)) {
+			responseGUI.getNoCharsDialog();
 			System.out.println(ClientConstants.NO_CHARS_CREATED);
 			return;
 		}
 		if(response.equals(ProtocolConstants.USER_NOT_FOUND)) {
+			responseGUI.getUserNotFoundDialog();
 			System.out.println(ClientConstants.USER_NOT_FOUND);
 			return;
 		}
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		System.out.println(response);
-		username = input[1];
+		username = usr;
 		
 		String character = userInput.getUserInput();
 		if(!response.contains(character)) {
@@ -368,6 +400,7 @@ public class Client {
 			beginChatServerListener();
 			isLoggedIn = true;
 			System.out.println(ClientConstants.LOGIN_SUCCESS);
+			responseGUI.getSuccessDialog();
 		}
 	}
 	
