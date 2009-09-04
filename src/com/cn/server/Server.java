@@ -400,6 +400,7 @@ public class Server {
 		public void onLOOT(String[] args) {
 			logger.trace("Inside Server.onLOOT.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[1]), monsterList);
+			Player p = ServerPlayersHelper.getPlayerByName(name, playerList);
 			if(m == null) {
 				logger.error("This monster does not exist.");
 				sockPrintWriter.println(ProtocolConstants.MONSTER_DOES_NOT_EXIST);
@@ -408,6 +409,7 @@ public class Server {
 					logger.debug("Monster is still alive or has already been looted. Player cannot loot.");
 					sockPrintWriter.println(ProtocolConstants.CANNOT_LOOT_MONSTER);
 				} else {
+					p.loot(m);
 					sockPrintWriter.println(ProtocolConstants.SUCCESS);
 				}
 			}

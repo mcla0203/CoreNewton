@@ -316,13 +316,19 @@ public class Client {
 		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
-		sendToServerAndGetResponse(Protocol.convertListToProtocol(args));
-//		if() {
-//			
-//		}
-//		else {
-//			System.out.println("Failed to loot monster.");
-//		}
+		String response = sendToServerAndGetResponse(Protocol.createLootRequest(args[1]));
+		if(response.equals(ProtocolConstants.SUCCESS)) {
+			System.out.println("You looted!");
+		}
+		else if(response.equals(ProtocolConstants.MONSTER_DOES_NOT_EXIST)) {
+			System.out.println("This monster does not exist.");
+		}
+		else if(response.equals(ProtocolConstants.CANNOT_LOOT_MONSTER)) {
+			System.out.println("Monster has already been looted or is still alive.");
+		}
+		else {
+			System.out.println("Failed to loot monster.");
+		}
 	}
 
 	public void doREST(String[] args) {

@@ -130,8 +130,8 @@ public class AuthenticationServerHelper {
 					logger.debug("Command wasn't PASSWORD, so these are stats.");
 					for(int i=1; i<5; i++) {
 						if(logger.isDebugEnabled()) {
-							logger.debug("Adding character '" + cmd + "to the characterMap " +
-									"with stats: " + Protocol.getRequestArgsSimple(line));
+							logger.debug("Adding character '" + cmd + " to the characterMap with stats: " + 
+									Protocol.getRequestArgsSimple(line));
 						}
 						characterMap.put(cmd, Protocol.getRequestArgsSimple(line));
 					}

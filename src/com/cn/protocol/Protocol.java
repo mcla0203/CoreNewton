@@ -106,5 +106,8 @@ public class Protocol {
 	public static String createXPNotification(int amt, String name) {
 		return ProtocolConstants.XP + "<" + amt +">" + "<" + name + ">";
 	}
+	public static String createLootRequest(String id) {
+		return ProtocolConstants.LOOT + "<" + id + ">";
+	}
 	
 }
