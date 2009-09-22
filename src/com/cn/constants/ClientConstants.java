@@ -48,4 +48,8 @@ public class ClientConstants extends Constants {
 	public static String LOGIN_SUCCESS = formatOutput("You have successfully logged in.");
 	
 	public static String GENERAL_FAILURE = formatOutput("Something when horribly wrong.");
+	
+	public static String REST_DISABLED = formatOutput("You stop resting.");
+	public static String REST_ENABLED = formatOutput("You start to rest.");
+	public static String ENERGY_FULL = formatOutput("Your energy was recharged to full.");
 }

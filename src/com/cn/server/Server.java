@@ -304,6 +304,11 @@ public class Server {
 						onSAVE(args);
 						continue;
 					}
+					else if (cmd.equalsIgnoreCase(Constants.REST)) {
+						logger.debug("cmd is rest");
+						onREST(args);
+						continue;
+					}
 					if(logger.isEnabledFor(Level.ERROR)) {
 						logger.error(ServerConstants.INVALID_MSG_RECVD);
 					}
@@ -451,6 +456,21 @@ public class Server {
 			logger.trace("Inside Server.onSAVE.");
 			Player p = ServerPlayersHelper.getPlayerByName(args[1], playerList);
 			sockPrintWriter.println(Protocol.convertListToProtocol(p.getStats()));
+		}
+		
+		public void onREST(String[] args) {
+			logger.trace("Inside onREST");
+			Player p = ServerPlayersHelper.getPlayerByName(name, playerList);
+			boolean result = p.rest();
+			if(result) {
+				logger.debug("The players energy was recharged to full");
+				sockPrintWriter.println(ProtocolConstants.ENERGY_FULL);
+			}
+			else {
+				logger.debug("success resting");
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			}
+			logger.trace("Exiting onREST");
 		}
 		
 		public void invalidMsg() {

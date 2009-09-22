@@ -56,6 +56,7 @@ public class Client {
 	private String username = null;
 	private String charName = null;
 	private boolean isLoggedIn = false;
+	private boolean isResting = false;
 
 	protected String myURL = null;
 	protected String cmd = "";
@@ -332,7 +333,25 @@ public class Client {
 	}
 
 	public void doREST(String[] args) {
-		System.out.println(ClientConstants.NOT_IMPLEMENTED);
+		if(args.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		String response = sendToServerAndGetResponse(ProtocolConstants.REST);
+		if(response == null) {
+			System.out.println(ClientConstants.GENERAL_FAILURE);
+			return;
+		}
+		if(ProtocolConstants.SUCCESS.equals(response)) {
+			System.out.println(ClientConstants.REST_DISABLED);
+		}
+		else if(ProtocolConstants.ENERGY_FULL.equals(response)) {
+			System.out.println(ClientConstants.ENERGY_FULL);
+		}
 	}
 
 	public void doGETMONSTERS(String[] args) {

@@ -27,5 +27,6 @@ public class ProtocolConstants extends Constants {
 	public static final String XP = "<" + Constants.XP + ">";
 	public static final String ANNOUNCEMENT = "<" + Constants.ANNOUNCEMENT +">";
 	public static final String LOOT = "<" + Constants.LOOT + ">";
+	public static final String ENERGY_FULL = "<"+Constants.ENERGY_FULL+">";
 	
 }
