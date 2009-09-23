@@ -56,7 +56,6 @@ public class Client {
 	private String username = null;
 	private String charName = null;
 	private boolean isLoggedIn = false;
-	private boolean isResting = false;
 
 	protected String myURL = null;
 	protected String cmd = "";
