@@ -126,6 +126,9 @@ public class Client {
 				else if(input[0].equals(Constants.LOGOUT)) {
 					doLOGOUT(input);
 				}
+				else if (input[0].equals(Constants.DISCONNECT)) {
+					doDISCONNECT(input);
+				}
 			}
 		} catch(Exception e) {
 			disconnectFromServer();
@@ -470,6 +473,14 @@ public class Client {
 		username = null;
 		charName = null;
 		isLoggedIn = false;
+	}
+	
+	private void doDISCONNECT(String[] input) {
+		sockPrintWriter.println(ProtocolConstants.LOGOUT);
+		disconnectFromAuthServer();
+		disconnectFromChatServer();
+		disconnectFromServer();
+		charName = null;
 	}
 
 	public String sendToServerAndGetResponse(String message) {
