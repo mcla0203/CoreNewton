@@ -10,6 +10,7 @@ public class Constants {
 	public static String GET_HEALTH = "getHealth";
 	public static String GET_ENERGY = "getEnergy";
 	public static String GET_MONSTER = "getMonsters";
+	public static String GET_DEAD_MONSTERS = "getDeadMonsters";
 	public static String GET_PLAYERS = "getPlayers";
 	public static String DEATH = "death";
 	public static String LOOT = "loot";

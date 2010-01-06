@@ -3,6 +3,7 @@ package com.cn.protocol;
 import java.util.List;
 
 import com.cn.constants.ProtocolConstants;
+import com.cn.npc.monsters.Monster;
 import com.cn.players.Player;
 
 public class Protocol {
@@ -29,10 +30,6 @@ public class Protocol {
 
 	public static String createCharacterDiedResponse(double id) {
 		return ProtocolConstants.DEATH + "<" + id + ">";
-	}
-	
-	public static String getMonstersRequest() {
-		return ProtocolConstants.GET_MONSTERS;
 	}
 
 	/**
@@ -82,10 +79,24 @@ public class Protocol {
 	 * @param array
 	 * @return String result
 	 */
-	public static String convertListToProtocol(List<Player> list) {
+	public static String convertPlayerListToProtocol(List<Player> list) {
 		String result = "";
 		for( Player p : list ) {
 			result += "<" + p.getName() + ">";
+		}
+		return result;
+	}
+	
+	/**
+	 * This method is used to iterate a set of strings and create a 
+	 * simple response.
+	 * @param array
+	 * @return String result
+	 */
+	public static String convertMonsterListToProtocol(List<Monster> list) {
+		String result = "";
+		for( Monster m : list ) {
+			result += "<" + m.getId() + ">";
 		}
 		return result;
 	}

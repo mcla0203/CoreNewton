@@ -102,6 +102,9 @@ public class Client {
 				else if(input[0].equals(ClientConstants.ATTACK)) {
 					doATTACK(input);
 				}
+				else if(input[0].equals(ClientConstants.GET_DEAD_MONSTERS)) {
+					doGETDEADMONSTERS(input);
+				}
 				else if(input[0].equals(ClientConstants.GET_MONSTER)) {
 					doGETMONSTERS(input);
 				}
@@ -362,7 +365,12 @@ public class Client {
 	}
 
 	public void doGETMONSTERS(String[] args) {
-		String response = sendToServerAndGetResponse(Protocol.getMonstersRequest());
+		String response = sendToServerAndGetResponse(ProtocolConstants.GET_MONSTERS);
+		System.out.println(response);
+	}
+	
+	public void doGETDEADMONSTERS(String[] args) {
+		String response = sendToServerAndGetResponse(ProtocolConstants.GET_DEAD_MONSTERS);
 		System.out.println(response);
 	}
 	

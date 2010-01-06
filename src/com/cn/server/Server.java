@@ -289,6 +289,11 @@ public class Server {
 						onGETMONSTERS(args);
 						continue;
 					}
+					else if (cmd.equalsIgnoreCase(Constants.GET_DEAD_MONSTERS)) {
+						logger.debug("cmd is Get Monsters");
+						onGETDEADMONSTERS(args);
+						continue;
+					}
 					else if (cmd.equalsIgnoreCase(Constants.GET_PLAYERS)) {
 						logger.debug("cmd is Get Players");
 						onGETPLAYERS(args);
@@ -430,13 +435,19 @@ public class Server {
 		
 		public void onGETMONSTERS(String[] args) {
 			logger.trace("Inside Server.onGETMONSTERS.");
-			String response = Protocol.convertListToProtocol(ServerMonstersHelper.getMonsterIds(monsterList));
+			String response = Protocol.convertMonsterListToProtocol(ServerMonstersHelper.getAliveMonsterIds(monsterList));
+			sockPrintWriter.println(response);
+		}
+		
+		public void onGETDEADMONSTERS(String[] args) {
+			logger.trace("Inside Server.onGETDEADMONSTERS.");
+			String response = Protocol.convertMonsterListToProtocol(ServerMonstersHelper.getDeadMonsterIds(monsterList));
 			sockPrintWriter.println(response);
 		}
 		
 		private void onGETPLAYERS(String[] args) {
 			logger.trace("Inside Server.onGETPLAYUERS");
-			String response = Protocol.convertListToProtocol(playerList);
+			String response = Protocol.convertPlayerListToProtocol(playerList);
 			sockPrintWriter.println(response);
 		}
 		

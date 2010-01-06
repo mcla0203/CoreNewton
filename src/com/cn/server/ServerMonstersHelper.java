@@ -1,5 +1,6 @@
 package com.cn.server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cn.npc.monsters.Monster;
@@ -12,7 +13,7 @@ import com.cn.npc.monsters.Monster;
  * 
  */
 public class ServerMonstersHelper {
-	
+
 	/**
 	 * Returns the monster for the given id.
 	 * @param id
@@ -29,7 +30,7 @@ public class ServerMonstersHelper {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns an array representation of all the monster ids.
 	 * 
@@ -42,6 +43,38 @@ public class ServerMonstersHelper {
 			result[i] = monsterList.get(i).getId();
 		}
 		return result;
+	}
+
+	/**
+	 * Returns an array representation of all the monster ids.
+	 * 
+	 * @param monsterList
+	 * @return
+	 */
+	public static List<Monster> getAliveMonsterIds(List<Monster> monsterList) {
+		ArrayList<Monster> aliveMonsterList = new ArrayList<Monster>();
+		for(Monster m : monsterList) {
+			if(m.isAlive()) {
+				aliveMonsterList.add(m);
+			}
+		}
+		return aliveMonsterList;
+	}
+	
+	/**
+	 * Returns an array representation of all the monster ids.
+	 * 
+	 * @param monsterList
+	 * @return
+	 */
+	public static List<Monster> getDeadMonsterIds(List<Monster> monsterList) {
+		ArrayList<Monster> deadMonsterList = new ArrayList<Monster>();
+		for(Monster m : monsterList) {
+			if(!m.isAlive()) {
+				deadMonsterList.add(m);
+			}
+		}
+		return deadMonsterList;
 	}
 
 }
