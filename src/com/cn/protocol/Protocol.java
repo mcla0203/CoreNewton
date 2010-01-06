@@ -1,6 +1,9 @@
 package com.cn.protocol;
 
+import java.util.List;
+
 import com.cn.constants.ProtocolConstants;
+import com.cn.players.Player;
 
 public class Protocol {
 
@@ -72,6 +75,21 @@ public class Protocol {
 		}
 		return result;
 	}
+	
+	/**
+	 * This method is used to iterate a set of strings and create a 
+	 * simple response.
+	 * @param array
+	 * @return String result
+	 */
+	public static String convertListToProtocol(List<Player> list) {
+		String result = "";
+		for( Player p : list ) {
+			result += "<" + p.getName() + ">";
+		}
+		return result;
+	}
+	
 
 	/**
 	 * Return the first argument of getRequestArgsSimple.

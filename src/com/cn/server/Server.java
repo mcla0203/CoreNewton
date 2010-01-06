@@ -289,6 +289,11 @@ public class Server {
 						onGETMONSTERS(args);
 						continue;
 					}
+					else if (cmd.equalsIgnoreCase(Constants.GET_PLAYERS)) {
+						logger.debug("cmd is Get Players");
+						onGETPLAYERS(args);
+						continue;
+					}
 					else if (cmd.equalsIgnoreCase(Constants.LOGIN_NAME)) {
 						logger.debug("cmd is LOGINNAME");
 						onLOGINNAME(args);
@@ -335,6 +340,9 @@ public class Server {
 			}
 		}
 		
+
+
+
 		public void onATTACK(String[] args) {
 			logger.trace("Inside Server.onAttack.");
 			Monster m = ServerMonstersHelper.getMonsterById(Double.valueOf(args[2]), monsterList);
@@ -423,6 +431,12 @@ public class Server {
 		public void onGETMONSTERS(String[] args) {
 			logger.trace("Inside Server.onGETMONSTERS.");
 			String response = Protocol.convertListToProtocol(ServerMonstersHelper.getMonsterIds(monsterList));
+			sockPrintWriter.println(response);
+		}
+		
+		private void onGETPLAYERS(String[] args) {
+			logger.trace("Inside Server.onGETPLAYUERS");
+			String response = Protocol.convertListToProtocol(playerList);
 			sockPrintWriter.println(response);
 		}
 		

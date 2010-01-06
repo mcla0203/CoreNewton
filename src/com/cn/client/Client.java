@@ -105,6 +105,9 @@ public class Client {
 				else if(input[0].equals(ClientConstants.GET_MONSTER)) {
 					doGETMONSTERS(input);
 				}
+				else if(input[0].equals(ClientConstants.GET_PLAYERS)) {
+					doGETPLAYERS(input);
+				}
 				else if(input[0].equals(Constants.HEAL)) {
 					doHEAL(input);
 				}
@@ -137,6 +140,8 @@ public class Client {
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
+
+
 
 
 	/**
@@ -360,6 +365,11 @@ public class Client {
 		String response = sendToServerAndGetResponse(Protocol.getMonstersRequest());
 		System.out.println(response);
 	}
+	
+	private void doGETPLAYERS(String[] input) {
+		String response = sendToServerAndGetResponse(ProtocolConstants.GET_PLAYERS);
+		System.out.println(response);
+	}
 
 	@SuppressWarnings({ "all", "null" })
 	public void doLOGIN(String[] input) {
@@ -379,7 +389,7 @@ public class Client {
 		if(action == JOptionPane.OK_OPTION) {
 			usr = g.getUserNameField().getText();
 			char[] pwTemp = g.getPasswordField().getPassword();
-			if(pwTemp == null || usr == null) {
+			if(usr == null || "".equals(usr)) {
 				return;
 			}
 			for(int i=0; i<pwTemp.length; i++) {
@@ -387,6 +397,11 @@ public class Client {
 			}
 			if(pw != null) {
 				pw = pw.substring(4);
+			}
+			else if ( pw == null || "".equals(pw)) {
+				System.out.println("You must specify a password!!");
+				doLOGIN(input);
+				return;
 			}
 			logger.debug("user clicked ok as : " + usr +"/"+ pw);
 		}

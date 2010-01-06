@@ -9,6 +9,7 @@ public class ProtocolConstants extends Constants {
 	public static final String FAILURE = "<failure>";
 	public static final String DEATH = "<"+Constants.DEATH+">";
 	public static final String GET_MONSTERS = "<"+Constants.GET_MONSTER+">";
+	public static final String GET_PLAYERS = "<" + Constants.GET_PLAYERS+">";
 	public static final String LOGIN = "<"+Constants.LOGIN+">";
 	public static final String LOGIN_NAME ="<"+Constants.LOGIN_NAME+">";
 	public static final String PASSWORD = "<"+Constants.PASSWORD+">";
@@ -28,5 +29,6 @@ public class ProtocolConstants extends Constants {
 	public static final String ANNOUNCEMENT = "<" + Constants.ANNOUNCEMENT +">";
 	public static final String LOOT = "<" + Constants.LOOT + ">";
 	public static final String ENERGY_FULL = "<"+Constants.ENERGY_FULL+">";
+	
 	
 }
