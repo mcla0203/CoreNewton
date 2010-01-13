@@ -55,6 +55,10 @@ public class AuthenticationServerHelper {
 		return userFound;
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+	
 	public Map<String, String[]> getCharacterMap() {
 		return characterMap;
 	}
@@ -145,12 +149,47 @@ public class AuthenticationServerHelper {
 	}
 	
 	/**
+	 * 
+	 */
+	public void addCharacterToAccount(String name) {
+		//Default properties for new characters
+		String level = "1";
+		String health = "100";
+		String energy = "20";
+		String xp = "0";
+		String credits = "0";
+		
+		String[] stats = new String[6];
+		stats[0]= name;
+		stats[1]= level;
+		stats[2]= health;
+		stats[3]= energy;
+		stats[4]= xp;
+		stats[5]= credits;
+		
+		if(!characterMap.containsKey(name)) {
+			if(logger.isDebugEnabled()) {
+				logger.debug("Adding character '" + name + "' to the characterMap with default stats");
+			}
+			characterMap.put(name, stats);
+			//Save the structure
+			overWriteChar();
+		}
+		
+	}
+	
+	/**
 	 * This method is only intended to be used after init(String, String) has
 	 * been called by the instructor.
 	 */
 	private void reInit() {
 		logger.trace("Calling reinit");
-		init(username, password);
+		if(username != null && password != null) {
+			init(username, password);
+		}
+		else {
+			logger.error("The username or the password was null... failed reInit.");
+		}
 	}
 
 

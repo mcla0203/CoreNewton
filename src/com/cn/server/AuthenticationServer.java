@@ -123,7 +123,9 @@ public class AuthenticationServer {
 
 					String cmd = Protocol.getRequestCmdSimple(request);
 					String[] args = Protocol.getRequestArgsSimple(request);
-
+					
+					logger.debug("the cmd is: "+ cmd);
+					
 					if(cmd.equalsIgnoreCase(Constants.LOGIN)) {
 						logger.debug("The cmd was 'login'");
 						onLOGIN(args);
@@ -139,6 +141,11 @@ public class AuthenticationServer {
 						onCREATEACC(args);
 						continue;
 					}
+					else if(cmd.equalsIgnoreCase(Constants.CREATE_CHAR)) {
+						logger.debug("The cmd was 'create char'");
+						onCREATECHAR(args);
+						continue;
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -147,7 +154,7 @@ public class AuthenticationServer {
 				}
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
+					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress(), e);
 				}
 
 			} finally {
@@ -220,7 +227,10 @@ public class AuthenticationServer {
 					String request = null;
 					if ((request = sockBufReader.readLine()) != null) {
 						String loginAs = Protocol.getRequestCmdSimple(request);
-						if(characters.containsKey(loginAs)) {
+						if(loginAs.equals(Constants.CREATE_CHAR)) {
+							onCREATECHAR(Protocol.getRequestArgsSimple(request));
+						}
+						else if(characters.containsKey(loginAs)) {
 							sockPrintWriter.println(Protocol.convertListToProtocol(characters.get(loginAs)));
 						}
 						else {
@@ -239,6 +249,23 @@ public class AuthenticationServer {
 			}
 			else {
 				sockPrintWriter.println(ProtocolConstants.ACCOUNT_ALREADY_IN_USE);
+			}
+		}
+		
+		private void onCREATECHAR(String[] args) {
+			if(args[1] != null) {
+				logger.debug("Attempting to add the character with the name: " + args[1]);
+				ash.addCharacterToAccount(args[1]);
+			}
+			else {
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
+			}
+			//if Character already exists... this isn't implemented yet
+			if(false) {
+				sockPrintWriter.println(ProtocolConstants.CHAR_ALREADY_EXISTS);
+			}
+			else{
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
 			}
 		}
 

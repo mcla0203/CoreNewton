@@ -21,6 +21,7 @@ public class Constants {
 	public static String SAVE = "save";
 	public static String LOGGER_PROPERTIES = "dep/log4j.properties";
 	public static String CREATE_ACC = "createAcc";
+	public static String CREATE_CHAR = "createChar";
 
 	public static String MONSTER_DOES_NOT_EXIST = "monsterDNE";
 	public static String MONSTER_WAS_KILLED = "monsterWasKilled";
@@ -28,6 +29,7 @@ public class Constants {
 	public static String SUCCESS = "success";
 
 	public static String NO_CHARS_CREATED = "noCharsCreated";
+	public static String CHAR_ALREADY_EXISTS = "charAlreadyExists";
 	public static String USER_NOT_FOUND = "noUsersFound";
 	
 	public static final String NOT_ENOUGH_ENERGY = "notEnoughEnergy";

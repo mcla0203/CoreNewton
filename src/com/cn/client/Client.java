@@ -55,10 +55,10 @@ public class Client {
 	
 	private String username = null;
 	private String charName = null;
+	private boolean isPlaying = false;
 	private boolean isLoggedIn = false;
 
 	protected String myURL = null;
-	protected String cmd = "";
 	
 	Logger logger = Logger.getLogger(ClientConstants.LOGGER);
 
@@ -129,11 +129,23 @@ public class Client {
 				else if(input[0].equals(Constants.CREATE_ACC)) {
 					doCREATEACC(input);
 				}
+				else if(input[0].equals(Constants.CREATE_CHAR)) {
+					doCREATCHAR(input);
+				}
 				else if(input[0].equals(Constants.LOGOUT)) {
 					doLOGOUT(input);
 				}
-				else if (input[0].equals(Constants.DISCONNECT)) {
+				else if(input[0].equals(Constants.DISCONNECT)) {
 					doDISCONNECT(input);
+				}
+				else if(input[0].equals(Constants.GET_HEALTH)) {
+					doGETHEALTH(input);
+				}
+				else if(input[0].equals(Constants.GET_ENERGY)) {
+					doGETENERGY(input);
+				}
+				else {
+					System.out.println("Invalid command.");
 				}
 			}
 		} catch(Exception e) {
@@ -143,9 +155,6 @@ public class Client {
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
-
-
-
 
 	/**
 	 * Method that connects to the server Given a serverName (ip/url)
@@ -342,12 +351,58 @@ public class Client {
 		}
 	}
 
+	public void doGETENERGY(String[] input) {
+		if(!isPlaying) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(input.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'getEnergy'");
+			return;
+		}	
+		String response = sendToServerAndGetResponse(ProtocolConstants.GET_ENERGY);
+		String cmd = Protocol.getRequestCmdSimple(response);
+		logger.debug("The cmd is: " + cmd);
+		String[] responseArgs = Protocol.getRequestArgsSimple(response);
+		if(response == null) {
+			System.out.println(ClientConstants.GENERAL_FAILURE);
+			return;
+		}
+		if(Constants.SUCCESS.equals(cmd)) {
+			System.out.println("Your energy is: " + responseArgs[1]);
+		}
+	}
+
+	public void doGETHEALTH(String[] input) {
+		if(!isPlaying) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(input.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'getHealth'");
+			return;
+		}	
+		String response = sendToServerAndGetResponse(ProtocolConstants.GET_HEALTH);
+		String cmd = Protocol.getRequestCmdSimple(response);
+		logger.debug("The cmd is: " + cmd);
+		String[] responseArgs = Protocol.getRequestArgsSimple(response);
+		if(response == null) {
+			System.out.println(ClientConstants.GENERAL_FAILURE);
+			return;
+		}
+		if(Constants.SUCCESS.equals(cmd)) {
+			System.out.println("Your health is: " + responseArgs[1]);
+		}
+	}
+	
 	public void doREST(String[] args) {
 		if(args.length != 1) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 			return;
 		}
-		if(!isLoggedIn) {
+		if(!isPlaying) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
 			return;
 		}
@@ -365,23 +420,50 @@ public class Client {
 	}
 
 	public void doGETMONSTERS(String[] args) {
+		if(!isPlaying) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(args.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'getHealth'");
+			return;
+		}
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_MONSTERS);
 		System.out.println(response);
 	}
 	
 	public void doGETDEADMONSTERS(String[] args) {
+		if(!isPlaying) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(args.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'getHealth'");
+			return;
+		}
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_DEAD_MONSTERS);
 		System.out.println(response);
 	}
 	
 	private void doGETPLAYERS(String[] input) {
+		if(!isPlaying) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(input.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			System.out.println("Just use 'getHealth'");
+			return;
+		}
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_PLAYERS);
 		System.out.println(response);
 	}
 
 	@SuppressWarnings({ "all", "null" })
 	public void doLOGIN(String[] input) {
-		if(isLoggedIn) {
+		if(isPlaying) {
 			System.out.println(ClientConstants.ALREADY_LOGGED_IN);
 			return;
 		}
@@ -435,27 +517,37 @@ public class Client {
 		System.out.println(ClientConstants.LOGIN_CHARACTERS);
 		System.out.println(response);
 		username = usr;
+		isLoggedIn = true;
 		
-		String character = userInput.getUserInput();
-		if(!response.contains(character)) {
-			System.out.println("You made a typo... try again SLOWLY...");
-			character = userInput.getUserInput();
+		String inputFromUser = userInput.getUserInput();
+		String[] newUserInput = inputFromUser.split(" ");
+		String cmd = newUserInput[0];
+		logger.debug("input from user is : "+ inputFromUser);
+		logger.debug("cmd is : " + cmd);
+		if(cmd.equals(Constants.CREATE_CHAR)) {
+			//create char
+			doCREATCHAR(newUserInput);
+			return;
 		}
-		charName = character;
-		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(character));
+		else if(!response.contains(inputFromUser)) {
+			System.out.println("You made a typo... try again SLOWLY...");
+			inputFromUser = userInput.getUserInput();
+		}
+		charName = inputFromUser;
+		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(inputFromUser));
 		
 		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
 		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
 		if(response.equals(ProtocolConstants.SUCCESS)) {
 			beginChatServerListener();
-			isLoggedIn = true;
+			isPlaying = true;
 			System.out.println(ClientConstants.LOGIN_SUCCESS);
 			responseGUI.getSuccessDialog();
 		}
 	}
 	
 	private void doSAVE(String[] input) {
-		if(!isLoggedIn) {
+		if(!isPlaying) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
 			return;
 		}
@@ -474,6 +566,7 @@ public class Client {
 		logger.trace("Entering the doCREATEACC method.");
 		if(input.length != 4) {
 			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
 		}
 		if(!input[2].equals(input[3])) {
 			System.out.println(ClientConstants.PASSWORDS_DONT_MATCH);
@@ -488,6 +581,27 @@ public class Client {
 		logger.trace("Exiting the doCREATEACC method.");
 	}
 	
+	private void doCREATCHAR(String[] input) {
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(input.length != 2) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		logger.debug("input is : " + input);
+		logger.debug("the request is : " + Protocol.convertListToProtocol(input));
+		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		String cmd = Protocol.getRequestCmdSimple(response);
+		if(cmd.equals(ClientConstants.SUCCESS)) {
+			System.out.println("Your character was created!");
+		}
+		else if(cmd.equals(ClientConstants.CHAR_ALREADY_EXISTS)) {
+			System.out.println("Somebody else has that name already... please pick a different one.");
+		}
+	}
+	
 	private void doLOGOUT(String[] input) {
 		doSAVE(input);  //only works cause input.length of logout == input.length of save
 		sockPrintWriter.println(ProtocolConstants.LOGOUT);
@@ -495,6 +609,7 @@ public class Client {
 		disconnectFromChatServer();
 		username = null;
 		charName = null;
+		isPlaying = false;
 		isLoggedIn = false;
 	}
 	
