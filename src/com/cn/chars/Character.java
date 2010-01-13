@@ -3,6 +3,8 @@ package com.cn.chars;
 import org.apache.log4j.Logger;
 
 import com.cn.npc.monsters.Monster;
+import com.cn.weapon.DefaultWeapon;
+import com.cn.weapon.Weapon;
 
 public class Character {
 
@@ -17,6 +19,8 @@ public class Character {
 	protected int MAX_ENERGY;
 	Logger logger = Logger.getLogger(Character.class);
 	
+	protected Weapon weapon = null;
+	
 	/**
 	 * Construct an instance of a Character
 	 */
@@ -29,6 +33,7 @@ public class Character {
 		isAlive = true;
 		level = 1;
 		xp = 0;
+		weapon = DefaultWeapon.getDefaultWeapon(level);
 	}
 	
 	/**
@@ -65,6 +70,7 @@ public class Character {
 	 */
 	public void setLevel(int lvl) {
 		level = lvl;
+		weapon = DefaultWeapon.getDefaultWeapon(level);
 	}
 	
 	/**
@@ -188,5 +194,13 @@ public class Character {
 			ret = 100;
 		}
 		return ret;
+	}
+	
+	public void setWeapon(Weapon w) {
+		weapon = w;
+	}
+	
+	public Weapon getWeapon() {
+		return weapon;
 	}
 }

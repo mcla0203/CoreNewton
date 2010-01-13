@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.cn.chars.Character;
 import com.cn.npc.monsters.Monster;
+import com.cn.weapon.DefaultWeapon;
 
 public class Player extends Character {
 	Logger logger = Logger.getLogger(Player.class);
@@ -29,6 +30,7 @@ public class Player extends Character {
 		this.health = health;
 		this.energy = energy;
 		this.isOnline = true;
+		weapon = DefaultWeapon.getDefaultWeapon(level);
 	}
 	
 	/**

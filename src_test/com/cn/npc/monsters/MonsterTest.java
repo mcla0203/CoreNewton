@@ -32,26 +32,26 @@ public class MonsterTest extends TestCase {
 	public void testbeAttacked_EligibleFirstAttack() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 30);
+		m.beAttacked(p);
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 	}
 	
 	public void testbeAttacked_NotEligibleFirstAttackButEligibleSecond() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 10);
+		m.beAttacked(p);
 		assertFalse(m.getPlayersEligibleForXP().containsKey(p));
 
-		m.beAttacked(p, 10);
+		m.beAttacked(p);
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 	}
 	
 	public void testbeAttacked_NeverEligible() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 10);
+		m.beAttacked(p);
 		Player p2 = new Player("player2");
-		m.beAttacked(p2, 100);
+		m.beAttacked(p2);
 		
 		assertFalse(m.getPlayersEligibleForXP().containsKey(p));
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p2));
@@ -60,9 +60,9 @@ public class MonsterTest extends TestCase {
 	public void testBeAttacked_BothEligible() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 30);
+		m.beAttacked(p);
 		Player p2 = new Player("player2");
-		m.beAttacked(p2, 30);
+		m.beAttacked(p2);
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p2));
 	}
@@ -70,8 +70,8 @@ public class MonsterTest extends TestCase {
 	public void testBeAttacked_EligibleMoreDmg() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 30);
-		m.beAttacked(p, 30);
+		m.beAttacked(p);
+		m.beAttacked(p);
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 		assertFalse(m.getAttackedBy().containsKey(p));
 	}
@@ -79,10 +79,10 @@ public class MonsterTest extends TestCase {
 	public void testBeAttacked_NeverInEligible() {
 		Monster m = new Monster();
 		Player p = new Player("player");
-		m.beAttacked(p, 5);
+		m.beAttacked(p);
 		assertFalse(m.getPlayersEligibleForXP().containsKey(p));
 		assertTrue(m.getAttackedBy().containsKey(p));
-		m.beAttacked(p,5);
+		m.beAttacked(p);
 		assertFalse(m.getPlayersEligibleForXP().containsKey(p));
 		assertTrue(m.getAttackedBy().containsKey(p));
 	}

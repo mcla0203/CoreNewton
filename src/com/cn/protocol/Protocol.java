@@ -8,13 +8,10 @@ import com.cn.players.Player;
 
 public class Protocol {
 
-	public static String attackRequest(int damage, double id, String name) {
-		return ProtocolConstants.ATTACK_MONSTER + "<" + damage + "><" + id + "><" + name + ">";
+	public static String attackRequest(double id, String name) {
+		return ProtocolConstants.ATTACK_MONSTER + "<" + id + "><" + name + ">";
 	}
 
-	public static String attackResponse(int damage, double id, String name) {
-		return attackRequest(damage, id, name);
-	}
 
 	public static String healRequest(int heal, String name) {
 		return ProtocolConstants.HEAL + "<" + heal + "><" + name + ">";

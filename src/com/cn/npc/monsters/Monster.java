@@ -64,7 +64,14 @@ public class Monster extends Character {
 	 * @param p, player performing the attack
 	 * @param dmg, damage done to monster
 	 */
-	public void beAttacked(Player p, int dmg) {
+	public int beAttacked(Player p) {
+		int dmg = p.getWeapon().computeDamage();
+		if(logger.isDebugEnabled()) {
+			logger.debug("Attacking player level is: " + p.getLevel());
+			logger.debug("The dmg done is: " + dmg);
+			logger.debug("The min dmg is: " + p.getWeapon().getMin());
+			logger.debug("The max dmg is: " + p.getWeapon().getMax());
+		}
 		if(logger.isTraceEnabled()) {
 			logger.trace("Inside Monster.beAttacked(): " + this.toString());
 		}
@@ -114,6 +121,7 @@ public class Monster extends Character {
 				attackedBy.put(p, dmg);
 			}
 		}
+		return dmg;
 	}
 
 	/**

@@ -287,11 +287,11 @@ public class Client {
 	}
 
 	public void doATTACK(String[] args) {
-		if(args.length != 3) {
+		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
 		logger.debug("charName: " + charName);
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), charName));
+		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), charName));
 		String cmd = Protocol.getRequestCmdSimple(response);
 		String[] responseArgs = Protocol.getRequestArgsSimple(response);
 		if(cmd.equals(Constants.SUCCESS)) {
@@ -317,10 +317,10 @@ public class Client {
 	}
 
 	public void doHEAL(String[] args) {
-		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
-		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
-			System.out.println(ClientConstants.HEAL_COMPLETE);
-		}
+//		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
+//		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
+//			System.out.println(ClientConstants.HEAL_COMPLETE);
+//		}
 	}
 
 	public void doLOOT(String[] args) {
