@@ -114,6 +114,10 @@ public class Protocol {
 		return createSimpleResponse(s);
 	}
 	
+	public static String createSimpleRequest(int i) {
+		return createSimpleResponse(String.valueOf(i));
+	}
+	
 	public static String createLoginWithCharName(String s) {
 		return ProtocolConstants.LOGIN_NAME + s;
 	}

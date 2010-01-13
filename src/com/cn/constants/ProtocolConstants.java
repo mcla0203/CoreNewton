@@ -8,6 +8,8 @@ public class ProtocolConstants extends Constants {
 	public static final String SUCCESS = "<" + Constants.SUCCESS + ">";
 	public static final String FAILURE = "<failure>";
 	public static final String DEATH = "<"+Constants.DEATH+">";
+	public static final String GET_HEALTH = "<" + Constants.GET_HEALTH + ">";
+	public static final String GET_ENERGY = "<" + Constants.GET_ENERGY + ">";
 	public static final String GET_MONSTERS = "<"+Constants.GET_MONSTER+">";
 	public static final String GET_DEAD_MONSTERS = "<"+Constants.GET_DEAD_MONSTERS+">";
 	public static final String GET_PLAYERS = "<" + Constants.GET_PLAYERS+">";

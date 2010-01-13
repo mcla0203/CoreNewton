@@ -319,6 +319,16 @@ public class Server {
 						onREST(args);
 						continue;
 					}
+					else if(cmd.equalsIgnoreCase(Constants.GET_HEALTH)) {
+						logger.debug("cmd is get health");
+						onGETHEALTH(args);
+						continue;
+					}
+					else if(cmd.equalsIgnoreCase(Constants.GET_ENERGY)) {
+						logger.debug("cmd is get health");
+						onGETENERGY(args);
+						continue;
+					}
 					if(logger.isEnabledFor(Level.ERROR)) {
 						logger.error(ServerConstants.INVALID_MSG_RECVD);
 					}
@@ -346,6 +356,36 @@ public class Server {
 		}
 		
 
+
+
+		private void onGETENERGY(String[] args) {
+			// TODO Auto-generated method stub
+			Player p = ServerPlayersHelper.getPlayerByName(name, playerList);
+			if( p == null) {
+				logger.error("This player is null");
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
+			}
+			else {
+				int energy = p.getEnergy();
+				logger.debug(ProtocolConstants.SUCCESS + Protocol.createSimpleRequest(energy));
+				sockPrintWriter.println(ProtocolConstants.SUCCESS + Protocol.createSimpleRequest(energy));
+			}
+		}
+
+
+		private void onGETHEALTH(String[] args) {
+			// TODO Auto-generated method stub
+			Player p = ServerPlayersHelper.getPlayerByName(name, playerList);
+			if( p == null) {
+				logger.error("This player is null");
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
+			}
+			else {
+				int health = p.getHealth();
+				logger.debug(ProtocolConstants.SUCCESS + Protocol.createSimpleRequest(health));
+				sockPrintWriter.println(ProtocolConstants.SUCCESS + Protocol.createSimpleRequest(health));
+			}
+		}
 
 
 		public void onATTACK(String[] args) {

@@ -16,15 +16,17 @@ public class ClientConstants extends Constants {
 	
 	public static String HELP = "help";
 	public static String HELP_CMDS_AVAILABLE = "Available commands are:"
-																	+ "\n   login <user> <pass>                      - login to the server"
-																	+ "\n   createAcc <user> <password> <password>   - create a new account"
-																	+ "\n   attack <monster id>                      - attack the monster"
-																	+ "\n   loot <monster id>                        - loot the monster you killed"
-																	+ "\n   heal                                     - heal yourself"
-																	+ "\n   rest                                     - rest yourself"
-																	+ "\n   getHealth                                - get your current health"
-																	+ "\n   getEnergy                                - get your energy"
-																	+ "\n   getMonsters                              - get the monsters in this instance";
+      + "\n   login <user> <pass>                      - login to the server"
+	+ "\n   createAcc <user> <password> <password>   - create a new account"
+	+ "\n   attack <id>                              - attack the monster"
+	+ "\n   loot <id>                                - loot the monster you killed"
+	+ "\n   heal                                     - heal yourself"
+	+ "\n   rest                                     - rest yourself"
+	+ "\n   getHealth                                - get your current health"
+	+ "\n   getPlayers                               - find out who's online"
+	+ "\n   getMonsters                              - get the monsters in this instance"
+	+ "\n   getDeadMonsters                          - get the dead monsters in this instance"
+	+ "\n   getEnergy                                - get your energy";
 	public static String HELP_FORMATTED = formatOutput(HELP_CMDS_AVAILABLE);
 	
 	public static String LOOT_IS_POSSIBLE = formatOutput("You can loot these remains...");
