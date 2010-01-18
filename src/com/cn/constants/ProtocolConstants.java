@@ -34,6 +34,13 @@ public class ProtocolConstants extends Constants {
 	public static final String ANNOUNCEMENT = "<" + Constants.ANNOUNCEMENT +">";
 	public static final String LOOT = "<" + Constants.LOOT + ">";
 	public static final String ENERGY_FULL = "<"+Constants.ENERGY_FULL+">";
-	
+	public static final String WEAK_PASSWORD =  "<"+Constants.WEAK_PASSWORD+">";
+	public static final String ACCOUNT_DOES_NOT_EXIST ="<"+Constants.ACCOUNT_DOES_NOT_EXIST+">";
+	public static final String TOO_MANY_CHARS ="<"+Constants.TOO_MANY_CHARS+">"; 
+	public static final String PASSWORD_INCORRECT ="<"+Constants.PASSWORD_INCORRECT+">";
+	public static final String PLAY = "<"+Constants.PLAY+">";
+	public static final String NOT_LOGGED_IN = "<"+Constants.NOT_LOGGED_IN+">";
+	public static final String DOES_NOT_OWN_THAT_CHAR = "<"+Constants.DOES_NOT_OWN_THAT_CHAR+">";
 	
 }
+

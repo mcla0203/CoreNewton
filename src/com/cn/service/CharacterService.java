@@ -36,12 +36,19 @@ public class CharacterService extends Service {
 	/**
 	 * This will method will create a character for a given account.
 	 * Acceptable input is the string username.
+	 * Returns: <br>
+	 * 1: if the character was created successfully<br>
+	 * 2: if the user account does not exist<br>
+	 * 3: if the user has the max number of characters already<br>
+	 * 4: if the character name already exists in the db<br>
+	 * 5: if the username or character name is null or empty<br>
+	 * 999: if something else goes wrong<br>
 	 * 
 	 * @param account
 	 */
-	public void createCharacter(String username, String charName) {
+	public int createCharacter(String username, String charName) {
 		if(username == null || username.equals("") || charName == null || charName.equals("")) {
-			return;
+			return 5;
 		}
 		try {
 			//convert the username to account id
@@ -50,21 +57,18 @@ public class CharacterService extends Service {
 
 			//ensure account exists
 			if(userID == -1) {
-				//TODO: ERROR
 				System.out.println("Account does not exist.");
-				return;
+				return 2;
 			}
 			//make sure they don't have > 4 chars
 			if(nCharacters(userID) >= 4) {
-				//TODO: ERROR
 				System.out.println("This user has too many characters.");
-				return;
+				return 3;
 			}
 			//make sure that character name is unique
 			if(!isUniqueCharName(charName)) {
-				//TODO: ERROR
 				System.out.println("This charName already exists.");
-				return;
+				return 4;
 			}
 			//insert row into character
 			int charID = nCharacters() + 1;
@@ -82,7 +86,9 @@ public class CharacterService extends Service {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			return 999;
 		}
+		return 1;
 	}
 
 	/**
@@ -126,18 +132,96 @@ public class CharacterService extends Service {
 		}
 		return nCharacters;
 	}
+	
+	/**
+	 * Returns the Character ID of the given charName.  If it doesn't exist, then it returns -1.
+	 * @param name
+	 * @return
+	 */
+	public int getCid(String name) {
+		int cid = -1;
+		Statement stmt;
+		try {
+			stmt = connection.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT id FROM Character WHERE name = '" + name + "'");
+			if (rset.next()) {
+				cid = rset.getInt(1);
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 999;
+		}
+		return cid;
+	}
+	
+	public ArrayList<String> getCharacters(String username) {
+		Statement stmt;
+		ArrayList<String> chars = new ArrayList<String>();
+		try {
+			AccountService as = new AccountService();
+			int aid = as.getID(username);
+			stmt = connection.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT name FROM Character WHERE aid = " + aid);
+			while (rset.next()) {
+				chars.add(rset.getString(1).trim());
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return chars;
+	}
+	
+	/**
+	 * This method returns true if aid has the given character.
+	 * @param aid
+	 * @return
+	 */
+	public boolean hasCharacter(String username, String name) {
+		boolean ret = false;
+		try {
+			AccountService as = new AccountService();
+			int aid = as.getID(username);
+			int cid = getCid(name);
+			Statement stmt = connection.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT count(*) FROM Character WHERE id = " + cid + 
+																			   "AND aid = " + aid);
+			if (rset.next()) {
+				if(rset.getInt(1) == 1) {
+					ret = true;
+				}
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
+		
+	}
 
-//	public static void main(String[] args) {
-//		CharacterService cs = new CharacterService();
-//		System.out.println(cs.nCharacters());
-//		System.out.println(cs.nCharacters(3));
+	public static void main(String[] args) {
+		CharacterService cs = new CharacterService();
+		System.out.println(cs.nCharacters());
+		System.out.println(cs.nCharacters(3));
 //		cs.createCharacter("blarg", "blarg");
 //		cs.createCharacter("mcla0203", "Bilbo");
 //		cs.createCharacter("osgoo030", "Dirka");
 //		cs.createCharacter("osgoo030", "Bilbo");
 //		cs.createCharacter("osgoo030", "Bilbo Baggins");
 //		cs.createCharacter("osgoo030", "Marty");
-//	}
+		System.out.println(cs.getCid("Duckie"));
+		System.out.println(cs.getCid("BOMBAY"));
+		ArrayList<String> chars = cs.getCharacters("mcla0203");
+		for(String s: chars) {
+			System.out.println(s);
+		}
+		System.out.println(cs.hasCharacter("mcla0203", "Duckie"));
+		System.out.println(cs.hasCharacter("mcla0203", "Chica"));
+	}
 
 
 }

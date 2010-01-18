@@ -26,7 +26,9 @@ public class LoginGUI {
 	JLabel password;
 	
 	public int getLoginDialog() {
-		return JOptionPane.showConfirmDialog(null,panel,"Login to Core Newton",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+		usernameField.requestFocus();
+		int i = JOptionPane.showConfirmDialog(null,panel,"Login to Core Newton",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+		return i;
 	}
 
 	public LoginGUI() {
@@ -39,13 +41,16 @@ public class LoginGUI {
 			username=new JLabel("Username");  
 			password=new JLabel("Password");  
 
-			usernameField=new JTextField(20);  
+			usernameField=new JTextField(20);
+			usernameField.setFocusable(true);
 			passwordField=new JPasswordField(20);  
 
 			panel.add(username);  
 			panel.add(usernameField);  
 			panel.add(password);  
 			panel.add(passwordField);
+			
+			usernameField.requestFocus();
 
 		} catch (Exception e) {
 			e.printStackTrace();

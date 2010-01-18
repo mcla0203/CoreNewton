@@ -130,7 +130,7 @@ public class Client {
 					doCREATEACC(input);
 				}
 				else if(input[0].equals(Constants.CREATE_CHAR)) {
-					doCREATCHAR(input);
+					doCREATECHAR(input);
 				}
 				else if(input[0].equals(Constants.LOGOUT)) {
 					doLOGOUT(input);
@@ -143,6 +143,9 @@ public class Client {
 				}
 				else if(input[0].equals(Constants.GET_ENERGY)) {
 					doGETENERGY(input);
+				}
+				else if(input[0].equals(Constants.PLAY)) {
+					doSELECTCHAR(input);
 				}
 				else {
 					System.out.println("Invalid command.");
@@ -507,6 +510,8 @@ public class Client {
 		if(response.equals(ProtocolConstants.NO_CHARS_CREATED)) {
 			responseGUI.getNoCharsDialog();
 			System.out.println(ClientConstants.NO_CHARS_CREATED);
+			username = usr;
+			isLoggedIn = true;
 			return;
 		}
 		if(response.equals(ProtocolConstants.USER_NOT_FOUND)) {
@@ -518,32 +523,35 @@ public class Client {
 		System.out.println(response);
 		username = usr;
 		isLoggedIn = true;
-		
-		String inputFromUser = userInput.getUserInput();
-		String[] newUserInput = inputFromUser.split(" ");
-		String cmd = newUserInput[0];
-		logger.debug("input from user is : "+ inputFromUser);
-		logger.debug("cmd is : " + cmd);
-		if(cmd.equals(Constants.CREATE_CHAR)) {
-			//create char
-			doCREATCHAR(newUserInput);
-			return;
-		}
-		else if(!response.contains(inputFromUser)) {
-			System.out.println("You made a typo... try again SLOWLY...");
-			inputFromUser = userInput.getUserInput();
-		}
-		charName = inputFromUser;
-		String stats = sendToAuthServerAndGetResponse(Protocol.createSimpleRequest(inputFromUser));
-		
-		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
-		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
-		if(response.equals(ProtocolConstants.SUCCESS)) {
-			beginChatServerListener();
-			isPlaying = true;
-			System.out.println(ClientConstants.LOGIN_SUCCESS);
-			responseGUI.getSuccessDialog();
-		}
+//		
+//		String inputFromUser = userInput.getUserInput();
+//		String[] newUserInput = inputFromUser.split(" ");
+//		String cmd = newUserInput[0];
+//		logger.debug("input from user is : "+ inputFromUser);
+//		logger.debug("cmd is : " + cmd);
+//		if(cmd.equals(Constants.CREATE_CHAR)) {
+//			//create char
+//			doCREATECHAR(newUserInput);
+//			return;
+//		}
+//		else if(!response.contains(inputFromUser.split(" ")[1])) {
+//			System.out.println("You made a typo... try again SLOWLY...");
+//			inputFromUser = userInput.getUserInput();
+//		}
+//		charName = inputFromUser;
+//		String stats = sendToAuthServerAndGetResponse(ProtocolConstants.CHAR_SELECTED + Protocol.createSimpleRequest(inputFromUser));
+//		if(stats.equals(ProtocolConstants.NOT_LOGGED_IN)) {
+//			System.out.println("You must be logged in.");
+//			return;
+//		}
+//		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
+//		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
+//		if(response.equals(ProtocolConstants.SUCCESS)) {
+//			beginChatServerListener();
+//			isPlaying = true;
+//			System.out.println(ClientConstants.LOGIN_SUCCESS);
+//			responseGUI.getSuccessDialog();
+//		}
 	}
 	
 	private void doSAVE(String[] input) {
@@ -553,9 +561,11 @@ public class Client {
 		}
 		if(input.length == 1) {
 			String response = sendToServerAndGetResponse(Protocol.createSaveRequest(charName));
-			
 			String toForward = ProtocolConstants.SAVE + Protocol.createSimpleRequest(username) + response;
 			response = sendToAuthServerAndGetResponse(toForward);
+			if(response.equals(ProtocolConstants.SUCCESS)) {
+				System.out.println("Character saved.");
+			}
 		}
 		else {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -570,18 +580,30 @@ public class Client {
 		}
 		if(!input[2].equals(input[3])) {
 			System.out.println(ClientConstants.PASSWORDS_DONT_MATCH);
+			return;
 		}
 		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
 		if(response.equals(ProtocolConstants.ACCOUNT_ALREADY_IN_USE)) {
 			System.out.println(ClientConstants.ACCOUNT_ALREADY_EXISTS);
+			return;
 		}
-		if(response.equals(ProtocolConstants.SUCCESS)) {
+		else if(response.equals(ProtocolConstants.SUCCESS)) {
 			System.out.println(ClientConstants.ACCOUNT_CREATED_SUCCESSFULLY);
+			return;
 		}
+		else if(response.equals(ProtocolConstants.WEAK_PASSWORD)) {
+			System.out.println("Your password is so weak my kitty could guess it... pick a new one.");
+			return;
+		}
+		else if(response.equals(ProtocolConstants.FAILURE)) {
+			System.out.println("Something went wrong.");
+			return;
+		}
+		
 		logger.trace("Exiting the doCREATEACC method.");
 	}
 	
-	private void doCREATCHAR(String[] input) {
+	private void doCREATECHAR(String[] input) {
 		if(!isLoggedIn) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
 			return;
@@ -600,17 +622,76 @@ public class Client {
 		else if(cmd.equals(ClientConstants.CHAR_ALREADY_EXISTS)) {
 			System.out.println("Somebody else has that name already... please pick a different one.");
 		}
+		else if(cmd.equals(ClientConstants.TOO_MANY_CHARS)) {
+			System.out.println("You have too many chars already... just use the ones you have...");
+		}
+	}
+	
+	private void doSELECTCHAR(String[] input) {
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(isPlaying) {
+			System.out.println("You must not be playing to select a character.");
+			return;
+		}
+		if(input.length != 2) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		logger.debug("input is : " + input);
+		logger.debug("the request is : " + Protocol.convertListToProtocol(input));
+		String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
+		if(response.contains(ProtocolConstants.NOT_LOGGED_IN)) {
+			isLoggedIn = false;
+			System.out.println("You are not logged in.");
+			return;
+		}
+		else if(response.contains(ProtocolConstants.FAILURE)) {
+			System.out.println("Failed.");
+			return;
+		}
+		else if(response.contains(ProtocolConstants.DOES_NOT_OWN_THAT_CHAR)) {
+			System.out.println("You dont own that character...");
+			return;
+		}
+		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
+		logger.debug("auth server response: " + response);
+		response = sendToServerAndGetResponse(ProtocolConstants.LOGIN_NAME + response);
+		logger.debug("server response: " + response);
+		if(response.equals(ProtocolConstants.SUCCESS)) {
+			isPlaying = true;
+			charName = input[1];
+		}
+		beginChatServerListener();
+		isPlaying = true;
+		System.out.println(ClientConstants.LOGIN_SUCCESS);
+		//responseGUI.getSuccessDialog();
 	}
 	
 	private void doLOGOUT(String[] input) {
-		doSAVE(input);  //only works cause input.length of logout == input.length of save
-		sockPrintWriter.println(ProtocolConstants.LOGOUT);
-		disconnectFromServer();
-		disconnectFromChatServer();
-		username = null;
-		charName = null;
-		isPlaying = false;
-		isLoggedIn = false;
+		if(isLoggedIn && isPlaying) {
+			doSAVE(input);  //only works cause input.length of logout == input.length of save
+			sockPrintWriter.println(ProtocolConstants.LOGOUT);
+			disconnectFromServer();
+			disconnectFromChatServer();
+			username = null;
+			charName = null;
+			isPlaying = false;
+			isLoggedIn = false;
+		}
+		else if(isLoggedIn) {
+			username = null;
+			charName = null;
+			isPlaying = false;
+			isLoggedIn = false;
+			System.out.println("You've logged out.");
+		}
+		else if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
 	}
 	
 	private void doDISCONNECT(String[] input) {

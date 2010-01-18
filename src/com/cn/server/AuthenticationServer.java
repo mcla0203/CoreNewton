@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
+import java.util.ArrayList;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -19,13 +19,16 @@ import com.cn.constants.Constants;
 import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.protocol.Protocol;
+import com.cn.service.AccountService;
+import com.cn.service.CharacterService;
+import com.cn.service.StatService;
 
 public class AuthenticationServer {
-	
+
 	private int port;
 	private ServerSocket serverSocket;
 	Logger logger = Logger.getLogger(AuthenticationServer.class);
-	
+
 	public AuthenticationServer() {
 		port = 8888;
 		try {
@@ -40,7 +43,7 @@ public class AuthenticationServer {
 		logger.debug(ServerConstants.AUTH_SERVER_ACCEPTING);
 
 	}
-	
+
 	/**
 	 * Main method that is called when you launch the 
 	 * run_auth_server.bat or run_auth_server.sh
@@ -62,13 +65,13 @@ public class AuthenticationServer {
 				clientSocket = serverSocket.accept();
 				logger.trace("Client-(Auth)Server connection has been made successfully");
 			} catch (IOException e) {
-			    if(logger.isEnabledFor(Level.ERROR)) {
-			    	logger.error("Error establishing client-server connection: ", e);
-			    }
+				if(logger.isEnabledFor(Level.ERROR)) {
+					logger.error("Error establishing client-server connection: ", e);
+				}
 				logger.debug(ServerConstants.Server_STARTUP_FAILED);
 				System.exit(1);
 			} 
-			
+
 			/*
 			 * Start a new thread (ServerThread).
 			 */
@@ -79,9 +82,9 @@ public class AuthenticationServer {
 			t.start();
 		}
 	}
-	
+
 	public class AuthenticationServerThread implements Runnable{
-		
+
 		// Client-Server Interaction
 		protected Socket clientSocket;
 		protected BufferedReader sockBufReader = null;
@@ -91,7 +94,9 @@ public class AuthenticationServer {
 		protected String accountName = null;
 		{logger.debug("ash is initialized to null");}
 		AuthenticationServerHelper ash = null;
-		
+		String username = null;
+		boolean isAuthenticated = false;
+
 		public AuthenticationServerThread(Socket socket) {
 			clientSocket = socket;
 
@@ -123,9 +128,9 @@ public class AuthenticationServer {
 
 					String cmd = Protocol.getRequestCmdSimple(request);
 					String[] args = Protocol.getRequestArgsSimple(request);
-					
+
 					logger.debug("the cmd is: "+ cmd);
-					
+
 					if(cmd.equalsIgnoreCase(Constants.LOGIN)) {
 						logger.debug("The cmd was 'login'");
 						onLOGIN(args);
@@ -144,6 +149,11 @@ public class AuthenticationServer {
 					else if(cmd.equalsIgnoreCase(Constants.CREATE_CHAR)) {
 						logger.debug("The cmd was 'create char'");
 						onCREATECHAR(args);
+						continue;
+					}
+					else if(cmd.equalsIgnoreCase(Constants.PLAY)) {
+						logger.debug("The cmd was 'select char'");
+						onSELECTCHAR(args);
 						continue;
 					}
 					if(logger.isDebugEnabled()) {
@@ -172,30 +182,36 @@ public class AuthenticationServer {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
+		/**
+		 * Example of the save protocol that is incomming:
+		 * <save><mcla0203><Duckie><1><100><20><20><10>
+		 * 
+		 * This function will save the character to the databse.
+		 * 
+		 * @param args
+		 */
 		private void onSAVE(String[] args) {
 			logger.trace("onSAVE method");
-			if(ash != null && ash.isAuthenticated()) {
-				logger.debug("ash is authenticated and not null");
-				Map map = ash.getCharacterMap();
-				if(map.containsKey(args[2])) {
-					logger.debug("character map contains char: "+args[2]);
-					map.remove(args[2]);
-					logger.debug("removed char: "+args[2]);
-					String[] stats = new String[6];
-					for(int i=2; i<args.length; i++) {
-						//should include name...
-						stats[i-2] = args[i];
-					}
-					logger.debug("Stats: " +stats);
-					map.put(args[2], stats);
-					ash.overWriteChar();
-					sockPrintWriter.println(ProtocolConstants.SUCCESS);
-					logger.debug("onSAVE was successful");				
-				}
+			if(args.length != 8) {
+				for(String s : args) {System.out.println("The args " + s);}
+				System.out.println("The arg length is supposed to be 8");
+				invalidMsg();
+				return;
 			}
-			else {
-				logger.debug("Failed onSAVE");
+			String name = args[2];
+			int lvl = Integer.valueOf(args[3]);
+			int health = Integer.valueOf(args[4]);
+			int energy = Integer.valueOf(args[5]);
+			int xp = Integer.valueOf(args[6]);
+			int credits = Integer.valueOf(args[7]);
+
+			StatService ss = new StatService();
+			int status = ss.setStats(name, lvl, credits, xp, health, energy);
+
+			if(status == 1) {
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			}
+			else if(status == 2 || status == 999) {
 				sockPrintWriter.println(ProtocolConstants.FAILURE);
 			}
 		}
@@ -204,68 +220,123 @@ public class AuthenticationServer {
 			logger.trace("Inside AuthServerThread.onLOGIN");
 			if(args.length != 3) {
 				invalidMsg();
+				return;
 			}
-			else {
-				logger.debug("ash is being set. Username: " + args[1] + " Password: " + args[2]);
-				ash = new AuthenticationServerHelper(args[1], args[2]);
-				if(!ash.isUserFound()) {
-					sockPrintWriter.println(ProtocolConstants.USER_NOT_FOUND);
-					System.out.println("The login user was not found.");
+			String local_usr = args[1];
+			String local_pw = args[2];
+			AccountService as = new AccountService();
+			int status = as.login(local_usr, local_pw);
+			if(status == 2) {
+				sockPrintWriter.println(ProtocolConstants.USER_NOT_FOUND);
+				System.out.println("The login user was not found.");
+				return;
+			}
+			else if(status == 3) {
+				sockPrintWriter.println(ProtocolConstants.PASSWORD_INCORRECT);
+				System.out.println("Password incorrect.");
+				return;
+			}
+			else if(status == 999) {
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
+				System.out.println("General failure");
+				return;
+			}
+			//if success then return characters or let them create a new one
+			else if(status == 1) {
+				username = local_usr;
+				isAuthenticated = true;
+				CharacterService cs = new CharacterService();
+				ArrayList<String> chars = cs.getCharacters(username);
+				if(chars.size() == 0) {
+					logger.debug("No characters have been created on the account.");
+					sockPrintWriter.println(ProtocolConstants.NO_CHARS_CREATED);
 					return;
 				}
-				if(ash.isAuthenticated()) {
-					logger.debug("ash is authenticated in AuthServerThread.onLOGIN");
-					Map<String, String[]> characters = ash.getCharacterMap();
-					if(ash.getCharacterMap().size() > 0) {
-						sockPrintWriter.println(characters.keySet());
-					}
-					else {
-						logger.debug("No characters have been created on the account.");
-						sockPrintWriter.println(ProtocolConstants.NO_CHARS_CREATED);
-						return;
-					}
-					String request = null;
-					if ((request = sockBufReader.readLine()) != null) {
-						String loginAs = Protocol.getRequestCmdSimple(request);
-						if(loginAs.equals(Constants.CREATE_CHAR)) {
-							onCREATECHAR(Protocol.getRequestArgsSimple(request));
-						}
-						else if(characters.containsKey(loginAs)) {
-							sockPrintWriter.println(Protocol.convertListToProtocol(characters.get(loginAs)));
-						}
-						else {
-							invalidMsg();
-						}
-					}
+				else {
+					sockPrintWriter.println(chars);
+//				}
+//				String request = null;
+//				if ((request = sockBufReader.readLine()) != null) {
+//					String loginAs = Protocol.getRequestCmdSimple(request);
+//					//create a new character, then process it
+//					if(loginAs.equals(Constants.CREATE_CHAR)) {
+//						onCREATECHAR(Protocol.getRequestArgsSimple(request));
+//					}
+//					//choose existing character, then process it
+//					else if(loginAs.equals(Constants.CHAR_SELECTED)) {
+//						onSELECTCHAR(Protocol.getRequestArgsSimple(request));
+//					}
+//					
+////					else if(characters.containsKey(loginAs)) {
+////						sockPrintWriter.println(Protocol.convertListToProtocol(characters.get(loginAs)));
+////					}
+//					else {
+//						invalidMsg();
+//					}
 				}
-			}
+			}		
 		}
-		
-		private void onCREATEACC(String[] args) {
-			AccountCreationHelper ach = new AccountCreationHelper(args[1], args[2]);
-			if(!ach.isAccountInUse()) {
-				System.out.println("The account is available.  It has been created.");
-				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+
+		private void onSELECTCHAR(String[] args) {
+			if(args.length != 2) {
+				invalidMsg();
+				return;
+			}
+			if(!isAuthenticated) {
+				sockPrintWriter.println(ProtocolConstants.NOT_LOGGED_IN);
+				return;
+			}
+			String charName = args[1];
+			CharacterService cs = new CharacterService();
+			if(cs.hasCharacter(username, charName)) {
+				StatService ss = new StatService();
+				ArrayList<String> stats = ss.getStats(charName);
+				if(stats == null) {
+					sockPrintWriter.println(ProtocolConstants.FAILURE);
+					return;
+				}
+				sockPrintWriter.println(Protocol.convertListToProtocol(stats));
 			}
 			else {
+				sockPrintWriter.println(ProtocolConstants.DOES_NOT_OWN_THAT_CHAR);
+			}
+			
+		}
+
+		private void onCREATEACC(String[] args) {
+			AccountService as = new AccountService();
+			int ret = as.createAccount(args[1], args[2]);
+			if(ret == 1) {
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			}
+			else if(ret == 3) {
 				sockPrintWriter.println(ProtocolConstants.ACCOUNT_ALREADY_IN_USE);
 			}
-		}
-		
-		private void onCREATECHAR(String[] args) {
-			if(args[1] != null) {
-				logger.debug("Attempting to add the character with the name: " + args[1]);
-				ash.addCharacterToAccount(args[1]);
+			else if(ret == 4) {
+				sockPrintWriter.println(ProtocolConstants.WEAK_PASSWORD);
 			}
-			else {
+			else if(ret == 999 || ret == 2) {
 				sockPrintWriter.println(ProtocolConstants.FAILURE);
 			}
-			//if Character already exists... this isn't implemented yet
-			if(false) {
+		}
+
+		private void onCREATECHAR(String[] args) {
+			CharacterService cs = new CharacterService();
+			int ret = cs.createCharacter(username, args[1]);
+			if(ret == 1) {
+				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			}
+			else if(ret == 2) {
+				sockPrintWriter.println(ProtocolConstants.ACCOUNT_DOES_NOT_EXIST);
+			}
+			else if(ret == 3) {
+				sockPrintWriter.println(ProtocolConstants.TOO_MANY_CHARS);
+			}
+			else if(ret == 4) {
 				sockPrintWriter.println(ProtocolConstants.CHAR_ALREADY_EXISTS);
 			}
-			else{
-				sockPrintWriter.println(ProtocolConstants.SUCCESS);
+			else if(ret == 999 || ret == 5) {
+				sockPrintWriter.println(ProtocolConstants.FAILURE);
 			}
 		}
 

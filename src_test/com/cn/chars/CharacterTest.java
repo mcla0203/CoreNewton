@@ -1,7 +1,5 @@
 package com.cn.chars;
 
-import com.cn.players.Player;
-
 import junit.framework.TestCase;
 
 public class CharacterTest extends TestCase {
@@ -22,15 +20,6 @@ public class CharacterTest extends TestCase {
 		assertEquals(c.getEnergy(), 10);
 		assertFalse(c.loseEnergy(20));
 		assertEquals(c.getEnergy(), 10);
-	}
-	
-	public void testAttack() {
-		Character c = new Character();
-		Player p = new Player("Bob");		
-		p.attack(c, 10);
-		
-		assertEquals(p.getEnergy(), 18);
-		assertEquals(c.getHealth(), 90);
 	}
 	
 	public void testBeAttacked() {

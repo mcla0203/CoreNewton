@@ -1,5 +1,6 @@
 package com.cn.protocol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cn.constants.ProtocolConstants;
@@ -49,6 +50,20 @@ public class Protocol {
 	 * @return String result
 	 */
 	public static String convertListToProtocol(String[] list) {
+		String result = "";
+		for( String s : list ) {
+			result += "<" + s + ">";
+		}
+		return result;
+	}
+	
+	/**
+	 * This method is used to iterate a set of strings and create a 
+	 * simple response.
+	 * @param array
+	 * @return String result
+	 */
+	public static String convertListToProtocol(ArrayList<String> list) {
 		String result = "";
 		for( String s : list ) {
 			result += "<" + s + ">";

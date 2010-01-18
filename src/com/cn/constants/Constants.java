@@ -22,6 +22,11 @@ public class Constants {
 	public static String LOGGER_PROPERTIES = "dep/log4j.properties";
 	public static String CREATE_ACC = "createAcc";
 	public static String CREATE_CHAR = "createChar";
+	public static String WEAK_PASSWORD = "weakPassword";
+	public static String ACCOUNT_DOES_NOT_EXIST = "accountDoesNotExist";
+	public static String TOO_MANY_CHARS = "tooManyCharacters";
+	public static String PASSWORD_INCORRECT = "passwordIncorrect";
+	public static String PLAY = "play";
 
 	public static String MONSTER_DOES_NOT_EXIST = "monsterDNE";
 	public static String MONSTER_WAS_KILLED = "monsterWasKilled";
@@ -31,6 +36,7 @@ public class Constants {
 	public static String NO_CHARS_CREATED = "noCharsCreated";
 	public static String CHAR_ALREADY_EXISTS = "charAlreadyExists";
 	public static String USER_NOT_FOUND = "noUsersFound";
+	public static String DOES_NOT_OWN_THAT_CHAR = "noCharOwnership";
 	
 	public static final String NOT_ENOUGH_ENERGY = "notEnoughEnergy";
 	public static final String ENERGY_FULL = "energyFull";
@@ -41,6 +47,7 @@ public class Constants {
 	public static final String XP = "xp";
 	
 	public static final String ANNOUNCEMENT = "announcement";
+	public static final String NOT_LOGGED_IN = "notLoggedIn";
 
 	
 	/**
