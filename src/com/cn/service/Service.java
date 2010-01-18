@@ -28,7 +28,7 @@ public class Service {
 		}
 		try {
 			// Step 2: Connect to the DB.
-			connection = DriverManager.getConnection(url,"mcla0203","Acatg1t3");
+			connection = DriverManager.getConnection(url,"mcla0203","pw123");
 		} catch (SQLException e) {
 			System.out.println("Unable to connect to the database.  Check the url variable for IP:PORT/Service");
 		}
