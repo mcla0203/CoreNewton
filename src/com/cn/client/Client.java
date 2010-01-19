@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -23,7 +24,9 @@ import com.cn.constants.ProtocolConstants;
 import com.cn.constants.ServerConstants;
 import com.cn.gui.LoginGUI;
 import com.cn.gui.LoginResponseGUI;
+import com.cn.gui.SelectCharacter;
 import com.cn.protocol.Protocol;
+import com.cn.service.CharacterService;
 
 public class Client {
 
@@ -457,7 +460,7 @@ public class Client {
 		}
 		if(input.length != 1) {
 			System.out.println(ClientConstants.INVALID_INPUT);
-			System.out.println("Just use 'getHealth'");
+			System.out.println("Just use 'getPlayers'");
 			return;
 		}
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_PLAYERS);
@@ -523,6 +526,7 @@ public class Client {
 		System.out.println(response);
 		username = usr;
 		isLoggedIn = true;
+		launchCharacterSelectGUI(username);
 //		
 //		String inputFromUser = userInput.getUserInput();
 //		String[] newUserInput = inputFromUser.split(" ");
@@ -553,7 +557,7 @@ public class Client {
 //			responseGUI.getSuccessDialog();
 //		}
 	}
-	
+
 	private void doSAVE(String[] input) {
 		if(!isPlaying) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
@@ -702,6 +706,23 @@ public class Client {
 		charName = null;
 	}
 
+	/**
+	 * Launches the "Select Character" UI for the given user.
+	 * @param user
+	 */
+	@SuppressWarnings("unused")
+	public void launchCharacterSelectGUI(String user) {
+		logger.debug("Inside launch char select gui method...");
+		CharacterService cs = new CharacterService();
+		ArrayList<String> characters = cs.getCharacters(user);
+		while(characters.size() != 4) {
+			characters.add("New Character");
+		}
+		logger.debug("Trying to launch gui...");
+		SelectCharacter gui = new SelectCharacter(characters.get(0),characters.get(1),characters.get(2),
+				characters.get(3));
+	}
+	
 	public String sendToServerAndGetResponse(String message) {
 		try {
 			sockPrintWriter.println(message);

@@ -51,17 +51,19 @@ public class MonsterTest extends TestCase {
 		Player p = new Player("player");
 		m.beAttacked(p);
 		Player p2 = new Player("player2");
-		m.beAttacked(p2);
+		m.beAttacked(p);
 		
-		assertFalse(m.getPlayersEligibleForXP().containsKey(p));
-		assertTrue(m.getPlayersEligibleForXP().containsKey(p2));
+		assertFalse(m.getPlayersEligibleForXP().containsKey(p2));
+		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 	}
 	
 	public void testBeAttacked_BothEligible() {
 		Monster m = new Monster();
 		Player p = new Player("player");
 		m.beAttacked(p);
+		m.beAttacked(p);
 		Player p2 = new Player("player2");
+		m.beAttacked(p2);
 		m.beAttacked(p2);
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p));
 		assertTrue(m.getPlayersEligibleForXP().containsKey(p2));

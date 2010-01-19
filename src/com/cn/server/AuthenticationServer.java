@@ -92,8 +92,6 @@ public class AuthenticationServer {
 		protected BufferedInputStream bis;
 		protected BufferedOutputStream bos;
 		protected String accountName = null;
-		{logger.debug("ash is initialized to null");}
-		AuthenticationServerHelper ash = null;
 		String username = null;
 		boolean isAuthenticated = false;
 

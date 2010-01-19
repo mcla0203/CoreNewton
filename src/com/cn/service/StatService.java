@@ -57,7 +57,7 @@ public class StatService extends Service {
 					    "credits = "+ credits + ", " +
 					    "xp = " + xp + ", " +
 					    "health = " + health + ", " +
-					    "energy = " + xp +
+					    "energy = " + energy +
 					"WHERE cid = " + cid);
 			stmt.close();
 		} catch (SQLException e) {
@@ -106,3 +106,6 @@ public class StatService extends Service {
 	}
 	
 }
+
+
+

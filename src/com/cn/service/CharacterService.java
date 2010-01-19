@@ -156,6 +156,13 @@ public class CharacterService extends Service {
 		return cid;
 	}
 	
+	/**
+	 * Returns a list of characters associated with the given user in the db. Returns an 
+	 * empty list if the user does not have any characters.
+	 * 
+	 * @param username
+	 * @return
+	 */
 	public ArrayList<String> getCharacters(String username) {
 		Statement stmt;
 		ArrayList<String> chars = new ArrayList<String>();

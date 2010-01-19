@@ -1,1 +1,1 @@
-java -classpath "bin;dep/log4j-1.2.15.jar" com.cn.client.Client
+java -classpath "bin;dep/log4j-1.2.15.jar;dep/ojdbc6.jar" com.cn.client.Client
