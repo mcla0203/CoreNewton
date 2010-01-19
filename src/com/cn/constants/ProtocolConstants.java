@@ -41,6 +41,7 @@ public class ProtocolConstants extends Constants {
 	public static final String PLAY = "<"+Constants.PLAY+">";
 	public static final String NOT_LOGGED_IN = "<"+Constants.NOT_LOGGED_IN+">";
 	public static final String DOES_NOT_OWN_THAT_CHAR = "<"+Constants.DOES_NOT_OWN_THAT_CHAR+">";
+	public static final String GET_STATS = "<"+Constants.GET_STATS+">";
 	
 }
 

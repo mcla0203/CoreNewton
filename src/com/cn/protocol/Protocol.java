@@ -125,6 +125,14 @@ public class Protocol {
 		return "<" + s + ">";
 	}
 	
+	public static String createSimpleResponse(ArrayList<String> s) {
+		String ret = "";
+		for(String str : s) {
+			ret += createSimpleResponse(str);
+		}
+		return ret;
+	}
+	
 	public static String createSimpleRequest(String s) {
 		return createSimpleResponse(s);
 	}

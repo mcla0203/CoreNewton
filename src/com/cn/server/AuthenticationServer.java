@@ -154,6 +154,12 @@ public class AuthenticationServer {
 						onSELECTCHAR(args);
 						continue;
 					}
+					else if(cmd.equalsIgnoreCase(Constants.GET_STATS)) {
+						logger.debug("The cmd was 'get stats'");
+						onGETSTATS(args);
+						continue;
+						
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -316,6 +322,31 @@ public class AuthenticationServer {
 			else if(ret == 999 || ret == 2) {
 				sockPrintWriter.println(ProtocolConstants.FAILURE);
 			}
+		}
+		
+		private void onGETSTATS(String[] args) {
+			if(args.length != 1) {
+				invalidMsg();
+				return;
+			}
+
+			CharacterService cs = new CharacterService();
+			ArrayList<String> chars = cs.getCharacters(username);
+			
+			StatService ss = new StatService();
+			ArrayList<ArrayList<String>> statsList = new ArrayList<ArrayList<String>>();
+			for(String name : chars) {
+				statsList.add(ss.getStats(name));
+			}
+			
+			String response = ProtocolConstants.SUCCESS;
+			for( ArrayList<String> stats : statsList ) {
+				response += Protocol.createSimpleResponse(Constants.CHARACTER);
+				response += Protocol.createSimpleResponse(stats);
+			}
+			
+			System.out.println("Response is: " + response);
+			sockPrintWriter.println(response);
 		}
 
 		private void onCREATECHAR(String[] args) {

@@ -150,6 +150,9 @@ public class Client {
 				else if(input[0].equals(Constants.PLAY)) {
 					doSELECTCHAR(input);
 				}
+				else if(input[0].equals(Constants.GET_STATS)) {
+					doGETSTATS(input);
+				}
 				else {
 					System.out.println("Invalid command.");
 				}
@@ -526,7 +529,7 @@ public class Client {
 		System.out.println(response);
 		username = usr;
 		isLoggedIn = true;
-		launchCharacterSelectGUI(username);
+		//launchCharacterSelectGUI(username);
 //		
 //		String inputFromUser = userInput.getUserInput();
 //		String[] newUserInput = inputFromUser.split(" ");
@@ -574,6 +577,19 @@ public class Client {
 		else {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
+	}
+	
+	private void doGETSTATS(String[] input) {
+		if(input.length != 1) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		String response = sendToAuthServerAndGetResponse(ProtocolConstants.GET_STATS);
+		System.out.println(response);
 	}
 	
 	private void doCREATEACC(String[] input) {
