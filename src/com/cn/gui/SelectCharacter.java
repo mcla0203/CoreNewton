@@ -11,6 +11,7 @@
 
 package com.cn.gui;
 
+
 /**
  *
  * @author Michael
@@ -28,6 +29,14 @@ public class SelectCharacter extends javax.swing.JFrame {
     String char2Stats = "";
     String char3Stats = "";
     String char4Stats = "";
+    
+    public SelectCharacter(String getStatsResponse) {
+    	System.out.println("Inside SelectCharacter constructor with 4 char names.");
+    	initComponents();
+        this.setVisible(true);
+        //ArrayList<String> charStats = getStatsResponse.split(Constants.CHARACTER);
+        //setButtonText(charName1, charName2, charName3, charName4);
+    }
 
     public SelectCharacter(String charName1, String charName2, String charName3,
     		String charName4) {
