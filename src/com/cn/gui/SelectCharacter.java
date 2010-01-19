@@ -70,14 +70,14 @@ public class SelectCharacter extends javax.swing.JFrame {
         jButton1.setText("Play");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                playButtonClicked(evt);
+                clickedPlayButton(evt);
             }
         });
 
-        charButton2.setText("1");
+        charButton2.setText("2");
         charButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                clickedButton1(evt);
+                clickedCharButton2(evt);
             }
         });
 
@@ -90,24 +90,24 @@ public class SelectCharacter extends javax.swing.JFrame {
             }
         });
 
-        charButton4.setText("1");
+        charButton4.setText("4");
         charButton4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                charButton4clickedButton1(evt);
+            	clickedCharButton4(evt);
             }
         });
 
-        charButton3.setText("1");
+        charButton3.setText("3");
         charButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                charButton3clickedButton1(evt);
+            	clickedCharButton3(evt);
             }
         });
 
         charButton1.setText("1");
         charButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                charButton1clickedButton1(evt);
+            	clickedCharButton1(evt);
             }
         });
 
@@ -156,31 +156,31 @@ public class SelectCharacter extends javax.swing.JFrame {
     }// </editor-fold>
 
 
-    private void playButtonClicked(java.awt.event.MouseEvent evt) {                                   
+    private void clickedPlayButton(java.awt.event.MouseEvent evt) {                                   
        String text = jTextField1.getText();
        jTextField1.setText(text + " was selected.");
     }                                  
 
-    private void clickedButton1(java.awt.event.MouseEvent evt) {                                
+    private void clickedCharButton1(java.awt.event.MouseEvent evt) {                                
         // TODO add your handling code here:
-        jTextField1.setText("One...");
+    	jTextField1.setText(char1Stats);
     }                               
 
+    private void clickedCharButton2(java.awt.event.MouseEvent evt) {
+    	jTextField1.setText(char2Stats);
+    }
+
+    private void clickedCharButton3(java.awt.event.MouseEvent evt) {
+    	jTextField1.setText(char3Stats);
+    }
+
+    private void clickedCharButton4(java.awt.event.MouseEvent evt) {
+    	jTextField1.setText(char4Stats);
+    }
+    
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        // TODO add your handling code here:
-    }                                           
-
-    private void charButton4clickedButton1(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void charButton3clickedButton1(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void charButton1clickedButton1(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
-    }
+    	//TODO: do stuff.
+    }    
 
     /**
     * @param args the command line arguments
