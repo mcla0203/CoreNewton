@@ -32,10 +32,11 @@ public class SelectCharacter extends javax.swing.JFrame {
 		this.setVisible(true);
 	}
 
-	String char1Stats = "";
-	String char2Stats = "";
-	String char3Stats = "";
-	String char4Stats = "";
+	String defaultButtonText = "New Character";
+	String char1Stats = defaultButtonText;
+	String char2Stats = defaultButtonText;
+	String char3Stats = defaultButtonText;
+	String char4Stats = defaultButtonText;
 
 	public SelectCharacter(String getStatsResponse) {
 		System.out.println("Inside SelectCharacter constructor with response");
@@ -73,22 +74,28 @@ public class SelectCharacter extends javax.swing.JFrame {
 		char3Stats = parseStats(charStats[2]);
 		char4Stats = parseStats(charStats[3]);
 
-		charButton1.setText(charNames[0]);
-		charButton2.setText(charNames[1]);
-		charButton3.setText(charNames[2]);
-		charButton4.setText(charNames[3]);
+		charButton1.setText(charNames[0] != null ? charNames[0] : defaultButtonText);
+		charButton2.setText(charNames[1] != null ? charNames[1] : defaultButtonText);
+		charButton3.setText(charNames[2] != null ? charNames[2] : defaultButtonText);
+		charButton4.setText(charNames[3] != null ? charNames[3] : defaultButtonText);
 	}
 
 	private String parseStats(String[] statsArray) {
 		//lvl, health, energy, xp, credits
 		String newline = "\n";
-		String stats = "Selected Character:" + newline;
+		String stats = "";
+		if(statsArray[0] != null) {
+		stats = "Selected Character:" + newline;
 		stats += "Name: " + statsArray[0] + newline;
 		stats += "Level: " + statsArray[1] + newline;
-		stats += "XP: " + statsArray[2] + newline;
-		stats += "Health: " + statsArray[3] + newline;
-		stats += "Energy: " + statsArray[4] + newline;
+		stats += "Health: " + statsArray[2] + newline;
+		stats += "Energy: " + statsArray[3] + newline;
+		stats += "XP: " + statsArray[4] + newline;
 		stats += "Credits: " + statsArray[5] + newline;
+		}
+		else {
+			stats = "Use this slot to create a new character!";
+		}
 		return stats;
 	}
 
@@ -118,6 +125,7 @@ public class SelectCharacter extends javax.swing.JFrame {
 		charButton3 = new javax.swing.JButton();
 		charButton1 = new javax.swing.JButton();
 
+		charStatsTextArea.setWrapStyleWord(true);
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		//setBackground(new java.awt.Color(0, 0, 0));
 		//setForeground(new java.awt.Color(0, 0, 0));

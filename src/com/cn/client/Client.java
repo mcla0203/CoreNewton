@@ -529,7 +529,6 @@ public class Client {
 		System.out.println(response);
 		username = usr;
 		isLoggedIn = true;
-		//launchCharacterSelectGUI(username);
 //		
 //		String inputFromUser = userInput.getUserInput();
 //		String[] newUserInput = inputFromUser.split(" ");
@@ -727,7 +726,6 @@ public class Client {
 	 * Launches the "Select Character" UI for the given user.
 	 * @param user
 	 */
-	@SuppressWarnings("unused")
 	public void launchCharacterSelectGUI(String user) {
 		logger.debug("Inside launch char select gui method...");
 		CharacterService cs = new CharacterService();
