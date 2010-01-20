@@ -590,6 +590,7 @@ public class Client {
 		}
 		String response = sendToAuthServerAndGetResponse(ProtocolConstants.GET_STATS);
 		System.out.println(response);
+		new SelectCharacter(response);
 	}
 	
 	private void doCREATEACC(String[] input) {
@@ -735,8 +736,8 @@ public class Client {
 			characters.add("New Character");
 		}
 		logger.debug("Trying to launch gui...");
-		SelectCharacter gui = new SelectCharacter(characters.get(0),characters.get(1),characters.get(2),
-				characters.get(3));
+		//SelectCharacter gui = new SelectCharacter(characters.get(0),characters.get(1),characters.get(2),
+		//		characters.get(3));
 	}
 	
 	public String sendToServerAndGetResponse(String message) {
