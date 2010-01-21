@@ -202,7 +202,7 @@ public class Client {
 	 */
 	protected void connectToAuthServer() {
 		try {
-			authServerSocket = new Socket(ServerConstants.HOSTNAME, 8888);
+			authServerSocket = new Socket(ServerConstants.HOSTNAME, ServerConstants.AUTH_PORT);
 			Thread t = new Thread(new AuthClientShutdown());
 			Runtime.getRuntime().addShutdownHook(t);
 		} catch (Exception e) {

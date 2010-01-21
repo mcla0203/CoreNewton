@@ -9,6 +9,7 @@ public class ServerConstants extends Constants {
 	
 	public static String AUTH_SERVER_STARTUP = formatOutput("The Authentication server has been started");
 	public static String AUTH_SERVER_ACCEPTING = formatOutput("The Authentication server is waiting for client connections...");
+	public static int AUTH_PORT = 8888;
 	
 	public static String INVALID_MSG_RECVD = formatOutput("An invalid message was received!!");
 	public static String INVALID_MSG_RECVD_CODE = "999";
