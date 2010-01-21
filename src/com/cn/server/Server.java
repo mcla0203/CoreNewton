@@ -207,27 +207,27 @@ public class Server {
 		}
 		
 		
-		/**
-		 * Connects to the chat server.
-		 */
-		protected void connectToChatServer(String name, String url) {
-			try {
-				chatServerSocket = new Socket(ServerConstants.CHAT_HOSTNAME, ServerConstants.CHAT_PORT);
-			} catch (Exception e) {
-				chatServerSocket = null;
-			}
-			try {
-				chatBis = new BufferedInputStream(chatServerSocket.getInputStream());
-				chatBos = new BufferedOutputStream(chatServerSocket.getOutputStream());
-				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
-				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
-				url = (url.contains("/") ? url.replace("/", "") : url);
-				chatSockPrintWriter.println(Protocol.chatLoginRequest(name, url));
-			} catch (IOException e) {
-				logger.error(e);  //temp until we import log4j jar.
-				System.exit(1);
-			} 
-		}
+//		/**
+//		 * Connects to the chat server.
+//		 */
+//		protected void connectToChatServer(String name, String url) {
+//			try {
+//				chatServerSocket = new Socket(ServerConstants.CHAT_HOSTNAME, ServerConstants.CHAT_PORT);
+//			} catch (Exception e) {
+//				chatServerSocket = null;
+//			}
+//			try {
+//				chatBis = new BufferedInputStream(chatServerSocket.getInputStream());
+//				chatBos = new BufferedOutputStream(chatServerSocket.getOutputStream());
+//				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
+//				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
+//				url = (url.contains("/") ? url.replace("/", "") : url);
+//				chatSockPrintWriter.println(Protocol.chatLoginRequest(name, url));
+//			} catch (IOException e) {
+//				logger.error(e);  //temp until we import log4j jar.
+//				System.exit(1);
+//			} 
+//		}
 		
 		/**
 		 * Disconnects from the chat server.
@@ -496,7 +496,7 @@ public class Server {
 			name = args[1];
 			String url = clientSocket.getRemoteSocketAddress().toString();
 			logger.debug("The URL is : " + url);
-			connectToChatServer(name, url);
+//			connectToChatServer(name, url);
 			playerList.add(new Player(args[1], Integer.valueOf(args[2]), Integer.valueOf(args[3]),
 					       Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6])));
 			String response = ProtocolConstants.SUCCESS;

@@ -3,6 +3,7 @@ package com.cn.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cn.constants.Constants;
 import com.cn.constants.ProtocolConstants;
 import com.cn.npc.monsters.Monster;
 import com.cn.players.Player;
@@ -149,8 +150,8 @@ public class Protocol {
 		return ProtocolConstants.SAVE + Protocol.createSimpleRequest(name);
 	}
 	
-	public static String chatLoginRequest(String name, String url) {
-		return ProtocolConstants.CHAT_LOGIN + "<" + name + ">" + "<" + url + ">";
+	public static String chatLoginRequest(String name) {
+		return ProtocolConstants.CHAT_LOGIN + "<" + name + ">";
 	}
 	
 	public static String chatLogoutRequest(String name) {
@@ -161,6 +162,18 @@ public class Protocol {
 	}
 	public static String createLootRequest(String id) {
 		return ProtocolConstants.LOOT + "<" + id + ">";
+	}
+
+
+	public static String sendPlayerMessageRequest(String[] input) {
+		// TODO Auto-generated method stub
+		String name = input[1];
+		String message = "";
+		for(String s : input) {
+			message += s + " ";
+		}
+		message = message.substring(Constants.SEND_MESSAGE.length() + name.length() + 2).trim();
+		return ProtocolConstants.SEND_MESSAGE + "<" + name + ">" + "<" + message + ">";
 	}
 	
 }

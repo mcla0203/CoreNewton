@@ -151,7 +151,7 @@ public class AuthenticationServer {
 					}
 					else if(cmd.equalsIgnoreCase(Constants.PLAY)) {
 						logger.debug("The cmd was 'select char'");
-						onSELECTCHAR(args);
+						onPLAY(args);
 						continue;
 					}
 					else if(cmd.equalsIgnoreCase(Constants.GET_STATS)) {
@@ -168,7 +168,7 @@ public class AuthenticationServer {
 				}
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress(), e);
+					logger.error("User has disconnected from Auth Server... " +clientSocket.getInetAddress());
 				}
 
 			} finally {
@@ -281,7 +281,7 @@ public class AuthenticationServer {
 			}		
 		}
 
-		private void onSELECTCHAR(String[] args) {
+		private void onPLAY(String[] args) {
 			if(args.length != 2) {
 				invalidMsg();
 				return;

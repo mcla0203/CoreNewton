@@ -43,6 +43,7 @@ public class ProtocolConstants extends Constants {
 	public static final String DOES_NOT_OWN_THAT_CHAR = "<"+Constants.DOES_NOT_OWN_THAT_CHAR+">";
 	public static final String GET_STATS = "<"+Constants.GET_STATS+">";
 	public static final String CHARACTER = "<"+Constants.CHARACTER+">";
+	public static final String SEND_MESSAGE = "<"+Constants.SEND_MESSAGE+">";
 	
 }
 

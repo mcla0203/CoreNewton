@@ -8,13 +8,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -47,12 +45,12 @@ public class Client {
 	BufferedOutputStream authBos;
 	
 	//Chat-Server Listening
-	protected Socket chatListenerSocket;
-	protected BufferedReader chatSockBufReader = null;
+	Socket chatListenerSocket;
 	protected PrintWriter chatSockPrintWriter = null;
+	protected BufferedReader chatBufferedReader = null;
 	protected BufferedInputStream chatBis;
 	protected BufferedOutputStream chatBos;
-	protected ServerSocket chatServerSocket = null;		
+	protected Socket chatServerSocket = null;		
 
 	protected UserInput userInput = null;
 	
@@ -148,10 +146,13 @@ public class Client {
 					doGETENERGY(input);
 				}
 				else if(input[0].equals(Constants.PLAY)) {
-					doSELECTCHAR(input);
+					doPLAY(input);
 				}
 				else if(input[0].equals(Constants.GET_STATS)) {
 					doGETSTATS(input);
+				}
+				else if(input[0].equals(Constants.SEND_MESSAGE)) {
+					doSENDMSG(input);
 				}
 				else {
 					System.out.println("Invalid command.");
@@ -164,6 +165,8 @@ public class Client {
 			System.out.println(ClientConstants.DISCONNECT_SUCCESS);
 		}
 	}
+
+
 
 	/**
 	 * Method that connects to the server Given a serverName (ip/url)
@@ -210,6 +213,28 @@ public class Client {
 			authBos = new BufferedOutputStream(authServerSocket.getOutputStream());
 			authSockPrintWriter = new PrintWriter(new OutputStreamWriter(authBos), true);
 			authSockBufReader = new BufferedReader(new InputStreamReader(authBis));
+		} catch (IOException e) {
+			System.out.println(e);  //temp until we import log4j jar.
+			System.exit(1);
+		} 
+	}
+	
+	/**
+	 * Connects to the chat server.
+	 */
+	protected void connectToChatServer() {
+		try {
+			chatServerSocket = new Socket(ServerConstants.HOSTNAME, ServerConstants.CHAT_PORT);
+			Thread t = new Thread(new AuthClientShutdown());
+			Runtime.getRuntime().addShutdownHook(t);
+		} catch (Exception e) {
+			chatServerSocket = null;
+		}
+		try {
+			chatBis = new BufferedInputStream(chatServerSocket.getInputStream());
+			chatBos = new BufferedOutputStream(chatServerSocket.getOutputStream());
+			chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
+			chatBufferedReader = new BufferedReader(new InputStreamReader(chatBis));
 		} catch (IOException e) {
 			System.out.println(e);  //temp until we import log4j jar.
 			System.exit(1);
@@ -304,6 +329,14 @@ public class Client {
 		client.runClient();
 	}
 
+	private void doSENDMSG(String[] input) {
+		if(input.length < 3) {
+			return;
+		}
+		String request = Protocol.sendPlayerMessageRequest(input);
+		sendToChatServer(request);
+	}
+	
 	public void doATTACK(String[] args) {
 		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -647,7 +680,7 @@ public class Client {
 		}
 	}
 	
-	private void doSELECTCHAR(String[] input) {
+	private void doPLAY(String[] input) {
 		if(!isLoggedIn) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
 			return;
@@ -683,6 +716,8 @@ public class Client {
 		if(response.equals(ProtocolConstants.SUCCESS)) {
 			isPlaying = true;
 			charName = input[1];
+			connectToChatServer();
+			chatSockPrintWriter.println(Protocol.chatLoginRequest(charName));
 		}
 		beginChatServerListener();
 		isPlaying = true;
@@ -760,6 +795,15 @@ public class Client {
 		}	
 	}
 	
+void sendToChatServer(String message) {
+		try {
+			chatSockPrintWriter.println(message);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return;
+	}
+	
 	public void beginChatServerListener() {
 		Thread t = new Thread(new ChatServerListenerThread());
 		logger.trace("Starting the ChatServerListener");
@@ -768,96 +812,118 @@ public class Client {
 	
 	public class ChatServerListenerThread implements Runnable {
 
-		/*
-		 * The constructor for the ChatServerThread object.
-		 */
 		public ChatServerListenerThread() {
-			logger.trace("ServerThread initialization");
-			openSocket();
-			try {
-				chatListenerSocket = null;
-				chatListenerSocket = chatServerSocket.accept();
-				logger.debug("Has accepted connection from"+clientSocket.getRemoteSocketAddress());
-			} catch (IOException e) {
-				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error(ServerConstants.Server_STARTUP_FAILED);
-					logger.error(e);
-				}
-				System.exit(1);
-			}
-
-			try {
-				chatBis = new BufferedInputStream(chatListenerSocket.getInputStream());
-				chatBos = new BufferedOutputStream(chatListenerSocket.getOutputStream());
-				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
-				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
-			} catch (IOException e) {
-				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("Exception initializing ChatServerListener", e);
-				}
-				System.exit(1);
-			} 
+			System.out.println("Creating a ChatServerListenerThread");
 		}
 		
-		/**
-		 * Opens the socket that the server uses
-		 * @throws IOException
-		 */
-		public Boolean openSocket() {
-			logger.trace("Opening ChatListener Socket.");
-			try {
-				chatServerSocket = new ServerSocket(Constants.CHAT_LISTENER_PORT);
-				return true;
-			} catch (IOException e) {
-				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("Error opening socket ", e);
-				}
-				return false;
-			}
-		}
-		
-		/*
-		 * Thread main routine
-		 */
+		@Override
 		public void run() {
-			try {
-				String request;
-				while ((request = chatSockBufReader.readLine()) != null) {
-					if (request.length() < 1) {
-						if(logger.isEnabledFor(Level.ERROR)) {
-							logger.error("Message length is too short: "+request.length());
-						}
-						continue;
-					}
-					String cmd = Protocol.getRequestCmdSimple(request);
-					String[] args = Protocol.getRequestArgsSimple(request);
-					if(cmd.equals(Constants.ANNOUNCEMENT)) {
-						System.out.println(args[1]);
-						continue;
-					}
-					else if(cmd.equals(Constants.XP)) {
-						System.out.println("You received " + args[1] + " XP!!");
-					}
-				}
-			} catch (Exception e) {
-				if(logger.isEnabledFor(Level.ERROR)) {
-					logger.error("User has disconnected from Auth Server... " +chatListenerSocket.getInetAddress());
-				}
-
-			} finally {
+			System.out.println("Running ChatServerListnerThread");
+			while(true) {
 				try {
-					if (chatSockBufReader != null)
-						chatSockBufReader.close();
-					if (chatSockPrintWriter != null)
-						chatSockPrintWriter.close();
-					chatListenerSocket.close();	
-				} catch (Exception e) {
-					if(logger.isEnabledFor(Level.ERROR)) {
-						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
-					}
+					String someResponse = chatBufferedReader.readLine();
+					System.out.println(someResponse);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
-
-}
+//
+//		/*
+//		 * The constructor for the ChatServerThread object.
+//		 */
+//		public ChatServerListenerThread() {
+//			logger.trace("ServerThread initialization");
+//			openSocket();
+//			try {
+//				chatListenerSocket = null;
+//				chatListenerSocket = chatServerSocket.accept();
+//				logger.debug("Has accepted connection from"+clientSocket.getRemoteSocketAddress());
+//			} catch (IOException e) {
+//				if(logger.isEnabledFor(Level.ERROR)) {
+//					logger.error(ServerConstants.Server_STARTUP_FAILED);
+//					logger.error(e);
+//				}
+//				System.exit(1);
+//			}
+//
+//			try {
+//				chatBis = new BufferedInputStream(chatListenerSocket.getInputStream());
+//				chatBos = new BufferedOutputStream(chatListenerSocket.getOutputStream());
+//				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
+//				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
+//			} catch (IOException e) {
+//				if(logger.isEnabledFor(Level.ERROR)) {
+//					logger.error("Exception initializing ChatServerListener", e);
+//				}
+//				System.exit(1);
+//			} 
+//		}
+//		
+//		/**
+//		 * Opens the socket that the server uses
+//		 * @throws IOException
+//		 */
+//		public Boolean openSocket() {
+//			logger.trace("Opening ChatListener Socket.");
+//			try {
+//				chatServerSocket = new ServerSocket(Constants.CHAT_LISTENER_PORT);
+//				return true;
+//			} catch (IOException e) {
+//				if(logger.isEnabledFor(Level.ERROR)) {
+//					logger.error("Error opening socket ", e);
+//				}
+//				return false;
+//			}
+//		}
+//		
+//		/*
+//		 * Thread main routine
+//		 */
+//		public void run() {
+//			try {
+//				String request;
+//				while ((request = chatSockBufReader.readLine()) != null) {
+//					if (request.length() < 1) {
+//						if(logger.isEnabledFor(Level.ERROR)) {
+//							logger.error("Message length is too short: "+request.length());
+//						}
+//						continue;
+//					}
+//					String cmd = Protocol.getRequestCmdSimple(request);
+//					String[] args = Protocol.getRequestArgsSimple(request);
+//					if(cmd.equals(Constants.ANNOUNCEMENT)) {
+//						System.out.println(args[1]);
+//						continue;
+//					}
+//					else if(cmd.equals(Constants.XP)) {
+//						System.out.println("You received " + args[1] + " XP!!");
+//					}
+//				}
+//			} catch (Exception e) {
+//				if(logger.isEnabledFor(Level.ERROR)) {
+//					logger.error("User has disconnected from Auth Server... " +chatListenerSocket.getInetAddress());
+//				}
+//
+//			} finally {
+//				try {
+//					if (chatSockBufReader != null)
+//						chatSockBufReader.close();
+//					if (chatSockPrintWriter != null)
+//						chatSockPrintWriter.close();
+//					chatListenerSocket.close();	
+//				} catch (Exception e) {
+//					if(logger.isEnabledFor(Level.ERROR)) {
+//						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
+//					}
+//				}
+//			}
+//		}
+//	}

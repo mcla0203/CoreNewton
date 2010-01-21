@@ -28,6 +28,7 @@ public class Constants {
 	public static String PASSWORD_INCORRECT = "passwordIncorrect";
 	public static String PLAY = "play";
 	public static String GET_STATS = "getStats";
+	public static String SEND_MESSAGE = "msg";
 
 	public static String MONSTER_DOES_NOT_EXIST = "monsterDNE";
 	public static String MONSTER_WAS_KILLED = "monsterWasKilled";
