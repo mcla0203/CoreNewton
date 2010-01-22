@@ -29,6 +29,8 @@ public class Constants {
 	public static String PLAY = "play";
 	public static String GET_STATS = "getStats";
 	public static String SEND_MESSAGE = "msg";
+	public static String CHAT_CHANNEL = "msgc";
+	public static String CHANNEL_ALL = "all";
 
 	public static String MONSTER_DOES_NOT_EXIST = "monsterDNE";
 	public static String MONSTER_WAS_KILLED = "monsterWasKilled";

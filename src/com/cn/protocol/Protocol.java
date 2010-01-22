@@ -175,5 +175,14 @@ public class Protocol {
 		message = message.substring(Constants.SEND_MESSAGE.length() + name.length() + 2).trim();
 		return ProtocolConstants.SEND_MESSAGE + "<" + name + ">" + "<" + message + ">";
 	}
-	
+
+	public static String sendAllMessageRequest(String[] input, String myCharname) {
+		// TODO Auto-generated method stub
+		String message = "";
+		for(String s : input) {
+			message += s + " ";
+		}
+		message = message.substring(Constants.CHAT_CHANNEL.length() + Constants.CHANNEL_ALL.length() + myCharname.length() + 2).trim();
+		return ProtocolConstants.CHAT_CHANNEL + ProtocolConstants.CHANNEL_ALL +"<" + myCharname + ">" + "<" + message + ">";
+	}
 }
