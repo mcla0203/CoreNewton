@@ -729,6 +729,7 @@ public class Client {
 		if(isLoggedIn && isPlaying) {
 			doSAVE(input);  //only works cause input.length of logout == input.length of save
 			sockPrintWriter.println(ProtocolConstants.LOGOUT);
+			chatSockPrintWriter.println(ProtocolConstants.CHAT_LOGOUT + Protocol.createSimpleRequest(charName));
 			disconnectFromServer();
 			disconnectFromChatServer();
 			username = null;
@@ -825,8 +826,8 @@ void sendToChatServer(String message) {
 					System.out.println(someResponse);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
+					System.out.println("Closed ChatServerListenerThread");
+					break;
 				}
 			}
 		}
