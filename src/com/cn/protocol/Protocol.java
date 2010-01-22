@@ -182,7 +182,7 @@ public class Protocol {
 		for(String s : input) {
 			message += s + " ";
 		}
-		message = message.substring(Constants.CHAT_CHANNEL.length() + Constants.CHANNEL_ALL.length() + myCharname.length() + 2).trim();
+		message = message.substring(Constants.CHAT_CHANNEL.length() + Constants.CHANNEL_ALL.length() + 2).trim();
 		return ProtocolConstants.CHAT_CHANNEL + ProtocolConstants.CHANNEL_ALL +"<" + myCharname + ">" + "<" + message + ">";
 	}
 }
