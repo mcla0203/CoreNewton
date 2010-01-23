@@ -13,10 +13,8 @@ Protocol:
 	3.  Client -> ChatServer          <logout><Duckie>                Client logs out of ChatServer.
 	
 Possible Responses:                    Meaning:
-1.  <noUsersFound>                     Username not found
-2.  <noCharsCreated>                   No characters are created on the account yet (still logs in)
-3.  <passwordIncorrect>                Password typed in by user didn't match the database
-4.  <failure>                          Something really weird happened, i.e. server crash, etc.
+1.  <success>                          Username not found
+2.  <failure>                          Something really weird happened, i.e. server crash, etc.
 
 Acceptance Criteria:
      1.  The user is saved to the database.
