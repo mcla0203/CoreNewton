@@ -1,0 +1,25 @@
+Design of the login function.
+
+Intent:  Logout a user from playing.  This really is the inverse of the play+login command.  
+         Upon logout, the user will expect the following to happen:
+             1.  The user is saved to the database.
+             2.  The user is logged out of the Core server.
+             3.  The user is logged out of the ChatServer.
+         
+Protocol:
+    Communication Direction           Actual Message Sent             Meaning
+    1.  onSAVE is executed, see onSAVE documetation.
+	2.  Client -> Core                <logout>                        Client logs out of Core server.
+	3.  Client -> ChatServer          <logout><Duckie>                Client logs out of ChatServer.
+	
+Possible Responses:                    Meaning:
+1.  <noUsersFound>                     Username not found
+2.  <noCharsCreated>                   No characters are created on the account yet (still logs in)
+3.  <passwordIncorrect>                Password typed in by user didn't match the database
+4.  <failure>                          Something really weird happened, i.e. server crash, etc.
+
+Acceptance Criteria:
+     1.  The user is saved to the database.
+     2.  The user is logged out of the Core server.
+     3.  The user is logged out of the ChatServer.
+     4.  The user can login again once they are logged out.
