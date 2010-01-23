@@ -8,7 +8,7 @@ Intent:  Logout a user from playing.  This really is the inverse of the play+log
          
 Protocol:
     Communication Direction           Actual Message Sent             Meaning
-    1.  onSAVE is executed, see onSAVE documetation.
+    1.  onSAVE is executed
 	2.  Client -> Core                <logout>                        Client logs out of Core server.
 	3.  Client -> ChatServer          <logout><Duckie>                Client logs out of ChatServer.
 	
