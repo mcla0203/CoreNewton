@@ -1,25 +1,24 @@
 Design of the login function.
 
-Intent:  Login a user to the server.  This entails establishing connection to Auth server and 
-         Core server.  The Auth server contains save information of the character.  For example,
-         all of the characters on an account are stored in files on Auth server.  When a user 
-         logs in, these files are read, it returns a list of characters to the player.  The player
-         then selects which character he wants to play.  At this point, the Auth server sends
-         the stats back to the client.  The client forwards them immediately to the Core server.
-         At this point, the Core server will initialize the player and his stats, enabling him to
-         interact with the world.
+Intent:  Login a user to the server.  This entails establishing connection to Auth server
+         and verifying that the account authenticates properly.  The server authenticates
+         based on the username and input.  The user will be 'logged in' when the correct 
+         password is typed in.  Specifically, the AccountService has a login method that
+         verifies that the account was logged in properly.
          
 Protocol:
     Communication Direction           Actual Message Sent                       Meaning
-	1.  Client -> Auth                <login><user><pw>                         Client requests login.
-	2.  Auth -> Client                <Character1><Character2>...<Char3>        Auth server asks what character.
-	3.  Client -> Auth                <loginName><Character1>                   User wants character 1
-	4.  Auth -> Client                <Character1><lvl><hp><energy><xp><$$>     Auth server responds with stats.
-	5.  Client -> Core                <Character1><lvl><hp><energy><xp><$$>     Client forwards stats to Core for init.
+	1.  Client -> Auth                <login><user><pw>                         Client attempts login.
+	2.  Auth -> Client                <SUCCESS>                                 Client enters login state.
+	
+Possible Responses:                    Meaning:
+1.  <noUsersFound>                     Username not found
+2.  <noCharsCreated>                   No characters are created on the account yet (still logs in)
+3.  <passwordIncorrect>                Password typed in by user didn't match the database
+4.  <failure>                          Something really weird happened, i.e. server crash, etc.
 
 Acceptance Criteria:
     1.  Player can login to the authentication server.
 	2.  Player is informed if they typed an incorrect password or username.
 	3.  Player can login to the authentication server after a bad login attempt.
-	4.  Player automatically connects to the Core server on login.
-	5.  Player cannot login when logged in.
+	4.  Player cannot login when logged in.
