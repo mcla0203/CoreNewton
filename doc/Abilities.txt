@@ -1,0 +1,42 @@
+Abilities Documentation
+
+Description:  There are two types of abilities.  There are abilities that all players have, 
+              and there are profession specific.
+              
+              
+=========================================================
+Shared abilities between all professions:
+Strength - adds bonus to attack rating
+Intelligence - adds bonus to magic rating
+Stamina - adds to health, rate of health regeneration
+Wisdom - adds to energy, rate of energy regeneration
+=========================================================
+
+
+=========================================================
+Bruiser specific skills:
+Bashing - Multiplier on physical damage
+Tanking - Multiplier on health
+=========================================================
+
+
+=========================================================
+Soother specific skills:
+Soothing   - Ability to launch particular heals
+Protecting - Ability to launch particular protection
+=========================================================
+
+
+=========================================================
+Seer specific skills:
+Nuking     - Ability to launch particular nukes
+Conversion - Ability to convert damage taken into different
+             elements of the world.
+=========================================================
+
+
+=========================================================
+Master specific skills:
+Summoning - Ability to summon various minions.
+Hex       - Ability to hex foes to take damage.
+=========================================================
