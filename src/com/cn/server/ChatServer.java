@@ -184,10 +184,18 @@ public class ChatServer {
 						onSENDMSG(args);
 						continue;
 					}
+					else if (cmd.equals(Constants.CHAT_CHANNEL)) {
+						logger.debug("The cmd was " + Constants.CHAT_CHANNEL);
+						onSENDMSGCHANNEL(args);
+						continue;
+					}
 				}
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
 					logger.error("User has disconnected from Chat Server... " +serverSocket.getInetAddress());
+					if(chatMap.containsKey(name)) {
+						chatMap.remove(name);	
+					}
 				}
 			}
 			 finally {
@@ -252,6 +260,20 @@ public class ChatServer {
 			}
 			else {
 				logger.debug("This user is not logged in to the chat server...");
+			}
+		}
+		
+		private void onSENDMSGCHANNEL(String[] args) {
+			if(args.length != 4) {
+				return;
+			}
+			String channel = args[1];
+			String name = args[2];
+			String message = args[3];
+			if(channel.equals(Constants.CHANNEL_ALL)) {
+				for(String s : chatMap.keySet()) {
+					chatMap.get(s).println("[All]["+name+"] " + message);
+				}
 			}
 		}
 

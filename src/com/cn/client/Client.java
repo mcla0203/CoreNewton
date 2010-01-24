@@ -36,14 +36,14 @@ public class Client {
 	protected BufferedOutputStream bos;
 	protected BufferedReader sockBufReader;
 	protected PrintWriter sockPrintWriter;
-	
+
 	//Auth server interaction
 	Socket authServerSocket = null;
 	BufferedReader authSockBufReader = null;
 	PrintWriter authSockPrintWriter = null;
 	BufferedInputStream authBis;
 	BufferedOutputStream authBos;
-	
+
 	//Chat-Server Listening
 	Socket chatListenerSocket;
 	protected PrintWriter chatSockPrintWriter = null;
@@ -53,14 +53,14 @@ public class Client {
 	protected Socket chatServerSocket = null;		
 
 	protected UserInput userInput = null;
-	
+
 	private String username = null;
 	private String charName = null;
 	private boolean isPlaying = false;
 	private boolean isLoggedIn = false;
 
 	protected String myURL = null;
-	
+
 	Logger logger = Logger.getLogger(ClientConstants.LOGGER);
 
 	/**
@@ -157,6 +157,9 @@ public class Client {
 				else if(input[0].equals(Constants.DELETE_CHAR)) {
 					doDELETECHAR(input);
 				}
+				else if(input[0].equals(Constants.CHAT_CHANNEL)) {
+					doSENDMSGC(input);
+				}
 				else {
 					System.out.println("Invalid command.");
 				}
@@ -199,7 +202,7 @@ public class Client {
 		}
 		return retVal;
 	}
-	
+
 	/**
 	 * Connects to the authentication server.
 	 */
@@ -221,7 +224,7 @@ public class Client {
 			System.exit(1);
 		} 
 	}
-	
+
 	/**
 	 * Connects to the chat server.
 	 */
@@ -272,7 +275,7 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Destroy socket to disconnect from the auth server.
 	 * Sets the value of socket to null after calling close()
@@ -303,7 +306,7 @@ public class Client {
 			}
 		}
 	}
-	
+
 	/**
 	 * Shutdown handler for the client
 	 */
@@ -340,6 +343,15 @@ public class Client {
 		sendToChatServer(request);
 	}
 	
+	private void doSENDMSGC(String[] input) {
+		if(input.length < 3) {
+			return;
+		}
+		String request = Protocol.sendAllMessageRequest(input, charName);
+		System.out.println("Sending message "+ request);
+		sendToChatServer(request);
+	}
+
 	public void doATTACK(String[] args) {
 		if(args.length != 2) {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -371,10 +383,10 @@ public class Client {
 	}
 
 	public void doHEAL(String[] args) {
-//		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
-//		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
-//			System.out.println(ClientConstants.HEAL_COMPLETE);
-//		}
+		//		String response = sendToServerAndGetResponse(Protocol.attackRequest(Integer.valueOf(args[1]), Double.valueOf(args[2]), username));
+		//		if(Protocol.getRequestCmdSimple(response).equals(ProtocolConstants.SUCCESS)) {
+		//			System.out.println(ClientConstants.HEAL_COMPLETE);
+		//		}
 	}
 
 	public void doLOOT(String[] args) {
@@ -441,7 +453,7 @@ public class Client {
 			System.out.println("Your health is: " + responseArgs[1]);
 		}
 	}
-	
+
 	public void doREST(String[] args) {
 		if(args.length != 1) {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -477,7 +489,7 @@ public class Client {
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_MONSTERS);
 		System.out.println(response);
 	}
-	
+
 	public void doGETDEADMONSTERS(String[] args) {
 		if(!isPlaying) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
@@ -491,7 +503,7 @@ public class Client {
 		String response = sendToServerAndGetResponse(ProtocolConstants.GET_DEAD_MONSTERS);
 		System.out.println(response);
 	}
-	
+
 	private void doGETPLAYERS(String[] input) {
 		if(!isPlaying) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
@@ -565,35 +577,35 @@ public class Client {
 		System.out.println(response);
 		username = usr;
 		isLoggedIn = true;
-//		
-//		String inputFromUser = userInput.getUserInput();
-//		String[] newUserInput = inputFromUser.split(" ");
-//		String cmd = newUserInput[0];
-//		logger.debug("input from user is : "+ inputFromUser);
-//		logger.debug("cmd is : " + cmd);
-//		if(cmd.equals(Constants.CREATE_CHAR)) {
-//			//create char
-//			doCREATECHAR(newUserInput);
-//			return;
-//		}
-//		else if(!response.contains(inputFromUser.split(" ")[1])) {
-//			System.out.println("You made a typo... try again SLOWLY...");
-//			inputFromUser = userInput.getUserInput();
-//		}
-//		charName = inputFromUser;
-//		String stats = sendToAuthServerAndGetResponse(ProtocolConstants.CHAR_SELECTED + Protocol.createSimpleRequest(inputFromUser));
-//		if(stats.equals(ProtocolConstants.NOT_LOGGED_IN)) {
-//			System.out.println("You must be logged in.");
-//			return;
-//		}
-//		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
-//		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
-//		if(response.equals(ProtocolConstants.SUCCESS)) {
-//			beginChatServerListener();
-//			isPlaying = true;
-//			System.out.println(ClientConstants.LOGIN_SUCCESS);
-//			responseGUI.getSuccessDialog();
-//		}
+		//		
+		//		String inputFromUser = userInput.getUserInput();
+		//		String[] newUserInput = inputFromUser.split(" ");
+		//		String cmd = newUserInput[0];
+		//		logger.debug("input from user is : "+ inputFromUser);
+		//		logger.debug("cmd is : " + cmd);
+		//		if(cmd.equals(Constants.CREATE_CHAR)) {
+		//			//create char
+		//			doCREATECHAR(newUserInput);
+		//			return;
+		//		}
+		//		else if(!response.contains(inputFromUser.split(" ")[1])) {
+		//			System.out.println("You made a typo... try again SLOWLY...");
+		//			inputFromUser = userInput.getUserInput();
+		//		}
+		//		charName = inputFromUser;
+		//		String stats = sendToAuthServerAndGetResponse(ProtocolConstants.CHAR_SELECTED + Protocol.createSimpleRequest(inputFromUser));
+		//		if(stats.equals(ProtocolConstants.NOT_LOGGED_IN)) {
+		//			System.out.println("You must be logged in.");
+		//			return;
+		//		}
+		//		connectToServer(ServerConstants.HOSTNAME, ServerConstants.PORT);
+		//		response = sendToServerAndGetResponse(Protocol.createLoginWithCharName(stats));
+		//		if(response.equals(ProtocolConstants.SUCCESS)) {
+		//			beginChatServerListener();
+		//			isPlaying = true;
+		//			System.out.println(ClientConstants.LOGIN_SUCCESS);
+		//			responseGUI.getSuccessDialog();
+		//		}
 	}
 
 	private void doSAVE(String[] input) {
@@ -613,7 +625,7 @@ public class Client {
 			System.out.println(ClientConstants.INVALID_INPUT);
 		}
 	}
-	
+
 	private void doGETSTATS(String[] input) {
 		if(input.length != 1) {
 			System.out.println(ClientConstants.INVALID_INPUT);
@@ -627,7 +639,7 @@ public class Client {
 		System.out.println(response);
 		new SelectCharacter(response);
 	}
-	
+
 	private void doCREATEACC(String[] input) {
 		logger.trace("Entering the doCREATEACC method.");
 		if(input.length != 4) {
@@ -655,10 +667,10 @@ public class Client {
 			System.out.println("Something went wrong.");
 			return;
 		}
-		
+
 		logger.trace("Exiting the doCREATEACC method.");
 	}
-	
+
 	private void doCREATECHAR(String[] input) {
 		if(!isLoggedIn) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);
@@ -768,11 +780,12 @@ public class Client {
 		System.out.println(ClientConstants.LOGIN_SUCCESS);
 		//responseGUI.getSuccessDialog();
 	}
-	
+
 	private void doLOGOUT(String[] input) {
 		if(isLoggedIn && isPlaying) {
 			doSAVE(input);  //only works cause input.length of logout == input.length of save
 			sockPrintWriter.println(ProtocolConstants.LOGOUT);
+			chatSockPrintWriter.println(ProtocolConstants.CHAT_LOGOUT + Protocol.createSimpleRequest(charName));
 			disconnectFromServer();
 			disconnectFromChatServer();
 			username = null;
@@ -792,9 +805,10 @@ public class Client {
 			return;
 		}
 	}
-	
+
 	private void doDISCONNECT(String[] input) {
 		sockPrintWriter.println(ProtocolConstants.LOGOUT);
+		chatSockPrintWriter.println(ProtocolConstants.CHAT_LOGOUT);
 		disconnectFromAuthServer();
 		disconnectFromChatServer();
 		disconnectFromServer();
@@ -816,7 +830,7 @@ public class Client {
 		//SelectCharacter gui = new SelectCharacter(characters.get(0),characters.get(1),characters.get(2),
 		//		characters.get(3));
 	}
-	
+
 	public String sendToServerAndGetResponse(String message) {
 		try {
 			sockPrintWriter.println(message);
@@ -827,7 +841,7 @@ public class Client {
 			return "";
 		}	
 	}
-	
+
 	public String sendToAuthServerAndGetResponse(String message) {
 		try {
 			authSockPrintWriter.println(message);
@@ -838,8 +852,8 @@ public class Client {
 			return "";
 		}	
 	}
-	
-void sendToChatServer(String message) {
+
+	void sendToChatServer(String message) {
 		try {
 			chatSockPrintWriter.println(message);
 		}catch (Exception e) {
@@ -847,19 +861,19 @@ void sendToChatServer(String message) {
 		}	
 		return;
 	}
-	
+
 	public void beginChatServerListener() {
 		Thread t = new Thread(new ChatServerListenerThread());
 		logger.trace("Starting the ChatServerListener");
 		t.start();
 	}
-	
+
 	public class ChatServerListenerThread implements Runnable {
 
 		public ChatServerListenerThread() {
 			System.out.println("Creating a ChatServerListenerThread");
 		}
-		
+
 		@Override
 		public void run() {
 			System.out.println("Running ChatServerListnerThread");
@@ -869,105 +883,12 @@ void sendToChatServer(String message) {
 					System.out.println(someResponse);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
+					System.out.println("Closed ChatServerListenerThread");
+					break;
 				}
 			}
 		}
-			// TODO Auto-generated method stub
-			
-		}
-		
+
 	}
-//
-//		/*
-//		 * The constructor for the ChatServerThread object.
-//		 */
-//		public ChatServerListenerThread() {
-//			logger.trace("ServerThread initialization");
-//			openSocket();
-//			try {
-//				chatListenerSocket = null;
-//				chatListenerSocket = chatServerSocket.accept();
-//				logger.debug("Has accepted connection from"+clientSocket.getRemoteSocketAddress());
-//			} catch (IOException e) {
-//				if(logger.isEnabledFor(Level.ERROR)) {
-//					logger.error(ServerConstants.Server_STARTUP_FAILED);
-//					logger.error(e);
-//				}
-//				System.exit(1);
-//			}
-//
-//			try {
-//				chatBis = new BufferedInputStream(chatListenerSocket.getInputStream());
-//				chatBos = new BufferedOutputStream(chatListenerSocket.getOutputStream());
-//				chatSockPrintWriter = new PrintWriter(new OutputStreamWriter(chatBos), true);
-//				chatSockBufReader = new BufferedReader(new InputStreamReader(chatBis));
-//			} catch (IOException e) {
-//				if(logger.isEnabledFor(Level.ERROR)) {
-//					logger.error("Exception initializing ChatServerListener", e);
-//				}
-//				System.exit(1);
-//			} 
-//		}
-//		
-//		/**
-//		 * Opens the socket that the server uses
-//		 * @throws IOException
-//		 */
-//		public Boolean openSocket() {
-//			logger.trace("Opening ChatListener Socket.");
-//			try {
-//				chatServerSocket = new ServerSocket(Constants.CHAT_LISTENER_PORT);
-//				return true;
-//			} catch (IOException e) {
-//				if(logger.isEnabledFor(Level.ERROR)) {
-//					logger.error("Error opening socket ", e);
-//				}
-//				return false;
-//			}
-//		}
-//		
-//		/*
-//		 * Thread main routine
-//		 */
-//		public void run() {
-//			try {
-//				String request;
-//				while ((request = chatSockBufReader.readLine()) != null) {
-//					if (request.length() < 1) {
-//						if(logger.isEnabledFor(Level.ERROR)) {
-//							logger.error("Message length is too short: "+request.length());
-//						}
-//						continue;
-//					}
-//					String cmd = Protocol.getRequestCmdSimple(request);
-//					String[] args = Protocol.getRequestArgsSimple(request);
-//					if(cmd.equals(Constants.ANNOUNCEMENT)) {
-//						System.out.println(args[1]);
-//						continue;
-//					}
-//					else if(cmd.equals(Constants.XP)) {
-//						System.out.println("You received " + args[1] + " XP!!");
-//					}
-//				}
-//			} catch (Exception e) {
-//				if(logger.isEnabledFor(Level.ERROR)) {
-//					logger.error("User has disconnected from Auth Server... " +chatListenerSocket.getInetAddress());
-//				}
-//
-//			} finally {
-//				try {
-//					if (chatSockBufReader != null)
-//						chatSockBufReader.close();
-//					if (chatSockPrintWriter != null)
-//						chatSockPrintWriter.close();
-//					chatListenerSocket.close();	
-//				} catch (Exception e) {
-//					if(logger.isEnabledFor(Level.ERROR)) {
-//						logger.error("Exception thrown closing sockBufReader and sockPrintWriter", e);
-//					}
-//				}
-//			}
-//		}
-//	}
+
+}

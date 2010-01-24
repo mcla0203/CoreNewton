@@ -1,0 +1,34 @@
+Design of the play function.
+
+Intent:  Login a character to the world.  Basically the play function allows you to do two things.
+         First off the client obtains your stats from the Authentication server.  This requires you
+         to be logged in, see the prerequsites section.  Second, when the client gets these stats,
+         it creates a request to send to the Core server, and it will initiate your player into the 
+         world.
+         
+PreRequisites:
+1.  The user must be logged in to call this function.
+2.  The user cannot be playing to call this function.
+3.  The player cannot exist in the Servers player map.
+
+Protocol Trnasactions:
+    1.  Client -> Auth            <play><Duckie>                                  Give me the stats for Duckie plz!
+	2.  Auth -> Client            <Duckie><lvl><hp><energy><xp><$$>               Auth server responds with stats.
+	3.  Client -> Core            <play><Character1><lvl><hp><energy><xp><$$>     Client forwards stats to Core for init.
+	4.  Core -> Client            <success>                                       Server welcomes the new player
+	     
+     
+Possible Responses:               Meaning:
+1.  <notLoggedIn>                 Not logged in to the authentication server.
+2.  <failure>                     Something really weird happened, i.e. server crash, etc.
+3.  <noCharOwnership>             You tried to play a character that you don't own.
+
+Acceptance Criteria:
+    1.  Players cannot login as other people's characters.
+    2.  Players cannot login as characters that don't exist in the database.
+    3.  Players must be logged in to invoke the command.
+    4.  Players cannot be playing when they invoke the command.
+    5.  The CoreNewton server cannot have the player already in the player map at the time of user using the play command.
+    6.  When a user invokes the play command, you will establish connection with 2 servers:
+    	1.  Connection with the ChatServer will be established.
+    	2.  Connection with the CoreNewton server will be established.
