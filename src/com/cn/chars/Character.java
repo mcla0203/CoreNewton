@@ -3,6 +3,7 @@ package com.cn.chars;
 import org.apache.log4j.Logger;
 
 import com.cn.npc.monsters.Monster;
+import com.cn.players.Player;
 import com.cn.weapon.DefaultWeapon;
 import com.cn.weapon.Weapon;
 
@@ -13,7 +14,8 @@ public class Character {
 	protected boolean isAlive;
 	protected int level;
 	protected int xp;
-
+	protected String type;
+	
 	protected int dmgReceived;
 	protected int MAX_HEALTH;
 	protected int MAX_ENERGY;
@@ -33,7 +35,7 @@ public class Character {
 		isAlive = true;
 		level = 1;
 		xp = 0;
-		weapon = DefaultWeapon.getDefaultWeapon(level);
+		weapon = DefaultWeapon.getDefaultWeapon(level);		
 	}
 	
 	/**
@@ -120,6 +122,14 @@ public class Character {
 	}
 	
 	/**
+	 * Sets the character's health and energy to their MAX_HEALTH and MAX_ENERGY.
+	 */
+	public void rechargeHealthAndEnergy() {
+		health = MAX_HEALTH;
+		energy = MAX_ENERGY;
+	}
+	
+	/**
 	 * Returns the amount of damage that this character received.
 	 * @return
 	 */
@@ -144,8 +154,48 @@ public class Character {
 			}
 			dmgReceived = health;
 			health = 0;
-			isAlive = false;
+			die();
 		}
+	}
+	
+	/**
+	 * Method for handling what happens when a character dies. If the character is a player, 
+	 * it should automatically resurrect. 
+	 */
+	public void die() {
+		isAlive = false;
+		if(type.equals("player")) {
+			resurrect();
+		}
+	}
+	
+	/**
+	 * This method is called right after a player dies. It allows them to resurrect and continue
+	 * playing, only costing them a minor penalty. Their xp is reset to the minimum amount for
+	 * the current level that they are. The health and energy are recharged to full as well.
+	 */
+	public void resurrect() {
+		int level = getLevel();
+		int xp = getMinXPBasedOnLevel(level);
+		setXP(xp);
+		rechargeHealthAndEnergy();
+		isAlive = true;
+	}
+	
+	/**
+	 * Returns an int that represents the minimum amount of xp that a player needs in order to 
+	 * be a certain level. The level is passed in as a parameter (lvl).
+	 * @param lvl
+	 */
+	public int getMinXPBasedOnLevel(int lvl) {
+		int minXP = 0;
+		if(lvl == 1) {
+			return 0;
+		}
+		for(int i = 1; i<lvl; i++) {
+			minXP += 600 + 180*(i-1);
+		}		
+		return minXP;
 	}
 	
 	/**

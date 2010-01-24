@@ -19,6 +19,7 @@ public class Player extends Character {
 		}
 		this.name = name;
 		this.credits = 0;
+		this.type = "player";
 	}
 	
 	public Player(String name, int lvl, int health, int energy, int xp, int credits) {
@@ -31,6 +32,7 @@ public class Player extends Character {
 		this.energy = energy;
 		this.isOnline = true;
 		weapon = DefaultWeapon.getDefaultWeapon(level);
+		this.type = "player";
 	}
 	
 	/**
@@ -186,8 +188,7 @@ public class Player extends Character {
 		level += 1;
 		MAX_HEALTH += 10;
 		MAX_ENERGY += 2;
-		health = MAX_HEALTH;
-		energy = MAX_ENERGY;
+		rechargeHealthAndEnergy();
 		if(logger.isDebugEnabled()) {
 			logger.debug("Player " + this.getName() + "is now level " + this.getLevel());
 		}
@@ -224,8 +225,8 @@ public class Player extends Character {
 	 * @return true if the player should level up, else return false.
 	 */
 	public boolean shouldPlayerLevelUp(Integer amount) {
-		int minXPNeededForNextLevel = (getLevel()*180)+420;
-		int xpNeededToLevelUp = minXPNeededForNextLevel - getXP();
+		int maxXPNeededToLvlUp = (getLevel()*180)+420;
+		int xpNeededToLevelUp = maxXPNeededToLvlUp - getXP();
 		if(amount >= xpNeededToLevelUp) {
 			return true;
 		}

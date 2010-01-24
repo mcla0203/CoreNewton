@@ -78,4 +78,18 @@ public class CharacterTest extends TestCase {
 		assertFalse(c.setEnergy(100));
 		assertEquals(c.getEnergy(), 10);
 	}
+	
+	public void testGetMinXPBasedOnLevel() {
+		Character c = new Character();
+		assertEquals(0, c.getMinXPBasedOnLevel(1));
+		assertEquals(600, c.getMinXPBasedOnLevel(2));
+		assertEquals(1380, c.getMinXPBasedOnLevel(3));
+		assertEquals(2340, c.getMinXPBasedOnLevel(4));
+		assertEquals(3480, c.getMinXPBasedOnLevel(5));
+		assertEquals(4800, c.getMinXPBasedOnLevel(6));
+		assertEquals(6300, c.getMinXPBasedOnLevel(7));
+		assertEquals(7980, c.getMinXPBasedOnLevel(8));
+		assertEquals(9840, c.getMinXPBasedOnLevel(9));
+		assertEquals(11880, c.getMinXPBasedOnLevel(10));
+	}
 }

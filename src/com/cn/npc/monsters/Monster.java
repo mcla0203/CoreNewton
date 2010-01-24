@@ -21,11 +21,13 @@ public class Monster extends Character {
 		id = Math.floor(Math.random()*1000);
 		playersEligibleForXP = new HashMap<Player, Integer>();
 		attackedBy = new HashMap<Player, Integer>();
+		type = "monster";
 	}
 
 	public Monster(double id) {
 		this();
 		this.id = id;
+		this.type = "monster";
 	}
 
 	public double getId() {
