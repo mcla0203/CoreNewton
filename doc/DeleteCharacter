@@ -1,0 +1,25 @@
+Design of the delete character function.
+
+Intent:  Once a user is logged into the server, and before selecting a character, the user shall 
+		 be able to delete any character from his account. Since the Auth Server houses information
+		 about the user and his characters, the client communicates with the Auth Server to invoke 
+		 the deletion of the character specified by the user.
+
+Protocol:
+    Communication Direction           Actual Message Sent                       Meaning
+	1.  User -> Client                deleteChar charName                       User chooses to delete his character with the name 'charName'
+	2.  Client -> User                Are you sure?	This cannot be undone.      Client responds to user confirming the delete of the character.
+	3.  User -> Client                yes/no									User confirms/denies.
+	Assuming user responded with 'yes':
+	4.  Client -> Auth                <deleteChar><charName><username>          Client informs Auth server of the users request to delete the character.
+	5.  Auth -> Client                <SUCCESS>									Auth server informs client of success (or failure) .			  
+
+Acceptance Criteria:
+    1.  User must be logged in and cannot be playing (have already selected a character).
+	2.  A confirmation message is sent to the user in order to ensure that this is what he wants to do.
+	3.  User can respond with 'yes' or 'no'.
+	4.  If the user does not own the character, he is notified and the character is not deleted.
+	5.  If the user responds with 'yes' (and he owns the character), the character, as well as all the character's stats
+		are deleted from the database.
+	6.  If the user responds with 'no', the character is not deleted and the user can go back to selecting
+		a character to play.
