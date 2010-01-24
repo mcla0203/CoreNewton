@@ -419,8 +419,12 @@ public class Server {
 						
 					}
 					else {
-						logger.debug("Player successfully attacked but did not kill monster.");
-						sockPrintWriter.println(Protocol.createSuccessResponse() + dmgDone);
+						logger.debug("Player successfully attacked but did not kill monster. Monster is attacking back.");
+						int dmg = m.getWeapon().computeDamage();
+						String dmgReceived = Protocol.createSimpleResponse(String.valueOf(dmg));
+						boolean died = p.beAttacked(dmg);
+						String death = Protocol.createSimpleResponse(String.valueOf(died));
+						sockPrintWriter.println(Protocol.createSuccessResponse() + dmgDone + dmgReceived + death);
 					}
 				} 
 				else {

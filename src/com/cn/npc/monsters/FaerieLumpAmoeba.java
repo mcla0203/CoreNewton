@@ -16,10 +16,10 @@ public class FaerieLumpAmoeba extends Monster {
 	 * This method is overridden because the amoeba blocks 
 	 * some attacks against it.
 	 */
-	public void beAttacked(int dmg) {
-		logger.trace("Inside FaerieLumpAmoeba.beAttacked()");
-		//TODO: Implement me
-	}
+//	public int beAttacked(int dmg) {
+//		logger.trace("Inside FaerieLumpAmoeba.beAttacked()");
+//		return  1;
+//	}
 	
 	/**
 	 * The amoeba's method of defense. Does some damage 

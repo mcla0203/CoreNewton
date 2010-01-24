@@ -141,12 +141,15 @@ public class Character {
 	 * When a character is attacked, the health is decremented by the 
 	 * amount of the damage done. If the character doesn't have enough 
 	 * health, he dies and his health is set to 0.
+	 * Returns false if the character survived the attack, returns true
+	 * if it died.
 	 */
-	public void beAttacked(int dmg) {
+	public boolean beAttacked(int dmg) {
 		logger.trace("Inside character.beAttacked");
 		if(dmg < health) {
 			health -= dmg;
 			dmgReceived = dmg;
+			return false;
 		}
 		else {
 			if(logger.isDebugEnabled()) {
@@ -155,6 +158,7 @@ public class Character {
 			dmgReceived = health;
 			health = 0;
 			die();
+			return true;
 		}
 	}
 	
@@ -177,6 +181,7 @@ public class Character {
 	public void resurrect() {
 		int level = getLevel();
 		int xp = getMinXPBasedOnLevel(level);
+		logger.debug("Player is being resurrected. He is level: " + level + ". The xp is being reset to: " + xp);
 		setXP(xp);
 		rechargeHealthAndEnergy();
 		isAlive = true;

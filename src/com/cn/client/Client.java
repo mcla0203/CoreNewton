@@ -361,7 +361,20 @@ public class Client {
 		String cmd = Protocol.getRequestCmdSimple(response);
 		String[] responseArgs = Protocol.getRequestArgsSimple(response);
 		if(cmd.equals(Constants.SUCCESS)) {
-			System.out.println("You did " + responseArgs[1] + " damage to the monster.");
+			if(responseArgs[2] == null) {
+				System.out.println("You did " + responseArgs[1] + " damage to the monster.");
+			}
+			else {
+				System.out.println("You did " + responseArgs[1] + " damage to the monster," +
+						" and the monster attacked you back for " + responseArgs[2] + "damage.");
+				if(responseArgs[3].equals("true")) {
+					System.out.println("You died during the attack. You were resurrected with full health and energy, " +
+							"but your experience was reset.");
+					String[] saveArgs = new String[1];
+					saveArgs[0] = "save";
+					doSAVE(saveArgs);
+				}
+			}	
 		}
 		else if(cmd.equals(Constants.NOT_ENOUGH_ENERGY)) {
 			System.out.println("You do not have enough energy to attack.");
