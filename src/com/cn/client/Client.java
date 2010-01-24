@@ -154,6 +154,9 @@ public class Client {
 				else if(input[0].equals(Constants.SEND_MESSAGE)) {
 					doSENDMSG(input);
 				}
+				else if(input[0].equals(Constants.DELETE_CHAR)) {
+					doDELETECHAR(input);
+				}
 				else if(input[0].equals(Constants.CHAT_CHANNEL)) {
 					doSENDMSGC(input);
 				}
@@ -691,7 +694,48 @@ public class Client {
 			System.out.println("You have too many chars already... just use the ones you have...");
 		}
 	}
-
+	
+	private void doDELETECHAR(String[] input) {
+		if(!isLoggedIn) {
+			System.out.println(ClientConstants.NOT_LOGGED_IN);
+			return;
+		}
+		if(isPlaying) {
+			System.out.println(ClientConstants.ALREADY_PLAYING);
+			return;
+		}
+		if(input.length != 2) {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+		logger.debug("input is : " + input);
+		logger.debug("the request is : " + Protocol.convertListToProtocol(input));
+		System.out.println(ClientConstants.DELETE_CHAR_CONFIRMATION);
+		userInput = new UserInput();
+		String userConf = userInput.getUserInput();
+		if(userConf.equals("yes")) {
+			String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input) + Protocol.createSimpleRequest(username));
+			String cmd = Protocol.getRequestCmdSimple(response);
+			if(cmd.equals(ClientConstants.SUCCESS)) {
+				System.out.println("Your character was successfully deleted.");
+			}
+			else if(cmd.equals(ClientConstants.DOES_NOT_OWN_THAT_CHAR)) {
+				System.out.println("You do not own that character.");
+			}
+			else { 
+				System.out.println(ClientConstants.GENERAL_FAILURE);
+			}
+		}
+		else if(userConf.equals("no")) {
+			System.out.println("Your character is not being deleted.");
+			return;
+		}
+		else {
+			System.out.println(ClientConstants.INVALID_INPUT);
+			return;
+		}
+	}
+	
 	private void doPLAY(String[] input) {
 		if(!isLoggedIn) {
 			System.out.println(ClientConstants.NOT_LOGGED_IN);

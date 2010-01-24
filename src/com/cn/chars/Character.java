@@ -182,18 +182,52 @@ public class Character {
 	
 	/**
 	 * Returns an int that represents the amount of xp received
-	 * for the character that you just killed.
+	 * for the monster that was just killed. 
+	 * 
+	 * 100xp is received for killing monsters equal to your level, no matter what your level is.
+	 * If you are level 10 or below, killing a monster that is: 
+	 * 		5 or more levels below you earns you 0xp.
+	 * 		5 or more levels above you earns you 150xp.
+	 * 		1 to 4 levels below you earns you 100-[(x-y)*.1]
+	 * 		1 to 4 levels above you earns you 100+[(y-x)*.1]
+	 * If you are level 11 or higher, the amount of xp you earn is based on the ratio of the monster's
+	 * level to your level:
+	 * 		xpEarned = y/x * 100.
+	 * There are two edge cases to this. If xpEarned is:
+	 * 		less than 50, you earn 0xp.
+	 * 		greater than or equal to 200, you earn 300xp;
+	 * @param m
 	 */
 	public int receiveXp(Monster m) {
 		logger.trace("Inside Character.receiveXP(Monster)");
-		int ret = 25;
-		if(level < m.getLevel()) {
-			ret = 200;
+		int playerLevel = getLevel();
+		int monsterLevel = m.getLevel();
+		double xpToGive = ((double)monsterLevel/(double)playerLevel)*100;
+		if(playerLevel <= 10) {
+			logger.trace("Player is level 10 or lower.");
+			if(monsterLevel <= playerLevel-5) {
+				xpToGive = 0;
+			}
+			else if(monsterLevel >= playerLevel+5) {
+				xpToGive = 150;
+			}
+			else if(monsterLevel < playerLevel) {
+				xpToGive = 100 - ((playerLevel - monsterLevel)*.1);
+			}
+			else if(monsterLevel > playerLevel) {
+				xpToGive = 100 + ((monsterLevel - playerLevel)*.1);
+			}
 		}
-		if(level == m.getLevel()) {
-			ret = 100;
-		}
-		return ret;
+		else {
+			logger.trace("Player is level 11 or higher.");
+			if(xpToGive < 50) {
+				xpToGive = 0;
+			}
+			else if(xpToGive >= 200) {
+				xpToGive = 300;
+			}
+		}	
+		return (int)xpToGive;
 	}
 	
 	public void setWeapon(Weapon w) {
