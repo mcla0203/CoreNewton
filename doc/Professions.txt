@@ -1,0 +1,24 @@
+Professions documentation
+
+There are currently 4 Professions to choose from.
+
+  1. Soother
+  2. Bruiser
+  3. Seer
+  4. Master
+  
+  Soother - This is the healing class.  Soothers can launch heals to rejuvinate themselves 
+  			or teammates. This is the class to keep a team alive in an epic brawl in any battle.
+            
+  Bruiser - This is the warrior or tank class.  When he will be a heavy damage dealer
+            as well as a heavy damage taker.  He would be an essential part in 
+            any team trying looking for a hard hitting foe.
+            
+  Seer    - This is the elementalist or nuking class.  This class will have many
+            abilities to bring massive amounts of damage to groups of enemies.  
+            Although they are not as tough as a Bruiser, they make up for this with
+            their heavy damage dealing.
+            
+  Master  - This is the summoner class.  This class will primarily uses forces
+            to summon minions to fight for him.  In some cases, the Masters can
+            create a swarm of minions to bring down foes.
