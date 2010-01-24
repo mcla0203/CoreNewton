@@ -337,7 +337,10 @@ public class Server {
 			} catch (Exception e) {
 				if(logger.isEnabledFor(Level.ERROR)) {
 					logger.error("Disconnected: " +clientSocket.getInetAddress());
+					logger.error("Removing the player: " + name);
 				}
+				removePlayerFromPlayerList();
+				
 			} finally {
 				disconnectFromChatServer();
 				logger.trace("Closing socket.");
@@ -506,6 +509,16 @@ public class Server {
 		public void onLOGOUT(String[] args) {
 			logger.trace("Inside Server.onLOGOUT.");
 			logger.debug("The playerList size is " + playerList.size());
+			removePlayerFromPlayerList();
+			disconnectFromChatServer();
+			logger.trace("Inside Server.onLOGOUT.");
+		}
+		
+		/** 
+		 * Helper method to remove a player from the 
+		 * player list.
+		 */
+		private void removePlayerFromPlayerList() {
 			for(int i=0; i<playerList.size(); i++) {
 				if(playerList.get(i).getName().equals(name)) {
 					logger.debug("Removing the player " + name + " from the playerList");
@@ -513,10 +526,9 @@ public class Server {
 					break;
 				}
 			}
-			disconnectFromChatServer();
-			logger.trace("Inside Server.onLOGOUT.");
 		}
-		
+
+
 		public void onSAVE(String[] args) {
 			logger.trace("Inside Server.onSAVE.");
 			Player p = ServerPlayersHelper.getPlayerByName(args[1], playerList);

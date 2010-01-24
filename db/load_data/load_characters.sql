@@ -16,4 +16,4 @@ INSERT INTO Character
 INSERT INTO Character
 	(name, aid, id)
 	VALUES
-	('Hakuna Matata', 2, 4);
+	('Hakuna', 2, 4);
