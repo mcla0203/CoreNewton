@@ -54,4 +54,7 @@ public class ClientConstants extends Constants {
 	public static String REST_DISABLED = formatOutput("You stop resting.");
 	public static String REST_ENABLED = formatOutput("You start to rest.");
 	public static String ENERGY_FULL = formatOutput("Your energy was recharged to full.");
+	
+	public static String DELETE_CHAR_CONFIRMATION = formatOutput("Are you sure you want to delete this character? You will not be able to undo this.");
+	public static String ALREADY_PLAYING = formatOutput("You cannot be playing a character to do this. Please logout of this character and try again.");
 }

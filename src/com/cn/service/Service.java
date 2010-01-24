@@ -10,7 +10,7 @@ public class Service {
 	// Step 2: Establish the connection to the database.
 	// The 'localhost' might change if you're not on the same computer
 	// that the database is on...
-	private String url = "jdbc:oracle:thin:@//localhost:1521/root";
+	private String url = "jdbc:oracle:thin:@//192.168.0.107:1521/root";
 	protected Connection connection = null;
 	
 	protected Service() {

@@ -160,6 +160,11 @@ public class AuthenticationServer {
 						continue;
 						
 					}
+					else if(cmd.equalsIgnoreCase(Constants.DELETE_CHAR)) {
+						logger.debug("The cmd was 'delete char'");
+						onDELETECHAR(args);
+						continue;
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -366,6 +371,24 @@ public class AuthenticationServer {
 			}
 			else if(ret == 999 || ret == 5) {
 				sockPrintWriter.println(ProtocolConstants.FAILURE);
+			}
+		}
+		
+		private void onDELETECHAR(String[] args) {
+			String username = args[2];
+			String charToDelete = args[1];
+			CharacterService cs = new CharacterService();
+			if(!cs.hasCharacter(username, charToDelete)) {
+				sockPrintWriter.println(ProtocolConstants.DOES_NOT_OWN_THAT_CHAR);
+			}
+			else {
+				boolean successful = cs.deleteCharacter(charToDelete);
+				if(successful) {
+					sockPrintWriter.println(ProtocolConstants.SUCCESS);
+				}
+				else {
+					sockPrintWriter.println(ProtocolConstants.FAILURE);
+				}
 			}
 		}
 

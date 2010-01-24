@@ -184,16 +184,17 @@ public class CharacterService extends Service {
 	}
 	
 	/**
-	 * This method returns true if aid has the given character.
-	 * @param aid
+	 * This method returns true if the given charName belongs to the given username.
+	 * @param username
+	 * @param charName
 	 * @return
 	 */
-	public boolean hasCharacter(String username, String name) {
+	public boolean hasCharacter(String username, String charName) {
 		boolean ret = false;
 		try {
 			AccountService as = new AccountService();
 			int aid = as.getID(username);
-			int cid = getCid(name);
+			int cid = getCid(charName);
 			Statement stmt = connection.createStatement();
 			ResultSet rset = stmt.executeQuery("SELECT count(*) FROM Character WHERE id = " + cid + 
 																			   "AND aid = " + aid);
@@ -207,7 +208,29 @@ public class CharacterService extends Service {
 			e.printStackTrace();
 		}
 		return ret;
-		
+	}
+	
+	/**
+	 * Attempts to delete the given charName from the db. Returns true if it was successful, otherwise
+	 * returns false.
+	 * @param charName
+	 * @return
+	 */
+	public boolean deleteCharacter(String charName) {
+		int cid = getCid(charName);
+		Statement stmt;
+		try {
+			stmt = connection.createStatement();
+			stmt.executeQuery("DELETE FROM Character WHERE id = " + cid);	
+			stmt.executeQuery("DELETE FROM Stats WHERE cid = " + cid);
+			stmt.close();
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
 	}
 
 	public static void main(String[] args) {
