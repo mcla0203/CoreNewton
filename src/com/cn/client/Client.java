@@ -881,7 +881,7 @@ public class Client {
 		t.start();
 	}
 
-	public class ChatServerListenerThread implements Runnable {
+	public class ChatServerListenerThread extends Thread implements Runnable {
 
 		public ChatServerListenerThread() {
 			System.out.println("Creating a ChatServerListenerThread");

@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="Z:/CoreNewton/dep/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="Z:/CoreNewton/dep/ojdbc6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

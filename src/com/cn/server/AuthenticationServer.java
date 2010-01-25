@@ -83,7 +83,7 @@ public class AuthenticationServer {
 		}
 	}
 
-	public class AuthenticationServerThread implements Runnable{
+	public class AuthenticationServerThread extends Thread implements Runnable{
 
 		// Client-Server Interaction
 		protected Socket clientSocket;
