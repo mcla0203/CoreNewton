@@ -3,7 +3,10 @@
  */
 package com.cn.jme;
 
+import jmetest.terrain.TestIsland;
+
 import com.jme.app.SimpleGame;
+import com.jme.app.AbstractGame.ConfigShowMode;
 import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
 import com.jme.scene.shape.Box;
@@ -26,9 +29,12 @@ public class HelloJme extends SimpleGame {
 		startGame();
 	}
 	
-	public static HelloJme startGame() {
-		HelloJme game = new HelloJme();
-		game.setConfigShowMode(ConfigShowMode.AlwaysShow);
+	public static TestIsland startGame() {
+//		HelloJme game = new HelloJme();
+//		game.setConfigShowMode(ConfigShowMode.AlwaysShow);
+//		game.start();
+		TestIsland game = new TestIsland();
+		//game.setConfigShowMode(ConfigShowMode.AlwaysShow);
 		game.start();
 		return game;
 	}
