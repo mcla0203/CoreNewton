@@ -1,1 +1,2 @@
-java -classpath "bin;dep/log4j-1.2.15.jar" com.cn.client.Client
+java -classpath "bin;dep/log4j-1.2.15.jar;Z:/jme/bin;Z:/jme/lib/lwjgl/lwjgl.jar;Z:/jme/lib/lwjgl/lwjgl_util.jar;Z:/jme/lib/lwjgl/lwjgl_util_applet.jar;Z:/jme/lib/lwjgl/jinput.jar;Z:/jme/lib/swt/windows/swt.jar;Z:/jme/lib/jogl/jogl.jar;Z:/jme/lib/jorbis/jorbis-0.0.17.jar;Z:/jme/lib/jme-colladabinding.jar;Z:/jme/lib/jogl/gluegen-rt.jar;" -Djava.library.path=Z:/jme/lib/lwjgl/native/windows com.cn.client.Client
+
