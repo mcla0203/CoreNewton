@@ -53,6 +53,7 @@ public class Constants {
 	public static final String ANNOUNCEMENT = "announcement";
 	public static final String NOT_LOGGED_IN = "notLoggedIn";
 	public static final String DELETE_CHAR = "deleteChar";
+	public static final String LOGIN_RESPONSE = "loginResponse";
 
 	
 	/**

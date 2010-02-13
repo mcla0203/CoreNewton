@@ -46,6 +46,7 @@ public class ProtocolConstants extends Constants {
 	public static final String SEND_MESSAGE = "<"+Constants.SEND_MESSAGE+">";
 	public static final String CHAT_CHANNEL = "<"+Constants.CHAT_CHANNEL+">";
 	public static final String CHANNEL_ALL = "<" + Constants.CHANNEL_ALL + ">";
+	public static final String LOGIN_RESPONSE = "<" + Constants.LOGIN_RESPONSE + ">";;
 	
 }
 

@@ -262,7 +262,8 @@ public class AuthenticationServer {
 					return;
 				}
 				else {
-					sockPrintWriter.println(chars);
+					String response = Protocol.createLoginResponse(chars);
+					sockPrintWriter.println(response);
 //				}
 //				String request = null;
 //				if ((request = sockBufReader.readLine()) != null) {

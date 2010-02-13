@@ -146,6 +146,14 @@ public class Protocol {
 		return ProtocolConstants.LOGIN_NAME + s;
 	}
 	
+	public static String createLoginResponse(ArrayList<String> chars) {
+		String response = ProtocolConstants.LOGIN_RESPONSE;
+		for(String name : chars) {
+			response += "<" + name + ">";
+		}
+		return response;
+	}
+	
 	public static String createSaveRequest(String name) {
 		return ProtocolConstants.SAVE + Protocol.createSimpleRequest(name);
 	}
