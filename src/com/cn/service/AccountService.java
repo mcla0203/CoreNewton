@@ -134,13 +134,17 @@ public class AccountService extends Service {
 	 * Service method.  Return true if the username does not already exist, else return false.
 	 */
 	public boolean doesUserExist(String username) {
+		System.out.println("Does user exist? : " + username);
 		boolean userExists = false;
 		Statement stmt;
 		try {
 			stmt = connection.createStatement();
 			ResultSet rset = stmt.executeQuery("SELECT count(*) FROM Account WHERE username = '" + username + "'");
 			if (rset.next()) {
-				userExists = true;
+				int count = rset.getInt(1);
+				if(count > 0) {
+					userExists = true;
+				}
 			}
 			stmt.close();
 		}
@@ -157,6 +161,6 @@ public class AccountService extends Service {
 		as.createAccount("mcla0203", "");
 		as.createAccount("mcla0203", "dirka");
 		as.createAccount("dirka", "mcla0203");
+		System.out.println(as.doesUserExist("timmay"));
 	}
-
 }
