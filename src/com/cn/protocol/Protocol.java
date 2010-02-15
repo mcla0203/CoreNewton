@@ -193,4 +193,12 @@ public class Protocol {
 		message = message.substring(Constants.CHAT_CHANNEL.length() + Constants.CHANNEL_ALL.length() + 2).trim();
 		return ProtocolConstants.CHAT_CHANNEL + ProtocolConstants.CHANNEL_ALL +"<" + myCharname + ">" + "<" + message + ">";
 	}
+	
+	public static String getCharactersResponse(ArrayList<String> charList) {
+		String response = "";
+		for(String name : charList) {
+			response += "<" + name + ">";
+		}
+		return response;
+	}
 }

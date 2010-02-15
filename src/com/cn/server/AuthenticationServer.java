@@ -165,6 +165,11 @@ public class AuthenticationServer {
 						onDELETECHAR(args);
 						continue;
 					}
+					else if(cmd.equalsIgnoreCase(Constants.GET_CHARACTERS)) {
+						logger.debug("The cmd was 'get characters'");
+						onGETCHARACTERS(args);
+						continue;
+					}
 					if(logger.isDebugEnabled()) {
 						logger.debug("An invalid message was received: " + request);
 						logger.debug(ServerConstants.INVALID_MSG_RECVD + request);
@@ -354,6 +359,17 @@ public class AuthenticationServer {
 			System.out.println("Response is: " + response);
 			sockPrintWriter.println(response);
 		}
+		
+		private void onGETCHARACTERS(String[] args) {
+			if(!isAuthenticated) {
+				logger.debug("The user is not authenticated so we cannot get characters");
+				return;
+			}
+			CharacterService cs = new CharacterService();
+			ArrayList<String> charList = cs.getCharacters(username);
+			String response = Protocol.getCharactersResponse(charList);
+			sockPrintWriter.println(response);
+		}
 
 		private void onCREATECHAR(String[] args) {
 			CharacterService cs = new CharacterService();
@@ -376,7 +392,6 @@ public class AuthenticationServer {
 		}
 		
 		private void onDELETECHAR(String[] args) {
-			String username = args[2];
 			String charToDelete = args[1];
 			CharacterService cs = new CharacterService();
 			if(!cs.hasCharacter(username, charToDelete)) {

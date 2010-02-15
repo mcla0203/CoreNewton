@@ -234,7 +234,7 @@ public class Auth {
 		UserInput userInput = new UserInput();
 		String userConf = userInput.getUserInput();
 		if(userConf.equals("yes")) {
-			String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input) + Protocol.createSimpleRequest(username));
+			String response = sendToAuthServerAndGetResponse(Protocol.convertListToProtocol(input));
 			String cmd = Protocol.getRequestCmdSimple(response);
 			if(cmd.equals(ClientConstants.SUCCESS)) {
 				System.out.println("Your character was successfully deleted.");

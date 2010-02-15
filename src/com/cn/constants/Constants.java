@@ -53,7 +53,10 @@ public class Constants {
 	public static final String ANNOUNCEMENT = "announcement";
 	public static final String NOT_LOGGED_IN = "notLoggedIn";
 	public static final String DELETE_CHAR = "deleteChar";
+	
+	//Used for the C# client
 	public static final String LOGIN_RESPONSE = "loginResponse";
+	public static final String GET_CHARACTERS = "getCharacters";
 
 	
 	/**
