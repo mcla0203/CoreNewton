@@ -71,7 +71,7 @@ public class CharacterService extends Service {
 				return 4;
 			}
 			//insert row into character
-			int charID = nCharacters() + 1;
+			int charID = maxCharId() + 1;
 			Statement stmt;
 			stmt = connection.createStatement();
 			stmt.executeQuery("INSERT INTO Character "+
@@ -110,6 +110,26 @@ public class CharacterService extends Service {
 			e.printStackTrace();
 		}
 		return nCharacters;
+	}
+	
+	/**
+	 * Returns the number that represents the maximum genereated id.
+	 */
+	public int maxCharId() {
+		int maxId = -1;
+		Statement stmt;
+		try {
+			stmt = connection.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT Max(id) FROM Character");
+			if (rset.next()) {
+				maxId = rset.getInt(1);
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return maxId;
 	}
 
 	/**
